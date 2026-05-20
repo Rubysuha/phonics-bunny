@@ -1,0 +1,70 @@
+.topbar {
+  height: 86px;
+  padding: 0 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: transparent;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brandIcon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.brandText {
+  font-size: 28px;
+  font-weight: 900;
+  color: #3d3d3d;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+}
+
+.userBox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px 22px;
+
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+
+  border-radius: 999px;
+
+  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  box-shadow: 0 8px 20px rgba(92, 127, 149, 0.08);
+}
+
+.coin {
+  font-size: 20px;
+}
+
+.coinText {
+  font-size: 18px;
+  font-weight: 900;
+  color: #3d3d3d;
+}
+
+.divider {
+  font-size: 18px;
+  color: #c6b18d;
+}
+
+.role {
+  font-size: 18px;
+  font-weight: 900;
+  color: #4b3f39;
+}

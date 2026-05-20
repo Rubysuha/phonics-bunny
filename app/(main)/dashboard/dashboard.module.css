@@ -1,0 +1,286 @@
+.dashboard {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* 🔥 중앙 제목 */
+.title {
+  position: absolute;
+  top: -9px;
+  left: 40%;
+  transform: translateX(-50%);
+  font-size: 64px;
+  font-weight: 900;
+  color: #ff7f9b;
+  margin: 0;
+  z-index: 5;
+
+  text-shadow:
+    0 5px 0 rgba(255, 255, 255, 0.95),
+    0 0 16px rgba(255, 255, 255, 0.75);
+}
+
+/* 🔥 토끼 전체 위치 */
+.centerWrap {
+  position: absolute;
+  left: 40%;
+  top: 48.5%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+/* 토끼 영역 */
+.centerArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.circle {
+  position: relative;
+  width: 500px;
+  height: 360px;
+
+  border-radius: 0;
+  background: transparent;
+
+  overflow: visible;
+
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.bunny {
+  object-fit: contain;
+  object-position: center;
+  transform: scale(1.7);
+}
+
+.sparkleLeft,
+.sparkleRight {
+  position: absolute;
+  color: #ffe87d;
+  font-size: 24px;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+}
+
+.sparkleLeft {
+  left: 48px;
+  bottom: 92px;
+}
+
+.sparkleRight {
+  right: 42px;
+  bottom: 84px;
+}
+
+/* 🔥 오른쪽 카드 */
+.rightCards {
+  position: absolute;
+  top: 36px;
+  right: 0px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  width: 280px;
+  z-index: 10;
+}
+
+.kindergartenCard,
+.todayCard {
+  border-radius: 28px;
+  overflow: hidden;
+  background: rgba(255, 250, 235, 0.88);
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 12px 28px rgba(120, 80, 80, 0.10),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+
+.cardHeader {
+  background: rgba(255, 238, 177, 0.9);
+  padding: 16px 22px;
+  font-size: 19px;
+  font-weight: 900;
+  color: #2f231f;
+}
+
+.cardBody {
+  padding: 24px 24px 28px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: #3b241b;
+}
+
+.count {
+  font-size: 52px;
+  font-weight: 900;
+}
+
+.todayCard {
+  position: relative;
+  padding: 0;
+}
+
+.todayIcon {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.todayTitle {
+  font-weight: 900;
+  font-size: 22px;
+  margin-bottom: 16px;
+  color: #2f231f;
+}
+
+.todayText {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: #46332d;
+}
+
+.bee {
+  position: absolute;
+  right: 22px;
+  bottom: 16px;
+  font-size: 42px;
+}
+
+@media (max-width: 1180px) {
+  .title {
+    font-size: 52px;
+  }
+
+  .centerWrap {
+    left: 42%;
+  }
+
+  .circle {
+    width: 360px;
+    height: 360px;
+  }
+
+  .rightCards {
+    top: 36px;
+    right: 42px;
+    width: 270px;
+  }
+}
+
+.growthBody {
+  padding: 20px 22px 24px;
+}
+
+.levelRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 17px;
+  font-weight: 800;
+  color: #33251f;
+  margin-bottom: 14px;
+}
+
+.progressBar {
+  width: 100%;
+  height: 12px;
+  border-radius: 999px;
+  background: #eadfdc;
+  overflow: hidden;
+}
+
+.progressFill {
+  width: 75%;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    #ff6f9f,
+    #f6b1c5
+  );
+}
+
+.progressText {
+  text-align: right;
+  margin-top: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #7a6b67;
+}
+
+.nextLevel {
+  margin-top: 18px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #4b3a33;
+}
+
+.nextLevel span {
+  color: #ff7b45;
+  font-weight: 900;
+}
+
+.todayCoin {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #d67a38;
+}
+
+.todayCoin span {
+  color: #ff8a4c;
+}
+
+.todayConversation {
+  padding: 20px;
+}
+
+.topicRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topicLabel {
+  font-size: 15px;
+  font-weight: 700;
+  color: #6f625d;
+}
+
+.topicTitle {
+  margin-top: 4px;
+  font-size: 20px;
+  font-weight: 900;
+  color: #2d2420;
+}
+
+.weatherIcon {
+  font-size: 42px;
+}
+
+.sentenceBox {
+  margin-top: 18px;
+  background: #eaf2ff;
+  border-radius: 18px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #3c3c3c;
+}

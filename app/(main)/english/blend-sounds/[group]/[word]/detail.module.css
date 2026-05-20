@@ -1,0 +1,142 @@
+.page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.hero {
+  position: relative;
+  flex: 1;
+  border-radius: 28px;
+  overflow-y: auto;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.12)),
+    linear-gradient(180deg, #eef8ff 0%, #f6fbf7 100%);
+  margin-bottom: 8px;
+  padding: 8px 24px 36px;
+}
+
+.inner {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.centerPanel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 340px;
+}
+
+.imageOnlyWrap {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  height: 460px;
+}
+
+.wordImage {
+  object-fit: contain;
+  object-position: center;
+}
+
+.sentence {
+  text-align: center;
+  font-size: 34px;
+  font-weight: 800;
+  color: #222;
+  margin: 24px 0 18px;
+  line-height: 1.35;
+}
+
+.actionRow {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  position: relative;
+}
+
+.listenButton,
+.recordButton,
+.recordingButton,
+.playMineButton,
+.downloadButton,
+.closeButton {
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 13px 22px;
+  font-size: 15px;
+  font-weight: 900;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.listenButton:hover,
+.recordButton:hover,
+.recordingButton:hover,
+.playMineButton:hover,
+.downloadButton:hover,
+.closeButton:hover {
+  transform: translateY(-1px);
+}
+
+.listenButton {
+  background: linear-gradient(180deg, #9ed6ff 0%, #7ac4f7 100%);
+  color: #21455d;
+}
+
+.recordButton {
+  background: linear-gradient(180deg, #ffc0b4 0%, #ff9f8e 100%);
+  color: #7b3326;
+}
+
+.recordingButton {
+  background: linear-gradient(180deg, #ff9aa0 0%, #ff7d85 100%);
+  color: #6f1f26;
+}
+
+.playMineButton {
+  background: linear-gradient(180deg, #d4efb3 0%, #b7df87 100%);
+  color: #355317;
+}
+
+.hiddenFileInput {
+  display: none;
+}
+
+.bottomRow {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.downloadButton {
+  background: linear-gradient(180deg, #ffe8a8 0%, #ffd979 100%);
+  color: #6c5200;
+}
+
+.closeButton {
+  background: linear-gradient(180deg, #bce5ff 0%, #91d0fa 100%);
+  color: #28506d;
+}
+
+@media (max-width: 900px) {
+  .imageOnlyWrap {
+    max-width: 320px;
+    height: 220px;
+  }
+
+  .sentence {
+    font-size: 24px;
+  }
+}

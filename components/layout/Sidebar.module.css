@@ -1,0 +1,133 @@
+.sidebar {
+  padding: 16px 14px 16px 16px;
+  box-sizing: border-box;
+  height: 100%;
+  overflow: hidden;
+}
+
+.titleBox {
+  height: 72px;
+  border-radius: 999px;
+
+  background: rgba(255, 245, 210, 0.76);
+  backdrop-filter: blur(10px);
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0 20px;
+  margin-bottom: 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  box-shadow:
+    0 8px 22px rgba(255, 185, 170, 0.1);
+}
+
+.titleIcon {
+  width: 30px;
+  height: 30px;
+  color: #ff8a3d;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titleText {
+  font-size: 18px;
+  font-weight: 900;
+  color: #5c4338;
+}
+
+.menuPanel {
+  background: rgba(255, 250, 240, 0.55);
+  backdrop-filter: blur(14px);
+
+  border: 1px solid rgba(255, 255, 255, 0.42);
+
+  border-radius: 28px;
+  overflow: hidden;
+
+  box-shadow:
+    0 10px 28px rgba(255, 190, 170, 0.12);
+}
+
+.menuItem {
+  height: 78px;
+  padding: 0 18px;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  text-decoration: none;
+  color: inherit;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.42);
+
+  transition:
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.menuItem:last-child {
+  border-bottom: none;
+}
+
+.menuItem:hover {
+  background: rgba(255, 244, 230, 0.58);
+}
+
+.menuIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+
+  background: rgba(255, 244, 225, 0.82);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #9b6b52;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+
+  transition:
+    color 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.menuItem:hover .menuIcon {
+  color: #ff7f9b;
+  transform: scale(1.08);
+}
+
+.menuLabel {
+  font-size: 16px;
+  font-weight: 800;
+  color: #5a4740;
+}
+
+.active {
+  background: rgba(255, 242, 214, 0.78);
+}
+
+.active .menuIcon {
+  color: #ff7f9b;
+  background: rgba(255, 231, 190, 0.9);
+}
+
+.active .menuLabel {
+  color: #9b6238;
+}
+
+@media (max-width: 1024px) {
+  .sidebar {
+    display: none;
+  }
+}

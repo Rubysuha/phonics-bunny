@@ -1,0 +1,301 @@
+.page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(255, 198, 225, 0.55) 0%, transparent 32%),
+    radial-gradient(circle at 86% 18%, rgba(207, 226, 255, 0.55) 0%, transparent 30%),
+    radial-gradient(circle at 50% 92%, rgba(220, 244, 205, 0.78) 0%, transparent 36%),
+    linear-gradient(180deg, #fff0fb 0%, #eef7ff 48%, #f8f6dc 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.card {
+  width: 100%;
+  max-width: 1020px;
+  min-height: 620px;
+
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px);
+
+  border-radius: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.62);
+
+  box-shadow:
+    0 22px 54px rgba(150, 110, 140, 0.16),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+
+.left {
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 245, 200, 0.9) 0%, transparent 38%),
+    linear-gradient(180deg, rgba(255, 232, 242, 0.68) 0%, rgba(238, 250, 230, 0.7) 100%);
+  padding: 52px 44px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+
+  background: rgba(255, 246, 210, 0.86);
+  backdrop-filter: blur(8px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 42px;
+  margin-bottom: 22px;
+
+  box-shadow: 0 10px 24px rgba(255, 190, 170, 0.14);
+}
+
+.title {
+  font-size: 44px;
+  font-weight: 900;
+  color: #ff7f9b;
+  margin: 0 0 14px;
+  text-align: center;
+
+  text-shadow:
+    0 4px 0 rgba(255, 255, 255, 0.85),
+    0 0 16px rgba(255, 255, 255, 0.72);
+}
+
+.subtitle {
+  font-size: 17px;
+  font-weight: 800;
+  color: #6b5a52;
+  text-align: center;
+  line-height: 1.5;
+  margin: 0 0 32px;
+  word-break: keep-all;
+}
+
+.bunnyCircle {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+
+  background:
+    radial-gradient(circle at 50% 42%, #fff9e8 0%, #fff2cf 48%, rgba(255, 255, 255, 0.35) 100%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: visible;
+
+  box-shadow:
+    0 16px 34px rgba(255, 190, 170, 0.14),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+}
+
+.bunny {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1.2);
+}
+
+.right {
+  padding: 64px 54px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.formTitle {
+  font-size: 38px;
+  font-weight: 900;
+  color: #3f312c;
+  margin: 0 0 10px;
+}
+
+.formText {
+  font-size: 15px;
+  font-weight: 700;
+  color: #756962;
+  line-height: 1.5;
+  margin: 0 0 30px;
+  word-break: keep-all;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  font-size: 15px;
+  font-weight: 900;
+  color: #5a4740;
+}
+
+.input {
+  height: 54px;
+  border: 2px solid rgba(255, 218, 190, 0.88);
+  border-radius: 18px;
+  padding: 0 18px;
+
+  font-size: 15px;
+  font-weight: 700;
+  outline: none;
+
+  background: rgba(255, 253, 248, 0.9);
+  color: #3f312c;
+}
+
+.input:focus {
+  border-color: #ffb98f;
+  box-shadow: 0 0 0 4px rgba(255, 190, 150, 0.18);
+}
+
+.passwordWrap {
+  position: relative;
+}
+
+.passwordWrap .input {
+  width: 100%;
+  padding-right: 72px;
+}
+
+.showButton {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+
+  border: none;
+  background: transparent;
+
+  color: #d98a58;
+  font-size: 13px;
+  font-weight: 900;
+
+  cursor: pointer;
+}
+
+.loginButton,
+.googleButton {
+  height: 56px;
+  border: none;
+  border-radius: 999px;
+
+  font-size: 16px;
+  font-weight: 900;
+
+  cursor: pointer;
+}
+
+.loginButton {
+  margin-top: 8px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffe9cf 0%,
+      #ffd0ad 100%
+    );
+
+  color: #7a4f35;
+
+  box-shadow:
+    0 6px 0 rgba(210, 150, 110, 0.18),
+    0 10px 22px rgba(255, 190, 170, 0.12);
+}
+
+.loginButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.googleButton {
+  margin-top: 16px;
+
+  background: rgba(255, 246, 205, 0.92);
+  color: #6c5200;
+
+  box-shadow:
+    0 6px 0 rgba(190, 150, 70, 0.14),
+    0 10px 20px rgba(255, 220, 150, 0.14);
+}
+
+.findRow {
+  margin-top: 14px;
+
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+
+  font-size: 13px;
+  font-weight: 800;
+  color: #9c8b80;
+}
+
+.findButton {
+  border: none;
+  background: transparent;
+
+  color: #d98a58;
+  font-size: 13px;
+  font-weight: 900;
+
+  cursor: pointer;
+}
+
+.signupText {
+  margin-top: 22px;
+
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #7d706a;
+}
+
+.signupText a {
+  color: #d98a58;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+@media (max-width: 860px) {
+  .card {
+    grid-template-columns: 1fr;
+  }
+
+  .right {
+    padding: 38px 28px 46px;
+  }
+
+  .left {
+    padding: 38px 28px;
+  }
+
+  .bunnyCircle {
+    width: 220px;
+    height: 220px;
+  }
+
+  .title {
+    font-size: 34px;
+  }
+}

@@ -1,0 +1,146 @@
+.page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.hero {
+  position: relative;
+  flex: 1;
+  border-radius: 28px;
+  overflow-y: auto;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.12)),
+    linear-gradient(180deg, #eef8ff 0%, #f6fbf7 100%);
+  margin-bottom: 8px;
+  padding: 8px 24px 36px;
+}
+
+.inner {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.centerPanel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 340px;
+}
+
+.imageOnlyWrap {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  height: 460px;
+}
+
+.wordImage {
+  object-fit: contain;
+  object-position: center;
+}
+
+.sentence {
+  text-align: center;
+  font-size: 34px;
+  font-weight: 800;
+  color: #222;
+  margin: 24px 0 18px;
+  line-height: 1.35;
+}
+
+.infoBox {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto 18px;
+  background: #fff8ea;
+  border: 1px solid #f1e7d1;
+  border-radius: 22px;
+  padding: 14px 18px;
+  text-align: center;
+  box-shadow: 0 8px 18px rgba(92, 127, 149, 0.08);
+}
+
+.infoTitle {
+  font-size: 14px;
+  font-weight: 900;
+  color: #7a6c56;
+  margin-bottom: 6px;
+}
+
+.infoText {
+  font-size: 18px;
+  font-weight: 800;
+  color: #2f2f2f;
+}
+
+.actionRow {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  position: relative;
+}
+
+.recordButton,
+.recordingButton,
+.closeButton {
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 13px 22px;
+  font-size: 15px;
+  font-weight: 900;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.recordButton:hover,
+.recordingButton:hover,
+.closeButton:hover {
+  transform: translateY(-1px);
+}
+
+.recordButton {
+  background: linear-gradient(180deg, #ffc0b4 0%, #ff9f8e 100%);
+  color: #7b3326;
+}
+
+.recordingButton {
+  background: linear-gradient(180deg, #ff9aa0 0%, #ff7d85 100%);
+  color: #6f1f26;
+}
+
+.bottomRow {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.closeButton {
+  background: linear-gradient(180deg, #bce5ff 0%, #91d0fa 100%);
+  color: #28506d;
+}
+
+@media (max-width: 900px) {
+  .imageOnlyWrap {
+    max-width: 320px;
+    height: 220px;
+  }
+
+  .sentence {
+    font-size: 24px;
+  }
+
+  .infoText {
+    font-size: 16px;
+  }
+}
