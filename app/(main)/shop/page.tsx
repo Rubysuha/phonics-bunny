@@ -1,43 +1,68 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 import styles from "./shop.module.css";
-
-const categories = [
-  { id: "hat", label: "모자", icon: "👒" },
-  { id: "bag", label: "가방", icon: "👜" },
-  { id: "clothes", label: "옷", icon: "👗" },
-  { id: "glasses", label: "안경", icon: "👓" },
-  { id: "hair", label: "가발", icon: "👩" },
-  { id: "item", label: "아이템", icon: "⭐" },
-];
-
-const equippedItems = [
-  {
-    id: 1,
-    category: "hat",
-    name: "Straw Hat",
-    image: "/shop/items/straw-hat.png",
-  },
-  {
-    id: 2,
-    category: "bag",
-    name: "Pink Bag",
-    image: "/shop/items/pink-bag.png",
-  },
-];
+import { categories, bunnySkins, backgroundSkins } from "./data";
 
 export default function ShopPage() {
   const router = useRouter();
-  const [coin] = useState(125);
-  const [selectedCategory, setSelectedCategory] = useState("hat");
-  const [showStage, setShowStage] = useState(false);
+
+  const [coin, setCoin] = useState<number>(0);
+
+  const [selectedBunnyImage, setSelectedBunnyImage] =
+    useState<string>("/shop/bunny.png");
+
+  const [backgroundImage, setBackgroundImage] = useState<string>(
+    "/shop/closet-bg.png"
+  );
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("coins, selected_bunny_id, selected_background_id")
+        .eq("id", user.id)
+        .single();
+
+      if (error || !data) {
+        console.error("프로필 불러오기 실패:", error);
+        return;
+      }
+
+      setCoin(data.coins ?? 0);
+
+      const selectedBunny = bunnySkins.find(
+        (bunny) => bunny.id === data.selected_bunny_id
+      );
+
+      if (selectedBunny) {
+        setSelectedBunnyImage(selectedBunny.image);
+      }
+
+      const selectedBg = backgroundSkins.find(
+        (bg) => bg.id === (data.selected_background_id ?? "default_bg")
+      );
+
+      if (selectedBg) {
+        setBackgroundImage(selectedBg.image);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   return (
     <section className={styles.page}>
       <div className={styles.pageInner}>
-        <img src="/shop/closet-bg.png" alt="closet" className={styles.bg} />
+        <img src={backgroundImage} alt="closet" className={styles.bg} />
 
         <button
           className={styles.backButton}
@@ -60,10 +85,8 @@ export default function ShopPage() {
           {categories.map((category) => (
             <button
               key={category.id}
-              className={`${styles.categoryButton} ${
-                selectedCategory === category.id ? styles.active : ""
-              }`}
-              onClick={() => setSelectedCategory(category.id)}
+              className={styles.categoryButton}
+              onClick={() => router.push(`/shop/${category.id}`)}
             >
               <span>{category.icon}</span>
               <strong>{category.label}</strong>
@@ -72,75 +95,12 @@ export default function ShopPage() {
         </div>
 
         <div className={styles.bunnyArea}>
-          <img src="/shop/bunny.png" alt="Bunny" className={styles.bunny} />
-
-          {equippedItems.map((item) => (
-            <img
-              key={item.category}
-              src={item.image}
-              alt={item.name}
-              className={`${styles.equippedItem} ${
-                styles[`equipped_${item.category}`]
-              }`}
-            />
-          ))}
-
-          <button
-            className={styles.previewButton}
-            onClick={() => setShowStage(true)}
-          >
-            이미지 보기
-          </button>
+          <img
+            src={selectedBunnyImage}
+            alt="Selected Bunny"
+            className={styles.bunny}
+          />
         </div>
-
-        <div className={styles.equippedPanel}>
-          <div className={styles.equippedTitle}>현재 착용 아이템</div>
-
-          <div className={styles.equippedList}>
-            {equippedItems.map((item) => (
-              <div key={item.id} className={styles.equippedCard}>
-                <img src={item.image} alt={item.name} />
-                <strong>{item.name}</strong>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {showStage && (
-          <div className={styles.modal}>
-            <div className={styles.stage}>
-              <button
-                className={styles.closeButton}
-                onClick={() => setShowStage(false)}
-              >
-                ×
-              </button>
-
-              <div className={styles.sparkle}>✨ 짜라란! ✨</div>
-
-              <div className={styles.stageCircle}>
-                <img
-                  src="/shop/bunny.png"
-                  alt="Bunny"
-                  className={styles.stageBunny}
-                />
-
-                {equippedItems.map((item) => (
-                  <img
-                    key={item.category}
-                    src={item.image}
-                    alt={item.name}
-                    className={`${styles.stageItem} ${
-                      styles[`stage_${item.category}`]
-                    }`}
-                  />
-                ))}
-              </div>
-
-              <p>오늘의 Bunny Look!</p>
-            </div>
-          </div>
-        )}
       </div>
     </section>
   );

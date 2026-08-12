@@ -16,10 +16,13 @@
 .bg {
   position: absolute;
   inset: 0;
+
   width: 100%;
   height: 100%;
+
   object-fit: cover;
   object-position: center;
+
   z-index: 0;
 }
 
@@ -27,8 +30,7 @@
 .titleBox,
 .coinBox,
 .categoryBox,
-.bunnyArea,
-.equippedPanel {
+.bunnyArea {
   z-index: 5;
 }
 
@@ -36,14 +38,19 @@
   position: absolute;
   top: 34px;
   left: 34px;
+
   width: 64px;
   height: 64px;
+
   border: none;
   border-radius: 22px;
+
   background: rgba(255, 252, 246, 0.95);
   color: #9b6a48;
+
   font-size: 36px;
   font-weight: 900;
+
   cursor: pointer;
 }
 
@@ -51,6 +58,7 @@
   position: absolute;
   top: 44px;
   left: 132px;
+
   z-index: 10;
 }
 
@@ -59,16 +67,19 @@
   display: inline-block;
 
   margin: 0;
+
   font-size: 56px;
   font-weight: 950;
   letter-spacing: -1px;
 
   background: linear-gradient(
-  180deg,
-  #c06b42 0%,
-  #7a3f22 45%,
-  #3f1d10 100%
-);
+    180deg,
+    #c06b42 0%,
+    #7a3f22 45%,
+    #3f1d10 100%
+  );
+
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 
@@ -79,10 +90,12 @@
 
 .titleBox h1::after {
   content: "";
+
   position: absolute;
   left: -8px;
   right: -8px;
   bottom: 6px;
+
   height: 18px;
 
   background: linear-gradient(
@@ -95,30 +108,25 @@
   z-index: -1;
 }
 
-.titleBox p {
-  margin: 4px 0 0;
-  color: #371507;
-  font-size: 18px;
-  font-weight: 900;
-
-  text-shadow:
-    0 2px 0 rgba(255, 255, 255, 0.45),
-    0 4px 8px rgba(95, 50, 31, 0.12);
-}
-
 .coinBox {
   position: absolute;
   top: 42px;
   right: 58px;
+
   width: 210px;
   height: 66px;
+
   border-radius: 999px;
+
   background: rgba(255, 252, 246, 0.96);
   border: 3px solid #f3d59f;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   gap: 10px;
+
   color: #7a4a32;
   font-size: 23px;
 }
@@ -127,19 +135,16 @@
   font-size: 34px;
 }
 
-/* 오른쪽으로 이동 */
-/* 오른쪽 메뉴 */
-/* 오른쪽 메뉴 */
-/* 오른쪽 메뉴 */
 .categoryBox {
   position: absolute;
-  top: 155px;
+  top: 150px;
   right: 54px;
 
   width: 250px;
 
   display: flex;
   flex-direction: column;
+
   gap: 12px;
 
   z-index: 10;
@@ -152,7 +157,6 @@
   border-radius: 22px;
 
   background: rgba(255, 252, 246, 0.9);
-
   color: #9a6b4b;
 
   font-size: 20px;
@@ -169,230 +173,93 @@
 
   box-shadow:
     0 4px 10px rgba(0, 0, 0, 0.05),
-    inset 0 2px 0 rgba(255,255,255,0.7);
+    inset 0 2px 0 rgba(255, 255, 255, 0.7);
 
-  transition: transform 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
 }
 
 .categoryButton:hover {
   transform: translateY(-1px);
-}
-
-.categoryButton span {
-  font-size: 34px;
-}
-
-.categoryButton.active {
   background: linear-gradient(
     180deg,
     #ffb2bf 0%,
     #ff9aaa 100%
   );
-
   color: white;
 }
 
-/* 카펫 위 중앙 */
+.categoryButton span {
+  font-size: 32px;
+}
+
 .bunnyArea {
   position: absolute;
-  left: 50%;
-  top: 58%;
-  width: 420px;
-  height: 430px;
+  left: 60%;
+  top: 57%;
+
+  width: 520px;
+  height: 560px;
+
   transform: translate(-50%, -50%);
 }
 
 .bunny {
   position: absolute;
-  left: 50%;
-  bottom: 48px;
-  width: 320px;
+  left: 50px;
+  bottom: -40px;
+
+  width: 600px;
+
   transform: translateX(-50%);
+
   z-index: 3;
 }
 
-.equippedItem {
+.resetButton {
   position: absolute;
-  z-index: 5;
-}
+  bottom: 34px;
+  right: 54px;
+  z-index: 10;
 
-.equipped_hat {
-  width: 154px;
-  top: 26px;
-  left: 132px;
-}
-
-.equipped_bag {
-  width: 92px;
-  top: 222px;
-  right: 40px;
-}
-
-.equipped_clothes {
-  width: 170px;
-  top: 232px;
-  left: 124px;
-}
-
-.previewButton {
-  position: absolute;
-  left: 50%;
-  bottom: 8px;
-  transform: translateX(-50%);
-  border: none;
-  border-radius: 18px;
-  background: rgba(255, 249, 242, 0.96);
-  color: #ef8585;
-  padding: 12px 26px;
-  font-size: 17px;
-  font-weight: 900;
-  cursor: pointer;
-}
-
-/* 현재 착용 아이템만 표시 */
-.equippedPanel {
-  position: absolute;
-  left: 50%;
-  bottom: 20px;
-  transform: translateX(-50%);
-  width: 500px;
-  min-height: 104px;
-  border-radius: 26px;
-  background: rgba(255, 252, 246, 0.82);
-  border: 3px solid rgba(248, 132, 148, 0.65);
-  padding: 32px 22px 18px;
-  box-sizing: border-box;
-}
-
-.equippedTitle {
-  position: absolute;
-  top: -22px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #f98790;
-  color: white;
-  padding: 9px 26px;
-  border-radius: 999px;
-  font-size: 18px;
-  font-weight: 900;
-  white-space: nowrap;
-}
-
-.equippedList {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-}
-
-.equippedCard {
-  width: 130px;
-  height: 72px;
-  border-radius: 18px;
-  background: rgba(255, 252, 246, 0.95);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.equippedCard img {
-  width: 48px;
   height: 48px;
-  object-fit: contain;
-}
+  padding: 0 20px;
 
-.equippedCard strong {
-  color: #7a4a32;
-  font-size: 14px;
-  font-weight: 900;
-}
-
-.modal {
-  position: absolute;
-  inset: 0;
-  background: rgba(70, 40, 30, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 99;
-}
-
-.stage {
-  width: 520px;
-  height: 520px;
-  border-radius: 42px;
-  background: linear-gradient(180deg, #fff7eb 0%, #ffe2ea 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.closeButton {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 52px;
-  height: 52px;
   border: none;
-  border-radius: 50%;
-  background: white;
+  border-radius: 999px;
+
+  background: rgba(255, 252, 246, 0.92);
   color: #9a6b4b;
-  font-size: 32px;
+
+  font-size: 15px;
+  font-weight: 900;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
   cursor: pointer;
+
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.05),
+    inset 0 2px 0 rgba(255, 255, 255, 0.7);
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
 }
 
-.sparkle {
-  font-size: 32px;
-  color: #f08086;
-  font-weight: 900;
-  margin-bottom: 18px;
+.resetButton:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, #ffb2bf 0%, #ff9aaa 100%);
+  color: white;
 }
 
-.stageCircle {
-  position: relative;
-  width: 330px;
-  height: 350px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #fff 0%, #ffdce4 72%);
-}
-
-.stageBunny {
-  position: absolute;
-  width: 270px;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-}
-
-.stageItem {
-  position: absolute;
-  z-index: 5;
-}
-
-.stage_hat {
-  width: 140px;
-  top: 20px;
-  left: 98px;
-}
-
-.stage_bag {
-  width: 90px;
-  top: 195px;
-  right: 24px;
-}
-
-.stage_clothes {
-  width: 165px;
-  top: 205px;
-  left: 84px;
-}
-
-.stage p {
-  margin-top: 22px;
-  font-size: 24px;
-  color: #7a4a32;
-  font-weight: 900;
+.resetButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  background: rgba(255, 252, 246, 0.92);
+  color: #9a6b4b;
 }

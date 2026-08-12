@@ -82,8 +82,6 @@ export default function LoginPage() {
     <main className={styles.page}>
       <section className={styles.card}>
         <div className={styles.left}>
-          <div className={styles.logo}>🐰</div>
-
           <h1 className={styles.title}>Phonics Bunny</h1>
 
           <p className={styles.subtitle}>

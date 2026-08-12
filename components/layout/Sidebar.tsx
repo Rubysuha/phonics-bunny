@@ -15,7 +15,7 @@ import styles from "./Sidebar.module.css";
 
 const menus = [
   { icon: House, label: "Home", href: "/dashboard" },
-  { icon: Notebook, label: "English", href: "/english" },
+  { icon: Notebook, label: "Phonics", href: "/english" },
   { icon: ChatCircleDots, label: "Conversation", href: "/conversation" },
   { icon: BookOpen, label: "Book", href: "/book" },
   { icon: ShoppingBag, label: "Shop", href: "/shop" },
@@ -30,7 +30,7 @@ export default function Sidebar() {
   }
 
   const getCurrentTitle = () => {
-    if (pathname.startsWith("/english")) return "English";
+    if (pathname.startsWith("/english")) return "Phonics";
     if (pathname.startsWith("/conversation")) return "Conversation";
     if (pathname.startsWith("/book")) return "Book";
     if (pathname.startsWith("/community")) return "Community";

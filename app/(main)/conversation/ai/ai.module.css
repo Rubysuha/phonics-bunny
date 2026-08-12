@@ -1,0 +1,454 @@
+.page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.hero {
+  position: relative;
+  flex: 1;
+  border-radius: 30px;
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 18px 42px rgba(120, 90, 120, 0.1);
+
+  margin-bottom: 8px;
+  padding: 22px 24px 24px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex: 1;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: 34px;
+  font-weight: 950;
+  color: #d84f83;
+  margin: 0 0 4px;
+}
+
+.subtitle {
+  font-size: 14px;
+  font-weight: 800;
+  color: #8f8574;
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.backButton {
+  text-decoration: none;
+  background: linear-gradient(180deg, #ffe9cf 0%, #ffd9b8 100%);
+  color: #7a4f35;
+  font-size: 14px;
+  font-weight: 900;
+  padding: 10px 20px;
+  border-radius: 999px;
+  box-shadow: 0 6px 0 rgba(210, 170, 130, 0.18);
+  white-space: nowrap;
+}
+
+/* ── 채팅창 ── */
+
+.chatLayout {
+  flex: 1;
+  min-height: 0;
+
+  border-radius: 28px;
+  background: #fffaf3;
+  border: 1px solid #f0e6d6;
+  box-shadow: 0 10px 24px rgba(120, 90, 60, 0.08);
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.bunnyBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+
+  padding: 16px 24px;
+  border-bottom: 1px solid #f0e6d6;
+  background: #ffffff;
+}
+
+.bunnyAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  background: #f6efe2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: box-shadow 0.2s ease;
+}
+
+.bunnyAvatarSpeaking {
+  box-shadow: 0 0 0 3px rgba(255, 138, 101, 0.35);
+}
+
+.bunnyAvatar img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+
+.bunnyBarText h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 900;
+  color: #3d3428;
+}
+
+.statusRow {
+  margin: 3px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #8f8574;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e5dbc8;
+  flex-shrink: 0;
+}
+
+.statusDotActive {
+  background: #ff8a65;
+  animation: pulseDot 1.1s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.soundWave {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 20px;
+}
+
+.soundWave span {
+  width: 3px;
+  height: 100%;
+  border-radius: 2px;
+  background: #ff8a65;
+  animation: waveBar 0.9s ease-in-out infinite;
+}
+
+.soundWave span:nth-child(2) { animation-delay: 0.15s; }
+.soundWave span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes waveBar {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+/* ── 시작 화면 ── */
+
+.startScreen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.startIcon {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: #ffe9d9;
+  color: #ff8a65;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.startTitle {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 900;
+  color: #3d3428;
+}
+
+.startDesc {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #8f8574;
+  max-width: 320px;
+}
+
+.startButton {
+  border: none;
+  cursor: pointer;
+
+  height: 50px;
+  padding: 0 32px;
+
+  border-radius: 999px;
+
+  font-size: 15px;
+  font-weight: 900;
+
+  background: #ff8a65;
+  color: #ffffff;
+
+  box-shadow: 0 5px 0 rgba(200, 100, 70, 0.3);
+  transition: transform 0.12s ease;
+}
+
+.startButton:active {
+  transform: translateY(2px);
+}
+
+/* ── 메시지 목록 ── */
+
+.messageList {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 22px 24px;
+}
+
+.bunnyRow,
+.userRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 78%;
+  animation: fadeInUp 0.25s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.bunnyRow {
+  align-self: flex-start;
+}
+
+.userRow {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.rowAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  background: #f6efe2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rowAvatar img {
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+}
+
+.bunnyMessage,
+.userMessage {
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.45;
+  box-shadow: 0 2px 6px rgba(120, 90, 60, 0.06);
+}
+
+.bunnyMessage {
+  background: #f3ece0;
+  color: #3d3428;
+  border-radius: 18px 18px 18px 4px;
+}
+
+.userMessage {
+  background: #d7ece2;
+  color: #24443a;
+  border-radius: 18px 18px 4px 18px;
+}
+
+/* ── 타이핑 인디케이터 ── */
+
+.typingBubble {
+  background: #f3ece0;
+  border-radius: 18px 18px 18px 4px;
+  padding: 13px 16px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.typingBubble span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c3b6a0;
+  animation: dotBounce 1.2s ease-in-out infinite;
+}
+
+.typingBubble span:nth-child(2) { animation-delay: 0.15s; }
+.typingBubble span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes dotBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* ── 하단 입력 바 ── */
+
+.voiceBox {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  padding: 14px 20px;
+  border-top: 1px solid #f0e6d6;
+  background: #ffffff;
+}
+
+.exitButton {
+  border: none;
+  cursor: pointer;
+
+  height: 46px;
+  padding: 0 20px;
+
+  border-radius: 999px;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  background: #f2ede3;
+  color: #8f8574;
+
+  transition: background 0.15s ease;
+}
+
+.exitButton:hover {
+  background: #e8e0d0;
+}
+
+.micButton {
+  position: relative;
+  border: none;
+  cursor: pointer;
+
+  height: 50px;
+  padding: 0 30px;
+
+  border-radius: 999px;
+
+  font-size: 16px;
+  font-weight: 900;
+
+  background: #ff8a65;
+  color: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 5px 0 rgba(200, 100, 70, 0.3);
+  transition: transform 0.12s ease;
+}
+
+.micButton:active {
+  transform: translateY(2px);
+}
+
+.micButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.micButtonRecording {
+  background: #e0574a;
+}
+
+.micButtonLabel {
+  position: relative;
+  z-index: 1;
+}
+
+.micPulseRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: 2px solid rgba(224, 87, 74, 0.5);
+  animation: micPulse 1.3s ease-out infinite;
+}
+
+@keyframes micPulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+
+@media (max-width: 600px) {
+  .title {
+    font-size: 26px;
+  }
+}

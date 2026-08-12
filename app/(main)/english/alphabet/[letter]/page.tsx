@@ -1,11 +1,24 @@
 "use client";
 
+import { rewardCoin } from "@/lib/rewardCoin";
 import { useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
+import {
+  SpeakerHigh,
+  Robot,
+  Microphone,
+  StopCircle,
+  Play,
+  FileText,
+  House,
+} from "@phosphor-icons/react";
+import ActionButton from "@/components/ActionButton";
 import styles from "./detail.module.css";
 import { alphabetItems } from "../data";
+import { useToast } from "@/components/Toast";
 
 export default function AlphabetDetailPage() {
   const params = useParams<{ letter: string }>();
@@ -16,11 +29,19 @@ export default function AlphabetDetailPage() {
     [letter]
   );
 
+  const aiAudioPath = item ? `/audio/alphabet-ai/${item.letter}.mp3` : "";
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
+  const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [isRecording, setIsRecording] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [myRecordingUrl, setMyRecordingUrl] = useState("");
+
+  const [countdown, setCountdown] = useState<number | null>(null);
+
+  const { showToast } = useToast();
 
   if (!item) {
     notFound();
@@ -32,6 +53,17 @@ export default function AlphabetDetailPage() {
   const handleListen = async () => {
     try {
       const audio = new Audio(item.audio);
+
+      audio.onended = async () => {
+        const result = await rewardCoin({
+          contentId: `alphabet-${item.letter}-listen`,
+          contentType: "alphabet",
+          title: `${item.upper}${item.lower} 듣기`,
+        });
+
+        showToast(result.message);
+      };
+
       await audio.play();
     } catch (error) {
       console.error(error);
@@ -39,15 +71,56 @@ export default function AlphabetDetailPage() {
     }
   };
 
+  const handleListenAI = async () => {
+    try {
+      const audio = new Audio(aiAudioPath);
+
+      audio.onended = async () => {
+        const result = await rewardCoin({
+          contentId: `alphabet-${item.letter}-listen`,
+          contentType: "alphabet",
+          title: `${item.upper}${item.lower} AI 듣기`,
+        });
+
+        showToast(result.message);
+      };
+
+      await audio.play();
+    } catch (error) {
+      console.error(error);
+      alert("AI 소리 파일을 찾을 수 없거나 재생할 수 없어.");
+    }
+  };
+
+  const runCountdown = () => {
+    return new Promise<void>((resolve) => {
+      let current = 3;
+      setCountdown(current);
+
+      const interval = setInterval(() => {
+        current -= 1;
+
+        if (current <= 0) {
+          clearInterval(interval);
+          setCountdown(null);
+          resolve();
+        } else {
+          setCountdown(current);
+        }
+      }, 1000);
+    });
+  };
+
   const handleStartRecording = async () => {
     try {
-      // 이전 녹음 URL 정리
       if (myRecordingUrl) {
         URL.revokeObjectURL(myRecordingUrl);
         setMyRecordingUrl("");
       }
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      await runCountdown();
 
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
@@ -72,17 +145,36 @@ export default function AlphabetDetailPage() {
 
       mediaRecorder.start();
       setIsRecording(true);
+      setRecordingSeconds(0);
+
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingSeconds((prev) => prev + 1);
+      }, 1000);
     } catch (error) {
       console.error(error);
+      setCountdown(null);
       alert("마이크 권한을 허용해야 녹음할 수 있어.");
     }
   };
 
-  const handleStopRecording = () => {
+  const handleStopRecording = async () => {
     if (!mediaRecorderRef.current) return;
+
+    if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current);
+      recordingTimerRef.current = null;
+    }
+
     mediaRecorderRef.current.stop();
     setIsRecording(false);
-    alert("녹음이 끝났어. 이제 '내 녹음 듣기'로 바로 재생할 수 있어.");
+
+    const result = await rewardCoin({
+      contentId: `alphabet-${item.letter}-record`,
+      contentType: "alphabet",
+      title: `${item.upper}${item.lower} 녹음`,
+    });
+
+    showToast(result.message);
   };
 
   const handlePlayMine = async () => {
@@ -131,49 +223,91 @@ export default function AlphabetDetailPage() {
             lowercase {lower}
           </p>
 
+          {isRecording && (
+            <div className={styles.recordingBanner}>
+              <span className={styles.recordingDot} />
+              녹음 중이에요... {Math.floor(recordingSeconds / 60)}:
+              {String(recordingSeconds % 60).padStart(2, "0")}
+            </div>
+          )}
+
           <div className={styles.actionRow}>
-            <button className={styles.listenButton} onClick={handleListen}>
-              🔊 소리 재생
-            </button>
+            <ActionButton
+              variant="listen"
+              icon={<SpeakerHigh size={20} weight="fill" />}
+              onClick={handleListen}
+            >
+              소리 재생
+            </ActionButton>
+
+            <ActionButton
+              variant="aiListen"
+              icon={<Robot size={20} weight="fill" />}
+              onClick={handleListenAI}
+            >
+              AI가 읽어주기
+            </ActionButton>
 
             {!isRecording ? (
-              <button
-                className={styles.recordButton}
+              <ActionButton
+                variant="record"
+                icon={<Microphone size={20} weight="fill" />}
                 onClick={handleStartRecording}
+                disabled={countdown !== null}
               >
-                🎤 녹음하기
-              </button>
+                {countdown !== null ? "준비 중..." : "녹음하기"}
+              </ActionButton>
             ) : (
-              <button
-                className={styles.recordingButton}
+              <ActionButton
+                variant="recording"
+                icon={<StopCircle size={20} weight="fill" />}
                 onClick={handleStopRecording}
               >
-                ⏹ 녹음 중지
-              </button>
+                녹음 중지
+              </ActionButton>
             )}
 
-            <button
-              className={styles.playMineButton}
+            <ActionButton
+              variant="playback"
+              icon={<Play size={20} weight="fill" />}
               onClick={handlePlayMine}
             >
-              ▶ 내 녹음 듣기
-            </button>
+              내 녹음 듣기
+            </ActionButton>
           </div>
 
           <div className={styles.bottomRow}>
-            <button
-              className={styles.downloadButton}
+            <ActionButton
+              variant="download"
+              icon={<FileText size={20} weight="fill" />}
               onClick={handleDownloadWorksheet}
             >
-              📄 한글 자료 받기
-            </button>
+              한글 자료 받기
+            </ActionButton>
 
-            <Link href="/english/alphabet" className={styles.closeButton}>
-              🏠 닫기
-            </Link>
+            <ActionButton
+              variant="close"
+              icon={<House size={20} weight="fill" />}
+              href="/english/alphabet"
+            >
+              닫기
+            </ActionButton>
           </div>
         </div>
       </div>
+
+      {countdown !== null &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div className={styles.countdownOverlay}>
+            <div className={styles.countdownCircle}>
+              <span key={countdown} className={styles.countdownNumber}>
+                {countdown}
+              </span>
+            </div>
+          </div>,
+          document.body
+        )}
     </section>
   );
 }

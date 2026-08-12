@@ -1,3 +1,5 @@
+/* app/(main)/conversation/[category]/sentence-list.module.css */
+
 .page {
   height: 100%;
   display: flex;
@@ -8,34 +10,45 @@
 .hero {
   position: relative;
   flex: 1;
-  border-radius: 28px;
+  border-radius: 30px;
   overflow-y: auto;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.12)),
-    linear-gradient(180deg, #eef8ff 0%, #f6fbf7 100%);
+
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 18px 42px rgba(120, 90, 120, 0.1);
+
   margin-bottom: 8px;
-  padding: 26px 24px 32px;
+  padding: 28px 28px 36px;
+  box-sizing: border-box;
+}
+
+.helpWrap {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 10;
 }
 
 .inner {
   width: 100%;
-  max-width: 1120px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
 .title {
   text-align: center;
   font-size: 42px;
-  font-weight: 900;
-  color: #75b9f0;
+  font-weight: 950;
+  color: #a8623f;
   margin: 8px 0 10px;
 }
 
 .subtitle {
   text-align: center;
-  font-size: 17px;
-  font-weight: 600;
-  color: #6f7680;
+  font-size: 15px;
+  font-weight: 700;
+  color: #8f8574;
   margin: 0 0 30px;
 }
 
@@ -47,45 +60,92 @@
 }
 
 .card {
-  min-height: 180px;
-  border-radius: 24px;
-  background: #f7f2eb;
-  border: 3px solid #8cc8ff;
+  position: relative;
+  min-height: 220px;
+  border-radius: 26px;
+  padding: 18px;
+  box-sizing: border-box;
+
   text-decoration: none;
   color: #222;
-  box-shadow: 0 8px 20px rgba(92, 127, 149, 0.08);
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 22px 18px;
+
+  background: #ffffff;
+  border: 1px solid rgba(240, 230, 214, 0.9);
+  box-shadow: 0 10px 22px rgba(120, 90, 60, 0.08);
+
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(92, 127, 149, 0.12);
+  box-shadow: 0 14px 26px rgba(120, 90, 60, 0.12);
+}
+
+.number {
+  position: absolute;
+  top: -12px;
+  left: 18px;
+
+  background: #ff8a65;
+  color: white;
+  font-size: 13px;
+  font-weight: 900;
+
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.08);
+}
+
+.imageWrap {
+  width: 100%;
+  height: 140px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #f6efe2;
+  margin-bottom: 14px;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.textRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .sentence {
-  font-size: 26px;
   font-weight: 900;
-  color: #2f2f2f;
-  margin-bottom: 18px;
-  line-height: 1.35;
-  text-align: center;
+  font-size: 20px;
+  color: #3d3428;
+  margin: 0;
+  line-height: 1.3;
 }
 
-.studyButton {
-  background: linear-gradient(180deg, #ffd5ad 0%, #efc294 100%);
-  color: #7a4f22;
-  font-size: 15px;
-  font-weight: 900;
-  padding: 10px 18px;
-  border-radius: 14px;
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.08);
+.preview {
+  margin: 6px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #9a8f7c;
+}
+
+.lineCount {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 800;
+  color: #a8623f;
+  background: #fff1e0;
+  padding: 4px 10px;
+  border-radius: 999px;
 }
 
 .bottomRow {
@@ -96,54 +156,21 @@
 
 .backButton {
   text-decoration: none;
-
-  background:
-    linear-gradient(
-      180deg,
-      #ffe9cf 0%,
-      #ffd9b8 100%
-    );
-
+  background: linear-gradient(180deg, #ffe9cf 0%, #ffd9b8 100%);
   color: #7a4f35;
-
   font-size: 16px;
   font-weight: 900;
-
   padding: 12px 22px;
-
   border-radius: 999px;
-
-  border: 1px solid rgba(255,255,255,0.45);
-
-  box-shadow:
-    0 6px 0 rgba(210, 170, 130, 0.18),
-    0 10px 22px rgba(255, 190, 170, 0.12);
-
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 6px 0 rgba(210, 170, 130, 0.18), 0 10px 22px rgba(255, 190, 170, 0.12);
 }
 
-.backButton:hover {
-  transform: translateY(-2px);
-
-  box-shadow:
-    0 8px 0 rgba(210, 170, 130, 0.16),
-    0 14px 26px rgba(255, 190, 170, 0.18);
+@media (max-width: 1000px) {
+  .grid { grid-template-columns: repeat(2, 280px); }
+  .title { font-size: 36px; }
 }
 
-@media (max-width: 900px) {
-  .grid {
-    grid-template-columns: 340px;
-  }
-}
-
-@media (max-width: 560px) {
-  .grid {
-    grid-template-columns: 300px;
-  }
-
-  .sentence {
-    font-size: 22px;
-  }
+@media (max-width: 640px) {
+  .grid { grid-template-columns: 280px; }
 }

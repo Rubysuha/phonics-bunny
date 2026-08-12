@@ -45,7 +45,7 @@ export default function EnglishPage() {
       <div className={styles.hero}>
         <div className={styles.inner}>
           <div className={styles.titleBox}>
-            <h1 className={styles.title}>English 🐰</h1>
+            <h1 className={styles.title}>Phonics 🐰</h1>
 
             <p className={styles.englishSubtitle}>
               Choose a menu and start your phonics adventure!

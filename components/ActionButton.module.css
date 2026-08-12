@@ -1,0 +1,87 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+
+  border-radius: 999px;
+  padding: 12px 20px;
+
+  font-size: 15px;
+  font-weight: 800;
+  font-family: inherit;
+
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ── 색상 토큰: 톤 다운된 파스텔, 사이드바 느낌 ── */
+
+.listen {
+  background: #dceefb;
+  color: #3b6e91;
+}
+
+.aiListen {
+  background: #e7e0f7;
+  color: #5b4b8a;
+}
+
+.record {
+  background: #fce0da;
+  color: #b0503a;
+}
+
+.recording {
+  background: #f4a99a;
+  color: #7a2e1d;
+}
+
+.playback {
+  background: #dff3e1;
+  color: #2f7d4f;
+}
+
+.analyze {
+  background: #fbe3ed;
+  color: #a03f6a;
+}
+
+.download {
+  background: #fbf0d2;
+  color: #8a6a1d;
+}
+
+.close {
+  background: #eaeff3;
+  color: #51606e;
+}
+
+.retry {
+  background: #dceefb;
+  color: #3b6e91;
+}
+
+.sm {
+  padding: 8px 12px;
+  font-size: 12.5px;
+  gap: 5px;
+}

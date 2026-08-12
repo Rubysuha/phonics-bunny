@@ -1,30 +1,52 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import styles from "./TopBar.module.css";
 
 export default function TopBar() {
+  const router = useRouter();
+
   const [bunnyName, setBunnyName] = useState("로그인");
+  const [coins, setCoins] = useState(0);
 
   useEffect(() => {
-    const getUserInfo = async () => {
-      const { data, error } = await supabase.auth.getUser();
+  const getUserInfo = async () => {
+    const { data, error } = await supabase.auth.getUser();
 
-      if (error) {
-        console.error(error.message);
-        return;
-      }
+    if (error) {
+      console.error(error.message);
+      return;
+    }
 
-      const user = data.user;
+    const user = data.user;
 
-      if (user?.user_metadata?.bunny_name) {
-        setBunnyName(user.user_metadata.bunny_name);
-      }
-    };
+    if (!user) return;
 
-    getUserInfo();
-  }, []);
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("bunny_name, coins")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError) {
+      console.error("프로필 불러오기 실패:", profileError);
+      return;
+    }
+
+    setBunnyName(profile?.bunny_name ?? "로그인");
+    setCoins(profile?.coins ?? 0);
+  };
+
+  getUserInfo();
+
+  window.addEventListener("coin-updated", getUserInfo);
+
+  return () => {
+    window.removeEventListener("coin-updated", getUserInfo);
+  };
+}, []);
 
   return (
     <header className={styles.topbar}>
@@ -34,13 +56,18 @@ export default function TopBar() {
       </div>
 
       <div className={styles.right}>
-        <div className={styles.userBox}>
-          <span className={styles.coin}>🪙</span>
-          <span className={styles.coinText}>25</span>
+        <div
+          className={styles.userBox}
+          onClick={() => router.push("/mypage")}
+        >
+          <span className={styles.coin}>🥕</span>
+          <span className={styles.coinText}>{coins}</span>
 
           <span className={styles.divider}>|</span>
 
-          <span className={styles.role}>{bunnyName}</span>
+          <span className={styles.role}>
+          {bunnyName} ›
+          </span>
         </div>
       </div>
     </header>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BackButton from "@/components/ui/BackButton";
 import styles from "./blend-sounds.module.css";
 
 const blendMenus = [
@@ -67,9 +68,9 @@ export default function BlendSoundsPage() {
           </div>
 
           <div className={styles.bottomRow}>
-            <Link href="/english" className={styles.backButton}>
-              ← English로 돌아가기
-            </Link>
+            <BackButton href="/english">
+              English로 돌아가기
+            </BackButton>
           </div>
         </div>
       </div>

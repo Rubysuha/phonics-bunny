@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BackButton from "@/components/ui/BackButton";
 import styles from "./sight-words.module.css";
 
 const sightMenus = [
@@ -68,9 +69,9 @@ export default function SightWordsPage() {
           </div>
 
           <div className={styles.bottomRow}>
-            <Link href="/english" className={styles.backButton}>
-              ← English로 돌아가기
-            </Link>
+            <BackButton href="/english">
+              English로 돌아가기
+            </BackButton>
           </div>
         </div>
       </div>

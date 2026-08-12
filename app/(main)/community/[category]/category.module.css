@@ -1,0 +1,171 @@
+.page {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  padding: 36px 36px 140px;
+  box-sizing: border-box;
+
+  overflow-y: auto;
+
+  background:
+    radial-gradient(circle at top left, rgba(255,221,233,.7) 0%, transparent 32%),
+    radial-gradient(circle at bottom right, rgba(221,239,255,.75) 0%, transparent 34%),
+    linear-gradient(180deg,#fffaf4 0%,#fff7fb 52%,#f5f0ff 100%);
+}
+
+.header {
+  margin-bottom: 28px;
+}
+
+.backButton {
+  width: 58px;
+  height: 58px;
+
+  border: none;
+  border-radius: 20px;
+
+  background: white;
+
+  color: #8c6b78;
+  font-size: 34px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  margin-bottom: 20px;
+}
+
+.categoryHero {
+  border-radius: 34px;
+
+  padding: 50px 40px;
+  text-align: center;
+
+  box-shadow: 0 12px 28px rgba(119,91,122,.08);
+}
+
+.categoryHero span {
+  font-size: 54px;
+}
+
+.categoryHero h1 {
+  margin: 14px 0 10px;
+
+  color: #55465e;
+  font-size: 48px;
+  font-weight: 950;
+}
+
+.categoryHero p {
+  margin: 0;
+
+  color: #6f6278;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.writeButton {
+  margin-top: 24px;
+
+  width: 240px;
+  height: 56px;
+
+  border: none;
+  border-radius: 999px;
+
+  background: #ff8fa3;
+  color: white;
+
+  font-size: 18px;
+  font-weight: 900;
+
+  cursor: pointer;
+}
+
+.pink { background: linear-gradient(180deg,#ffe3ec,#ffcddc); }
+.yellow { background: linear-gradient(180deg,#fff6d8,#ffe8ac); }
+.green { background: linear-gradient(180deg,#ecffd9,#d8f4c0); }
+.purple { background: linear-gradient(180deg,#efe5ff,#ddccff); }
+.blue { background: linear-gradient(180deg,#e3f6ff,#ccefff); }
+
+.postList {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.postCard {
+  border: none;
+  border-radius: 28px;
+
+  background: white;
+
+  padding: 24px 28px;
+
+  cursor: pointer;
+  text-align: left;
+
+  box-shadow: 0 8px 18px rgba(119,91,122,.06);
+}
+
+.postTop,
+.postBottom {
+  display: flex;
+  justify-content: space-between;
+
+  color: #a46b82;
+  font-weight: 900;
+}
+
+.postCard h2 {
+  margin: 12px 0 8px;
+
+  color: #55465e;
+  font-size: 28px;
+}
+
+.postCard p {
+  margin: 0 0 18px;
+
+  color: #706477;
+  font-size: 17px;
+}
+
+.emptyBox {
+  border-radius: 30px;
+
+  background: white;
+
+  padding: 50px;
+
+  text-align: center;
+
+  color: #8c6b78;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.postImageBox {
+  width: 100%;
+  height: 240px;
+
+  margin-bottom: 18px;
+
+  border-radius: 24px;
+
+  overflow: hidden;
+
+  background: #fff4f8;
+}
+
+.postImageBox img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+}

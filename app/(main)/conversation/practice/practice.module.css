@@ -1,0 +1,178 @@
+/* app/(main)/conversation/practice/practice.module.css */
+
+.page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.hero {
+  position: relative;
+  flex: 1;
+  border-radius: 30px;
+  overflow-y: auto;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 225, 245, 0.7), transparent 30%),
+    radial-gradient(circle at 86% 14%, rgba(215, 234, 255, 0.78), transparent 30%),
+    radial-gradient(circle at 50% 100%, rgba(236, 248, 205, 0.72), transparent 34%),
+    rgba(255, 255, 255, 0.62);
+
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  box-shadow: 0 18px 42px rgba(120, 90, 120, 0.1);
+
+  margin-bottom: 8px;
+  padding: 28px 28px 36px;
+  box-sizing: border-box;
+}
+
+.inner {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 46px;
+  font-weight: 950;
+  color: #a8623f;
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  margin: 0;
+  color: #8f8574;
+  font-size: 16px;
+  font-weight: 850;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 270px);
+  justify-content: center;
+  gap: 24px 26px;
+}
+
+.card {
+  min-height: 340px;
+  border-radius: 28px;
+  padding: 16px 16px 20px;
+  box-sizing: border-box;
+
+  text-decoration: none;
+  color: inherit;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  background: #fffaf3;
+  border: 2px solid #f0e6d6;
+  box-shadow: 0 10px 22px rgba(120, 90, 60, 0.08);
+
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 30px rgba(120, 90, 60, 0.12);
+}
+
+.imageArea {
+  width: 100%;
+  height: 165px;
+  border-radius: 22px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  background: #f6efe2;
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.textArea {
+  flex: 1;
+}
+
+.textArea h2 {
+  font-weight: 900;
+  font-size: 26px;
+  color: #d9663f;
+  margin: 0 0 6px;
+}
+
+.preview {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #8f8574;
+}
+
+.description {
+  margin: 0 0 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #6d6a78;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+
+.studyButton {
+  margin-top: auto;
+  min-width: 105px;
+  padding: 10px 18px;
+  border-radius: 999px;
+
+  background: linear-gradient(180deg, #ff9d76 0%, #ff8a65 100%);
+  color: white;
+  font-size: 14px;
+  font-weight: 900;
+
+  box-shadow: 0 4px 0 rgba(200, 100, 70, 0.25);
+}
+
+/* 카드 배경 (연한 톤 유지, 보라 제거) */
+.pink { background: #fff5f9; }
+.blue { background: #f4f9ff; }
+.yellow { background: #fffaf0; }
+.mint { background: #f2fbf7; }
+.purple { background: #fdf7f3; }
+.cream { background: #fffaf3; }
+
+.bottomRow {
+  margin-top: 36px;
+  display: flex;
+  justify-content: center;
+}
+
+.backButton {
+  text-decoration: none;
+  background: linear-gradient(180deg, #ffe9cf 0%, #ffd9b8 100%);
+  color: #7a4f35;
+  font-size: 16px;
+  font-weight: 900;
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 6px 0 rgba(210, 170, 130, 0.18), 0 10px 22px rgba(255, 190, 170, 0.12);
+}
+
+@media (max-width: 1000px) {
+  .grid { grid-template-columns: repeat(2, 270px); }
+}
+
+@media (max-width: 640px) {
+  .grid { grid-template-columns: 270px; }
+  .title { font-size: 34px; }
+}

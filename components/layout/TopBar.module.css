@@ -46,6 +46,26 @@
   border: 1px solid rgba(255, 255, 255, 0.5);
 
   box-shadow: 0 8px 20px rgba(92, 127, 149, 0.08);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.userBox:hover {
+  transform: translateY(-2px);
+
+  background: rgba(255, 255, 255, 0.92);
+
+  box-shadow:
+    0 12px 24px rgba(92, 127, 149, 0.12);
+}
+
+.userBox:active {
+  transform: scale(0.97);
 }
 
 .coin {

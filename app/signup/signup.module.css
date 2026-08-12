@@ -210,6 +210,37 @@
   font-weight: 800;
 }
 
+.hintText {
+  display: block;
+  margin-top: 4px;
+  color: #9c8b80;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.passwordWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passwordWrap .input {
+  width: 100%;
+  padding-right: 44px;
+  box-sizing: border-box;
+}
+
+.eyeButton {
+  position: absolute;
+  right: 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 4px;
+}
+
 @media (max-width: 860px) {
   .card {
     padding: 34px 26px;

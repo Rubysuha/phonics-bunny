@@ -5,10 +5,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import styles from "./signup.module.css";
+import { useToast } from "@/components/Toast";
 
 export default function SignupPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordCheck, setShowPasswordCheck] = useState(false);
+
+  const { showToast } = useToast();
 
   const [form, setForm] = useState({
     role: "parent",
@@ -46,6 +51,11 @@ export default function SignupPage() {
       !form.bunnyName
     ) {
       alert("필수 항목을 모두 입력해 주세요.");
+      return;
+    }
+
+    if (form.password.length < 6) {
+      alert("비밀번호는 6자 이상이어야 해요.");
       return;
     }
 
@@ -117,7 +127,7 @@ export default function SignupPage() {
 
     setIsLoading(false);
 
-    alert("회원가입이 완료됐어. 이메일 인증 후 로그인해줘.");
+    showToast("🐰 회원가입이 완료됐어요!");
     router.push("/login");
   };
 
@@ -204,28 +214,51 @@ export default function SignupPage() {
 
               <label className={styles.label}>
                 비밀번호
-                <input
-                  name="password"
-                  type="password"
-                  className={styles.input}
-                  placeholder="비밀번호"
-                  value={form.password}
-                  onChange={handleChange}
-                />
+                <div className={styles.passwordWrap}>
+                  <input
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    className={styles.input}
+                    placeholder="비밀번호"
+                    value={form.password}
+                    onChange={handleChange}
+                  />
+                  <button
+                    type="button"
+                    className={styles.eyeButton}
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
+                  >
+                    {showPassword ? "🙈" : "👁️"}
+                  </button>
+                </div>
+                <span className={styles.hintText}>6자 이상 입력해 주세요</span>
               </label>
 
               <label className={styles.label}>
                 비밀번호 확인
-                <input
-                  name="passwordCheck"
-                  type="password"
-                  className={`${styles.input} ${
-                    passwordMismatch ? styles.inputError : ""
-                  }`}
-                  placeholder="비밀번호 확인"
-                  value={form.passwordCheck}
-                  onChange={handleChange}
-                />
+                <div className={styles.passwordWrap}>
+                  <input
+                    name="passwordCheck"
+                    type={showPasswordCheck ? "text" : "password"}
+                    className={`${styles.input} ${
+                      passwordMismatch ? styles.inputError : ""
+                    }`}
+                    placeholder="비밀번호 확인"
+                    value={form.passwordCheck}
+                    onChange={handleChange}
+                  />
+                  <button
+                    type="button"
+                    className={styles.eyeButton}
+                    onClick={() => setShowPasswordCheck((prev) => !prev)}
+                    aria-label={
+                      showPasswordCheck ? "비밀번호 숨기기" : "비밀번호 보기"
+                    }
+                  >
+                    {showPasswordCheck ? "🙈" : "👁️"}
+                  </button>
+                </div>
 
                 {passwordMismatch && (
                   <span className={styles.errorText}>
