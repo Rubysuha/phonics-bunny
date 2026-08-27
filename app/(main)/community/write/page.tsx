@@ -1,7 +1,7 @@
 "use client";
 
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
 import {
   CaretLeft,
   Carrot,
@@ -44,7 +44,7 @@ const categoryTint: Record<CommunityCategoryId, string> = {
   "local-recommend": "#e3ede7",
 };
 
-export default function CommunityWritePage() {
+function CommunityWritePageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -375,5 +375,13 @@ export default function CommunityWritePage() {
         </main>
       </div>
     </section>
+  );
+}
+
+export default function CommunityWritePage() {
+  return (
+    <Suspense fallback={null}>
+      <CommunityWritePageInner />
+    </Suspense>
   );
 }

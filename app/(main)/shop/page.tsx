@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Backpack,
@@ -47,7 +47,7 @@ const categoryIcon: Record<CategoryId, React.ElementType> = {
   fantasy: Sparkle,
 };
 
-export default function ShopPage() {
+function ShopPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -995,5 +995,13 @@ export default function ShopPage() {
         )}
       </div>
     </section>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={null}>
+      <ShopPageInner />
+    </Suspense>
   );
 }
