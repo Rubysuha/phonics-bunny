@@ -115,16 +115,16 @@ export default function ShopCategoryPage() {
     ? [defaultBunny, ...themedBunnies]
     : themedBunnies;
 
-  // 기본 배경도 항상 맨 앞에, 그 카테고리 전용 배경이 뒤에 이어짐
+  // 기본 배경도 항상 맨 앞에, 그 카테고리 전용 배경들이 뒤에 이어짐
   const defaultBackground = backgroundSkins.find(
     (bg) => bg.id === "default_bg"
   );
-  const themedBackground = backgroundSkins.find(
+  const themedBackgrounds = backgroundSkins.filter(
     (bg) => bg.category === categoryId && bg.id !== "default_bg"
   );
-  const backgroundOptions = [defaultBackground, themedBackground].filter(
-    (bg): bg is BackgroundSkin => Boolean(bg)
-  );
+  const backgroundOptions = defaultBackground
+    ? [defaultBackground, ...themedBackgrounds]
+    : themedBackgrounds;
 
   const handleBuy = async (bunny: BunnySkin) => {
     if (!userId) {
