@@ -93,3 +93,14 @@ function encodeWav(samples: Float32Array, sampleRate: number): Blob {
 
   return new Blob([buffer], { type: "audio/wav" });
 }
+
+export function createSupportedMediaRecorder(stream: MediaStream): MediaRecorder {
+  const preferredTypes = ["audio/webm", "audio/mp4", "audio/ogg"];
+  const mimeType = preferredTypes.find((type) =>
+    MediaRecorder.isTypeSupported(type)
+  );
+
+  return mimeType
+    ? new MediaRecorder(stream, { mimeType })
+    : new MediaRecorder(stream);
+}

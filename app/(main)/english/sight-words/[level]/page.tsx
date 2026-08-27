@@ -18,7 +18,7 @@ import ActionButton from "@/components/ActionButton";
 import HelpTooltip from "@/components/HelpTooltip";
 import styles from "./level.module.css";
 import { sightWordLevels } from "../data";
-import { convertRecordingToWav } from "@/lib/audioToWav";
+import { convertRecordingToWav, createSupportedMediaRecorder } from "@/lib/audioToWav";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/Toast";
 
@@ -126,7 +126,7 @@ export default function SightWordLevelPage() {
 
       await runCountdown(word);
 
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = createSupportedMediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       recordedChunksRef.current = [];
 
@@ -138,7 +138,7 @@ export default function SightWordLevelPage() {
 
       mediaRecorder.onstop = () => {
         const blob = new Blob(recordedChunksRef.current, {
-          type: "audio/webm",
+          type: mediaRecorder.mimeType || "audio/webm",
         });
 
         const audioUrl = URL.createObjectURL(blob);

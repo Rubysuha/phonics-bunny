@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChatsCircle, Microphone } from "@phosphor-icons/react";
 import { supabase } from "@/lib/supabase";
-import { convertRecordingToWav } from "@/lib/audioToWav";
+import { convertRecordingToWav, createSupportedMediaRecorder } from "@/lib/audioToWav";
 import { getWeakWords } from "@/lib/getWeakWords";
 import HelpTooltip from "@/components/HelpTooltip";
 import styles from "./ai.module.css";
@@ -158,7 +158,7 @@ export default function AiConversationPage() {
         streamRef.current = stream;
       }
 
-      const recorder = new MediaRecorder(stream);
+      const recorder = createSupportedMediaRecorder(stream);
       recordedChunksRef.current = [];
 
       recorder.ondataavailable = (e) => {
@@ -198,7 +198,9 @@ export default function AiConversationPage() {
     setStatusText("듣고 있어요...");
 
     try {
-      const blob = new Blob(recordedChunksRef.current, { type: "audio/webm" });
+      const blob = new Blob(recordedChunksRef.current, {
+        type: mediaRecorderRef.current?.mimeType || "audio/webm",
+      });
       const { wavBlob } = await convertRecordingToWav(blob);
 
       const formData = new FormData();

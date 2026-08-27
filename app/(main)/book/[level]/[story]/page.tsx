@@ -15,7 +15,7 @@ import {
 import ActionButton from "@/components/ActionButton";
 import styles from "./detail.module.css";
 import { getBookLevel, getBookStory } from "../../data";
-import { convertRecordingToWav } from "@/lib/audioToWav";
+import { convertRecordingToWav, createSupportedMediaRecorder } from "@/lib/audioToWav";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/Toast";
 import { useParams, notFound } from "next/navigation";
@@ -126,7 +126,7 @@ export default function BookDetailPage() {
 
       await runCountdown();
 
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = createSupportedMediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       recordedChunksRef.current = [];
 
@@ -138,7 +138,7 @@ export default function BookDetailPage() {
 
       mediaRecorder.onstop = () => {
         const blob = new Blob(recordedChunksRef.current, {
-          type: "audio/webm",
+          type: mediaRecorder.mimeType || "audio/webm",
         });
 
         const audioUrl = URL.createObjectURL(blob);

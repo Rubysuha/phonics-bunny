@@ -19,6 +19,7 @@ import ActionButton from "@/components/ActionButton";
 import styles from "./detail.module.css";
 import { alphabetItems } from "../data";
 import { useToast } from "@/components/Toast";
+import { createSupportedMediaRecorder } from "@/lib/audioToWav";
 
 export default function AlphabetDetailPage() {
   const params = useParams<{ letter: string }>();
@@ -122,7 +123,7 @@ export default function AlphabetDetailPage() {
 
       await runCountdown();
 
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = createSupportedMediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       recordedChunksRef.current = [];
 
@@ -134,7 +135,7 @@ export default function AlphabetDetailPage() {
 
       mediaRecorder.onstop = () => {
         const blob = new Blob(recordedChunksRef.current, {
-          type: "audio/webm",
+          type: mediaRecorder.mimeType || "audio/webm",
         });
 
         const audioUrl = URL.createObjectURL(blob);
