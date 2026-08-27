@@ -377,23 +377,6 @@ export default function SignupPage() {
       return;
     }
 
-    const userId = data.user?.id;
-
-    if (userId) {
-      const { error: profileError } = await supabase.from("profiles").insert([
-        {
-          id: userId,
-          email: form.email,
-          bunny_name: form.bunnyName,
-          phone: form.phone,
-        },
-      ]);
-
-      if (profileError) {
-        console.error(profileError.message);
-      }
-    }
-
     setIsLoading(false);
 
     showToast("🐰 회원가입이 완료됐어요!");
@@ -1993,53 +1976,352 @@ export const backgroundSkins: BackgroundSkin[] = [
     description: "처음부터 함께하는 기본 배경",
   },
 
+  // ===== STUDENT =====
   {
-    id: "student_bg",
+    id: "student_classroom",
     category: "student",
     name: "교실 배경",
-    price: 150,
-    image: "/shop/backgrounds/student.png",
+    price: 50,
+    image: "/shop/backgrounds/student/classroom.png",
     description: "영어를 배우는 아늑한 교실",
   },
   {
-    id: "royal_bg",
+    id: "student_university",
+    category: "student",
+    name: "대학 캠퍼스 배경",
+    price: 50,
+    image: "/shop/backgrounds/student/university.png",
+    description: "책과 낭만이 있는 대학 캠퍼스",
+  },
+  {
+    id: "student_kindergarten",
+    category: "student",
+    name: "유치원 놀이터 배경",
+    price: 50,
+    image: "/shop/backgrounds/student/kindergarten.png",
+    description: "노란 모자 친구들이 뛰노는 유치원",
+  },
+  {
+    id: "student_sports_field",
+    category: "student",
+    name: "운동장 배경",
+    price: 50,
+    image: "/shop/backgrounds/student/sports_field.png",
+    description: "힘차게 뛰노는 활기찬 운동장",
+  },
+  {
+    id: "student_library",
+    category: "student",
+    name: "도서관 배경",
+    price: 50,
+    image: "/shop/backgrounds/student/library.png",
+    description: "책이 가득한 조용한 도서관",
+  },
+  {
+    id: "student_music_room",
+    category: "student",
+    name: "음악실 배경",
+    price: 50,
+    image: "/shop/backgrounds/student/music_room.png",
+    description: "노래와 악기 소리가 가득한 음악실",
+  },
+  {
+    id: "student_graduation_hall",
+    category: "student",
+    name: "졸업식장 배경",
+    price: 50,
+    image: "/shop/backgrounds/student/graduation_hall.png",
+    description: "꽃다발과 박수가 가득한 졸업식장",
+  },
+
+  // ===== ROYAL =====
+  {
+    id: "royal_palace",
     category: "royal",
     name: "왕실 배경",
-    price: 160,
-    image: "/shop/backgrounds/royal.png",
+    price: 60,
+    image: "/shop/backgrounds/royal/palace.png",
     description: "화려한 궁전 속 왕실 분위기",
   },
   {
-    id: "job_bg",
+    id: "royal_princess_room",
+    category: "royal",
+    name: "공주의 방 배경",
+    price: 60,
+    image: "/shop/backgrounds/royal/princess_room.png",
+    description: "분홍빛으로 물든 공주의 방",
+  },
+  {
+    id: "royal_palace_courtyard",
+    category: "royal",
+    name: "궁전 정원 배경",
+    price: 60,
+    image: "/shop/backgrounds/royal/palace_courtyard.png",
+    description: "햇살 가득한 궁전의 정원",
+  },
+  {
+    id: "royal_throne_hall",
+    category: "royal",
+    name: "왕좌의 방 배경",
+    price: 60,
+    image: "/shop/backgrounds/royal/throne_hall.png",
+    description: "위엄이 느껴지는 왕좌의 방",
+  },
+  {
+    id: "royal_hall",
+    category: "royal",
+    name: "왕궁 홀 배경",
+    price: 60,
+    image: "/shop/backgrounds/royal/royal_hall.png",
+    description: "황금빛으로 빛나는 왕궁의 홀",
+  },
+  {
+    id: "royal_tea_garden",
+    category: "royal",
+    name: "티파티 정원 배경",
+    price: 60,
+    image: "/shop/backgrounds/royal/tea_garden.png",
+    description: "우아한 티타임이 열리는 정원",
+  },
+  {
+    id: "royal_palace_gate",
+    category: "royal",
+    name: "궁전 정문 배경",
+    price: 60,
+    image: "/shop/backgrounds/royal/palace_gate.png",
+    description: "근위병이 지키는 궁전의 정문",
+  },
+
+  // ===== JOB =====
+  {
+    id: "job_town",
     category: "job",
     name: "직업 마을 배경",
-    price: 150,
-    image: "/shop/backgrounds/job.png",
+    price: 50,
+    image: "/shop/backgrounds/job/job_town.png",
     description: "다양한 직업이 모인 Job Town",
   },
   {
-    id: "family_bg",
+    id: "job_bakery",
+    category: "job",
+    name: "빵집 배경",
+    price: 50,
+    image: "/shop/backgrounds/job/bakery.png",
+    description: "고소한 빵 냄새 가득한 빵집",
+  },
+  {
+    id: "job_hospital",
+    category: "job",
+    name: "병원 배경",
+    price: 50,
+    image: "/shop/backgrounds/job/hospital.png",
+    description: "친절한 의사 선생님이 있는 병원",
+  },
+  {
+    id: "job_school",
+    category: "job",
+    name: "학교 교실 배경",
+    price: 50,
+    image: "/shop/backgrounds/job/school.png",
+    description: "선생님이 수업하는 교실",
+  },
+  {
+    id: "job_police_station",
+    category: "job",
+    name: "경찰서 배경",
+    price: 50,
+    image: "/shop/backgrounds/job/police_station.png",
+    description: "마을을 지키는 든든한 경찰서",
+  },
+  {
+    id: "job_art_studio",
+    category: "job",
+    name: "화실 배경",
+    price: 50,
+    image: "/shop/backgrounds/job/art_studio.png",
+    description: "물감과 붓이 가득한 화실",
+  },
+  {
+    id: "job_airport",
+    category: "job",
+    name: "공항 배경",
+    price: 50,
+    image: "/shop/backgrounds/job/airport.png",
+    description: "하늘을 향해 날아오르는 공항",
+  },
+
+  // ===== FAMILY =====
+  {
+    id: "family_living_room",
     category: "family",
     name: "가족 거실 배경",
-    price: 150,
-    image: "/shop/backgrounds/family.png",
+    price: 50,
+    image: "/shop/backgrounds/family/living_room.png",
     description: "따뜻한 우리 가족의 거실",
   },
   {
-    id: "battle_bg",
+    id: "family_kitchen",
+    category: "family",
+    name: "주방 배경",
+    price: 50,
+    image: "/shop/backgrounds/family/kitchen.png",
+    description: "맛있는 요리가 가득한 주방",
+  },
+  {
+    id: "family_garage",
+    category: "family",
+    name: "차고 배경",
+    price: 50,
+    image: "/shop/backgrounds/family/garage.png",
+    description: "아빠의 손길이 담긴 차고",
+  },
+  {
+    id: "family_nursery",
+    category: "family",
+    name: "아기방 배경",
+    price: 50,
+    image: "/shop/backgrounds/family/nursery.png",
+    description: "포근한 아기의 방",
+  },
+  {
+    id: "family_playroom",
+    category: "family",
+    name: "놀이방 배경",
+    price: 50,
+    image: "/shop/backgrounds/family/playroom.png",
+    description: "형제자매가 함께 노는 놀이방",
+  },
+  {
+    id: "family_grandma_garden",
+    category: "family",
+    name: "할머니 정원 배경",
+    price: 50,
+    image: "/shop/backgrounds/family/grandma_garden.png",
+    description: "정겨운 할머니의 텃밭 정원",
+  },
+  {
+    id: "family_grandpa_porch",
+    category: "family",
+    name: "할아버지 마루 배경",
+    price: 50,
+    image: "/shop/backgrounds/family/grandpa_porch.png",
+    description: "따뜻한 햇살이 드는 할아버지의 마루",
+  },
+
+  // ===== BATTLE =====
+  {
+    id: "battle_arena",
     category: "battle",
     name: "버니 아레나 배경",
-    price: 170,
-    image: "/shop/backgrounds/battle.png",
+    price: 70,
+    image: "/shop/backgrounds/battle/arena.png",
     description: "용감한 토끼들의 전투 경기장",
   },
   {
-    id: "fantasy_bg",
+    id: "battle_castle_courtyard",
+    category: "battle",
+    name: "성 안뜰 배경",
+    price: 70,
+    image: "/shop/backgrounds/battle/castle_courtyard.png",
+    description: "기사가 훈련하는 성의 안뜰",
+  },
+  {
+    id: "battle_archery_range",
+    category: "battle",
+    name: "활쏘기 훈련장 배경",
+    price: 70,
+    image: "/shop/backgrounds/battle/archery_range.png",
+    description: "숲속의 조용한 활쏘기 훈련장",
+  },
+  {
+    id: "battle_battlefield",
+    category: "battle",
+    name: "전장 배경",
+    price: 70,
+    image: "/shop/backgrounds/battle/battlefield.png",
+    description: "영웅이 나타나는 치열한 전장",
+  },
+  {
+    id: "battle_dojo",
+    category: "battle",
+    name: "닌자 도장 배경",
+    price: 70,
+    image: "/shop/backgrounds/battle/dojo.png",
+    description: "그림자처럼 조용한 닌자 도장",
+  },
+  {
+    id: "battle_stable",
+    category: "battle",
+    name: "기마대 마구간 배경",
+    price: 70,
+    image: "/shop/backgrounds/battle/stable.png",
+    description: "용맹한 기마대의 마구간",
+  },
+  {
+    id: "battle_dragon_mountain",
+    category: "battle",
+    name: "용의 산 배경",
+    price: 70,
+    image: "/shop/backgrounds/battle/dragon_mountain.png",
+    description: "전설의 용이 사는 산",
+  },
+
+  // ===== FANTASY =====
+  {
+    id: "fantasy_magic_castle",
     category: "fantasy",
     name: "마법의 성 배경",
-    price: 180,
-    image: "/shop/backgrounds/fantasy.png",
+    price: 80,
+    image: "/shop/backgrounds/fantasy/magic_castle.png",
     description: "별빛 가득한 신비로운 마법 세계",
+  },
+  {
+    id: "fantasy_wizard_tower",
+    category: "fantasy",
+    name: "마법사의 탑 배경",
+    price: 80,
+    image: "/shop/backgrounds/fantasy/wizard_tower.png",
+    description: "신비로운 마법이 흐르는 탑",
+  },
+  {
+    id: "fantasy_enchanted_forest",
+    category: "fantasy",
+    name: "요정의 숲 배경",
+    price: 80,
+    image: "/shop/backgrounds/fantasy/enchanted_forest.png",
+    description: "작은 요정들이 사는 신비한 숲",
+  },
+  {
+    id: "fantasy_dwarf_workshop",
+    category: "fantasy",
+    name: "드워프 공방 배경",
+    price: 80,
+    image: "/shop/backgrounds/fantasy/dwarf_workshop.png",
+    description: "망치질 소리가 울리는 드워프의 공방",
+  },
+  {
+    id: "fantasy_elf_village",
+    category: "fantasy",
+    name: "엘프 마을 배경",
+    price: 80,
+    image: "/shop/backgrounds/fantasy/elf_village.png",
+    description: "나무 위에 자리한 엘프들의 마을",
+  },
+  {
+    id: "fantasy_heavenly_clouds",
+    category: "fantasy",
+    name: "천상의 구름 배경",
+    price: 80,
+    image: "/shop/backgrounds/fantasy/heavenly_clouds.png",
+    description: "포근한 구름 위 천사들의 세계",
+  },
+  {
+    id: "fantasy_dark_castle",
+    category: "fantasy",
+    name: "어둠의 성 배경",
+    price: 80,
+    image: "/shop/backgrounds/fantasy/dark_castle.png",
+    description: "어둠의 마법이 감도는 신비한 성",
   },
 ];
 ===== app/(main)/shop/[category]/category.module.css =====
@@ -5346,7 +5628,7 @@ export default function ShopCategoryPage() {
 
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Backpack,
@@ -5393,7 +5675,7 @@ const categoryIcon: Record<CategoryId, React.ElementType> = {
   fantasy: Sparkle,
 };
 
-export default function ShopPage() {
+function ShopPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -6341,6 +6623,14 @@ export default function ShopPage() {
         )}
       </div>
     </section>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={null}>
+      <ShopPageInner />
+    </Suspense>
   );
 }
 ===== app/(main)/dashboard/dashboard.module.css =====
@@ -8231,8 +8521,6 @@ export default function DashboardPage() {
     padding: 18px;
   }
 }
-
-
 ===== app/(main)/mypage/page.tsx =====
 
 "use client";
@@ -10563,7 +10851,7 @@ import {
 import ActionButton from "@/components/ActionButton";
 import styles from "./detail.module.css";
 import { shortVowelItems } from "../../data";
-import { convertRecordingToWav } from "@/lib/audioToWav";
+import { convertRecordingToWav, createSupportedMediaRecorder } from "@/lib/audioToWav";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/Toast";
 
@@ -10700,7 +10988,7 @@ export default function ShortVowelDetailPage() {
 
       await runCountdown();
 
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = createSupportedMediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       recordedChunksRef.current = [];
 
@@ -10712,7 +11000,7 @@ export default function ShortVowelDetailPage() {
 
       mediaRecorder.onstop = () => {
         const blob = new Blob(recordedChunksRef.current, {
-          type: "audio/webm",
+          type: mediaRecorder.mimeType || "audio/webm",
         });
 
         const audioUrl = URL.createObjectURL(blob);
@@ -12191,6 +12479,7 @@ import ActionButton from "@/components/ActionButton";
 import styles from "./detail.module.css";
 import { alphabetItems } from "../data";
 import { useToast } from "@/components/Toast";
+import { createSupportedMediaRecorder } from "@/lib/audioToWav";
 
 export default function AlphabetDetailPage() {
   const params = useParams<{ letter: string }>();
@@ -12294,7 +12583,7 @@ export default function AlphabetDetailPage() {
 
       await runCountdown();
 
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = createSupportedMediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       recordedChunksRef.current = [];
 
@@ -12306,7 +12595,7 @@ export default function AlphabetDetailPage() {
 
       mediaRecorder.onstop = () => {
         const blob = new Blob(recordedChunksRef.current, {
-          type: "audio/webm",
+          type: mediaRecorder.mimeType || "audio/webm",
         });
 
         const audioUrl = URL.createObjectURL(blob);
@@ -13418,7 +13707,7 @@ import {
 import ActionButton from "@/components/ActionButton";
 import styles from "./detail.module.css";
 import { blendItems } from "../../data";
-import { convertRecordingToWav } from "@/lib/audioToWav";
+import { convertRecordingToWav, createSupportedMediaRecorder } from "@/lib/audioToWav";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/Toast";
 
@@ -13554,7 +13843,7 @@ export default function BlendDetailPage() {
 
       await runCountdown();
 
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = createSupportedMediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       recordedChunksRef.current = [];
 
@@ -13566,7 +13855,7 @@ export default function BlendDetailPage() {
 
       mediaRecorder.onstop = () => {
         const blob = new Blob(recordedChunksRef.current, {
-          type: "audio/webm",
+          type: mediaRecorder.mimeType || "audio/webm",
         });
 
         const fileUrl = URL.createObjectURL(blob);
@@ -14955,7 +15244,7 @@ import ActionButton from "@/components/ActionButton";
 import HelpTooltip from "@/components/HelpTooltip";
 import styles from "./level.module.css";
 import { sightWordLevels } from "../data";
-import { convertRecordingToWav } from "@/lib/audioToWav";
+import { convertRecordingToWav, createSupportedMediaRecorder } from "@/lib/audioToWav";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/Toast";
 
@@ -15063,7 +15352,7 @@ export default function SightWordLevelPage() {
 
       await runCountdown(word);
 
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = createSupportedMediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       recordedChunksRef.current = [];
 
@@ -15075,7 +15364,7 @@ export default function SightWordLevelPage() {
 
       mediaRecorder.onstop = () => {
         const blob = new Blob(recordedChunksRef.current, {
-          type: "audio/webm",
+          type: mediaRecorder.mimeType || "audio/webm",
         });
 
         const audioUrl = URL.createObjectURL(blob);
@@ -16998,7 +17287,7 @@ import {
 import ActionButton from "@/components/ActionButton";
 import styles from "./detail.module.css";
 import { longVowelItems } from "../../data";
-import { convertRecordingToWav } from "@/lib/audioToWav";
+import { convertRecordingToWav, createSupportedMediaRecorder } from "@/lib/audioToWav";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/Toast";
 
@@ -17134,7 +17423,7 @@ export default function LongVowelDetailPage() {
 
       await runCountdown();
 
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = createSupportedMediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       recordedChunksRef.current = [];
 
@@ -17146,7 +17435,7 @@ export default function LongVowelDetailPage() {
 
       mediaRecorder.onstop = () => {
         const blob = new Blob(recordedChunksRef.current, {
-          type: "audio/webm",
+          type: mediaRecorder.mimeType || "audio/webm",
         });
 
         const audioUrl = URL.createObjectURL(blob);
@@ -18471,7 +18760,7 @@ import {
 import ActionButton from "@/components/ActionButton";
 import styles from "./detail.module.css";
 import { getBookLevel, getBookStory } from "../../data";
-import { convertRecordingToWav } from "@/lib/audioToWav";
+import { convertRecordingToWav, createSupportedMediaRecorder } from "@/lib/audioToWav";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/Toast";
 import { useParams, notFound } from "next/navigation";
@@ -18582,7 +18871,7 @@ export default function BookDetailPage() {
 
       await runCountdown();
 
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = createSupportedMediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       recordedChunksRef.current = [];
 
@@ -18594,7 +18883,7 @@ export default function BookDetailPage() {
 
       mediaRecorder.onstop = () => {
         const blob = new Blob(recordedChunksRef.current, {
-          type: "audio/webm",
+          type: mediaRecorder.mimeType || "audio/webm",
         });
 
         const audioUrl = URL.createObjectURL(blob);
@@ -19505,8 +19794,8 @@ export default function BookPage() {
 
 "use client";
 
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
 import {
   CaretLeft,
   Carrot,
@@ -19549,7 +19838,7 @@ const categoryTint: Record<CommunityCategoryId, string> = {
   "local-recommend": "#e3ede7",
 };
 
-export default function CommunityWritePage() {
+function CommunityWritePageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -19880,6 +20169,14 @@ export default function CommunityWritePage() {
         </main>
       </div>
     </section>
+  );
+}
+
+export default function CommunityWritePage() {
+  return (
+    <Suspense fallback={null}>
+      <CommunityWritePageInner />
+    </Suspense>
   );
 }
 ===== app/(main)/community/write/write.module.css =====
@@ -27753,7 +28050,7 @@ import {
 import ActionButton from "@/components/ActionButton";
 import { rewardCoin } from "@/lib/rewardCoin";
 import { logEngagement } from "@/lib/logEngagement";
-import { convertRecordingToWav } from "@/lib/audioToWav";
+import { convertRecordingToWav, createSupportedMediaRecorder } from "@/lib/audioToWav";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/Toast";
 import { notFound, useParams } from "next/navigation";
@@ -27913,7 +28210,7 @@ export default function ConversationDetailPage() {
 
       await runCountdown();
 
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = createSupportedMediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       recordedChunksRef.current = [];
 
@@ -27925,7 +28222,7 @@ export default function ConversationDetailPage() {
 
       mediaRecorder.onstop = () => {
         const blob = new Blob(recordedChunksRef.current, {
-          type: "audio/webm",
+          type: mediaRecorder.mimeType || "audio/webm",
         });
 
         const audioUrl = URL.createObjectURL(blob);
@@ -29036,7 +29333,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChatsCircle, Microphone } from "@phosphor-icons/react";
 import { supabase } from "@/lib/supabase";
-import { convertRecordingToWav } from "@/lib/audioToWav";
+import { convertRecordingToWav, createSupportedMediaRecorder } from "@/lib/audioToWav";
 import { getWeakWords } from "@/lib/getWeakWords";
 import HelpTooltip from "@/components/HelpTooltip";
 import styles from "./ai.module.css";
@@ -29189,7 +29486,7 @@ export default function AiConversationPage() {
         streamRef.current = stream;
       }
 
-      const recorder = new MediaRecorder(stream);
+      const recorder = createSupportedMediaRecorder(stream);
       recordedChunksRef.current = [];
 
       recorder.ondataavailable = (e) => {
@@ -29229,7 +29526,9 @@ export default function AiConversationPage() {
     setStatusText("듣고 있어요...");
 
     try {
-      const blob = new Blob(recordedChunksRef.current, { type: "audio/webm" });
+      const blob = new Blob(recordedChunksRef.current, {
+        type: mediaRecorderRef.current?.mimeType || "audio/webm",
+      });
       const { wavBlob } = await convertRecordingToWav(blob);
 
       const formData = new FormData();
