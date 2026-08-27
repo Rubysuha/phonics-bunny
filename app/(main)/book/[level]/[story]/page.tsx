@@ -1,6 +1,7 @@
 "use client";
 
 import { rewardCoin } from "@/lib/rewardCoin";
+import { logEngagement } from "@/lib/logEngagement";
 import { useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -76,6 +77,13 @@ export default function BookDetailPage() {
         });
 
         showToast(result.message);
+
+        // 코인 캡과 무관하게 실제 듣기 완료 횟수를 기록 (레벨 판정용)
+        logEngagement({
+          contentId: `book-${currentLevel.level}-${currentStory.slug}`,
+          contentType: "book",
+          action: "listen",
+        });
       };
 
       await audio.play();
@@ -182,6 +190,16 @@ export default function BookDetailPage() {
 
     try {
       const audio = new Audio(myRecordingUrl);
+
+      audio.onended = () => {
+        // 코인 보상은 없지만, 내 녹음 듣기 완료 횟수를 레벨 판정용으로 기록
+        logEngagement({
+          contentId: `book-${currentLevel.level}-${currentStory.slug}`,
+          contentType: "book",
+          action: "playback",
+        });
+      };
+
       await audio.play();
     } catch (error) {
       console.error(error);

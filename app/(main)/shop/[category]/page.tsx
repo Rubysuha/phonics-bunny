@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { supabase } from "@/lib/supabase";
 import styles from "./category.module.css";
 import {
@@ -13,6 +14,12 @@ import {
   type CategoryId,
 } from "../data";
 import { useToast } from "@/components/Toast";
+
+type Celebration = {
+  type: "bunny" | "background";
+  name: string;
+  image: string;
+};
 
 export default function ShopCategoryPage() {
   const router = useRouter();
@@ -34,7 +41,14 @@ export default function ShopCategoryPage() {
     "/shop/closet-bg.png"
   );
 
+  const [celebration, setCelebration] = useState<Celebration | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
   const { showToast } = useToast();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -82,6 +96,15 @@ export default function ShopCategoryPage() {
 
     fetchProfile();
   }, [router]);
+
+  const showCelebration = (item: Celebration) => {
+    setCelebration(item);
+    setTimeout(() => {
+      setCelebration((current) =>
+        current && current.name === item.name ? null : current
+      );
+    }, 1800);
+  };
 
   // 기본 토끼는 항상 맨 앞에, 그 카테고리 전용 토끼들이 뒤에 이어짐
   const defaultBunny = bunnySkins.find((bunny) => bunny.id === "basic_bunny");
@@ -147,7 +170,7 @@ export default function ShopCategoryPage() {
     setCoin(newCoin);
     setOwnedBunnies(newOwnedBunnies);
 
-    showToast(`${bunny.name} 구매 완료!`);
+    showCelebration({ type: "bunny", name: bunny.name, image: bunny.image });
   };
 
   const handleSelect = async (bunny: BunnySkin) => {
@@ -222,7 +245,7 @@ export default function ShopCategoryPage() {
     setCoin(newCoin);
     setOwnedBackgrounds(newOwnedBackgrounds);
 
-    showToast(`${bg.name} 구매 완료!`);
+    showCelebration({ type: "background", name: bg.name, image: bg.image });
   };
 
   const handleSelectBackground = async (bg: BackgroundSkin) => {
@@ -369,6 +392,32 @@ export default function ShopCategoryPage() {
           })}
         </div>
       </div>
+
+      {isMounted &&
+        celebration &&
+        createPortal(
+          <div
+            className={styles.celebrateOverlay}
+            onClick={() => setCelebration(null)}
+          >
+            <div className={styles.celebrateCard}>
+              <div className={styles.celebrateBadge}>🎉</div>
+
+              <img
+                src={celebration.image}
+                alt={celebration.name}
+                className={styles.celebrateImage}
+              />
+
+              <p className={styles.celebrateLabel}>
+                New {celebration.type === "bunny" ? "Bunny" : "Background"}!
+              </p>
+              <h2 className={styles.celebrateName}>{celebration.name}</h2>
+              <p className={styles.celebrateSub}>Added to your collection!</p>
+            </div>
+          </div>,
+          document.body
+        )}
     </section>
   );
 }

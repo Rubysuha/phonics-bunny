@@ -108,23 +108,6 @@ export default function SignupPage() {
       return;
     }
 
-    const userId = data.user?.id;
-
-    if (userId) {
-      const { error: profileError } = await supabase.from("profiles").insert([
-        {
-          id: userId,
-          email: form.email,
-          bunny_name: form.bunnyName,
-          phone: form.phone,
-        },
-      ]);
-
-      if (profileError) {
-        console.error(profileError.message);
-      }
-    }
-
     setIsLoading(false);
 
     showToast("🐰 회원가입이 완료됐어요!");

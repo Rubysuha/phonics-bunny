@@ -1,10 +1,10 @@
 "use client";
 
 import { rewardCoin } from "@/lib/rewardCoin";
+import { logEngagement } from "@/lib/logEngagement";
 import { useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import {
   SpeakerHigh,
@@ -81,6 +81,12 @@ export default function ShortVowelDetailPage() {
         });
 
         showToast(result.message);
+
+        logEngagement({
+          contentId: `short-vowels-${item.slug}`,
+          contentType: "short-vowels",
+          action: "listen",
+        });
       };
 
       await audio.play();
@@ -102,6 +108,12 @@ export default function ShortVowelDetailPage() {
         });
 
         showToast(result.message);
+
+        logEngagement({
+          contentId: `short-vowels-${item.slug}`,
+          contentType: "short-vowels",
+          action: "listen",
+        });
       };
 
       await audio.play();
@@ -208,6 +220,15 @@ export default function ShortVowelDetailPage() {
 
     try {
       const audio = new Audio(myRecordingUrl);
+
+      audio.onended = () => {
+        logEngagement({
+          contentId: `short-vowels-${item.slug}`,
+          contentType: "short-vowels",
+          action: "playback",
+        });
+      };
+
       await audio.play();
     } catch (error) {
       console.error(error);

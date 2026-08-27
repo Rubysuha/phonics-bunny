@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChatsCircle } from "@phosphor-icons/react";
+import { ChatsCircle, Microphone } from "@phosphor-icons/react";
 import { supabase } from "@/lib/supabase";
 import { convertRecordingToWav } from "@/lib/audioToWav";
 import { getWeakWords } from "@/lib/getWeakWords";
@@ -126,16 +126,27 @@ export default function AiConversationPage() {
     }
   };
 
-  // "대화 시작" 클릭 핸들러: 첫 await 이전에 play()를 한 번 호출해서
-  // 브라우저의 자동재생 잠금을 이 클릭 제스처 안에서 풀어줌
-  const handleStartConversation = () => {
+  // 두 시작 버튼 공통: 클릭 제스처 안에서 오디오 자동재생 잠금을 미리 풀어둠
+  const unlockAutoplay = () => {
     const unlockAudio = new Audio();
     unlockAudio.play().catch(() => {
       // 잠금 해제용 재생이라 에러는 무시해도 됨
     });
+  };
 
+  // "바니가 먼저 인사해요" 클릭 핸들러
+  const handleStartConversation = () => {
+    unlockAutoplay();
     setHasStarted(true);
     playBunnyVoice(messages[0].text);
+  };
+
+  // "내가 먼저 말할게요" 클릭 핸들러: 바니의 인사말을 건너뛰고
+  // 대화 기록을 비운 채로 바로 사용자가 녹음을 시작할 수 있게 함
+  const handleStartAsUser = () => {
+    unlockAutoplay();
+    setMessages([]);
+    setHasStarted(true);
   };
 
   const handleStartRecording = async () => {
@@ -219,11 +230,13 @@ export default function AiConversationPage() {
 
       let weakWords: string[] = [];
       let studiedTypes: string[] = [];
+      let level: "beginner" | "elementary" | "intermediate" | "advanced" = "beginner";
 
       if (user) {
         const summary = await getWeakWords(user.id);
         weakWords = summary.weakWords;
         studiedTypes = summary.studiedTypes;
+        level = summary.level;
       }
 
       const history = messages.map((m) => ({
@@ -239,6 +252,7 @@ export default function AiConversationPage() {
           history,
           weakWords,
           studiedTypes,
+          level,
         }),
       });
       const convData = await convResponse.json();
@@ -281,26 +295,36 @@ export default function AiConversationPage() {
 
             <div className={styles.headerActions}>
               <HelpTooltip
-  title="이렇게 진행돼요"
-  sections={[
-    {
-      heading: "학습 목표",
-      items: [
-        "정답이 정해져 있지 않은 자유 회화예요. 듣고 바로 반응하는 영어 감각을 길러요.",
-        "다른 학습에서 발음 정확도가 낮았던 단어를 대화 중 자연스럽게 다시 등장시켜 복습해요.",
-      ],
-    },
-    {
-      heading: "진행 방법",
-      items: [
-        "Speak를 누르면 마이크가 켜지고, Stop을 누르면 녹음이 종료되며 AI가 답변을 생성해요.",
-        "대화를 시작할 때마다 30가지 주제 중 하나가 무작위로 선택돼요.",
-        "이 대화는 발음을 채점하지 않아요. 편하게 말하는 연습에 집중해요.",
-        "대화를 마치고 싶으면 대화 종료 버튼을 눌러요.",
-      ],
-    },
-  ]}
-/>
+                title="이렇게 진행돼요"
+                sections={[
+                  {
+                    heading: "학습 목표",
+                    items: [
+                      "정답이 정해져 있지 않은 자유 회화예요. 듣고 바로 반응하는 영어 감각을 길러요.",
+                      "다른 학습에서 발음 정확도가 낮았던 단어를 대화 중 자연스럽게 다시 등장시켜 복습해요.",
+                    ],
+                  },
+                  {
+                    heading: "난이도는 이렇게 정해져요",
+                    items: [
+                      "Book과 Conversation Practice를 충분히 반복 학습하면 AI Bunny가 쓰는 문장이 자동으로 조금씩 길어지고 풍부해져요.",
+                      "왕초보 → 초급 → 중급 → 고급 순으로 올라가며, 짧은 단어 위주 대화에서 점점 더 자연스러운 문장으로 발전해요.",
+                      "단순히 화면을 넘기는 게 아니라, 듣고·녹음하고·점수를 확인하는 과정을 충실히 반복해야 다음 단계로 올라가요.",
+                      "레벨은 아이의 실제 학습 상태에 맞춰 매 대화마다 자동으로 다시 계산돼요.",
+                    ],
+                  },
+                  {
+                    heading: "진행 방법",
+                    items: [
+                      "Speak를 누르면 마이크가 켜지고, Stop을 누르면 녹음이 종료되며 AI가 답변을 생성해요.",
+                      "대화를 시작할 때마다 30가지 주제 중 하나가 무작위로 선택돼요.",
+                      "바니가 먼저 인사하게 할 수도 있고, 내가 먼저 말을 걸며 시작할 수도 있어요.",
+                      "이 대화는 발음을 채점하지 않아요. 편하게 말하는 연습에 집중해요.",
+                      "대화를 마치고 싶으면 대화 종료 버튼을 눌러요.",
+                    ],
+                  },
+                ]}
+              />
 
               <Link href="/conversation" className={styles.backButton}>
                 ← Back
@@ -316,11 +340,17 @@ export default function AiConversationPage() {
                 </div>
                 <h2 className={styles.startTitle}>Bunny Teacher와 대화할 준비 됐나요?</h2>
                 <p className={styles.startDesc}>
-                  시작 버튼을 누르면 바니가 먼저 영어로 인사를 건네요.
+                  바니가 먼저 인사하게 할까요, 내가 먼저 말을 걸어볼까요?
                 </p>
-                <button className={styles.startButton} onClick={handleStartConversation}>
-                  대화 시작
-                </button>
+                <div className={styles.startButtonRow}>
+                  <button className={styles.startButton} onClick={handleStartConversation}>
+                    바니가 먼저 인사해요
+                  </button>
+                  <button className={styles.startButtonOutline} onClick={handleStartAsUser}>
+                    <Microphone size={18} weight="fill" />
+                    내가 먼저 말할게요
+                  </button>
+                </div>
               </div>
             </div>
           ) : (
@@ -355,6 +385,12 @@ export default function AiConversationPage() {
               </div>
 
               <div className={styles.messageList} ref={messageListRef}>
+                {messages.length === 0 && (
+                  <div className={styles.emptyHint}>
+                    Speak를 눌러서 먼저 영어로 말을 걸어보세요!
+                  </div>
+                )}
+
                 {messages.map((m, i) =>
                   m.role === "bunny" ? (
                     <div key={i} className={styles.bunnyRow}>

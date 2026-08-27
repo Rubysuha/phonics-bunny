@@ -1,0 +1,1067 @@
+
+===== components/ui/BackButton.tsx =====
+
+"use client";
+
+import { ArrowLeft } from "@phosphor-icons/react";
+import ActionButton from "@/components/ActionButton";
+
+type BackButtonProps = {
+  href: string;
+  children: React.ReactNode;
+};
+
+export default function BackButton({ href, children }: BackButtonProps) {
+  return (
+    <ActionButton
+      variant="close"
+      icon={<ArrowLeft size={20} weight="fill" />}
+      href={href}
+    >
+      {children}
+    </ActionButton>
+  );
+}
+===== components/ActionButton.module.css =====
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+
+  border-radius: 999px;
+  padding: 12px 20px;
+
+  font-size: 15px;
+  font-weight: 800;
+  font-family: inherit;
+
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ── 색상 토큰: 톤 다운된 파스텔, 사이드바 느낌 ── */
+
+.listen {
+  background: #dceefb;
+  color: #3b6e91;
+}
+
+.aiListen {
+  background: #e7e0f7;
+  color: #5b4b8a;
+}
+
+.record {
+  background: #fce0da;
+  color: #b0503a;
+}
+
+.recording {
+  background: #f4a99a;
+  color: #7a2e1d;
+}
+
+.playback {
+  background: #dff3e1;
+  color: #2f7d4f;
+}
+
+.analyze {
+  background: #fbe3ed;
+  color: #a03f6a;
+}
+
+.download {
+  background: #fbf0d2;
+  color: #8a6a1d;
+}
+
+.close {
+  background: #eaeff3;
+  color: #51606e;
+}
+
+.retry {
+  background: #dceefb;
+  color: #3b6e91;
+}
+
+.sm {
+  padding: 8px 12px;
+  font-size: 12.5px;
+  gap: 5px;
+}
+===== components/Toast.module.css =====
+
+.toastStack {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  pointer-events: none;
+}
+
+.toast {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  background: #fbf0d2;
+  color: #8a6a1d;
+
+  font-size: 15px;
+  font-weight: 800;
+  text-align: left;
+
+  padding: 12px 22px;
+  border-radius: 999px;
+
+  box-shadow: 0 8px 20px rgba(150, 100, 60, 0.16);
+
+  animation: toastBounceIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    toastOut 0.2s ease 2.2s forwards;
+}
+
+.toastText {
+  line-height: 1.3;
+}
+
+@keyframes toastBounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes toastOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.95);
+  }
+}
+===== components/layout/BottomActionBar.module.css =====
+
+.bar {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.93);
+  border: 1px solid #e8edf2;
+  border-radius: 32px;
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 10px 24px rgba(74, 110, 146, 0.08);
+}
+
+.item {
+  border: none;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 800;
+  color: #4d4d4d;
+}
+
+.pink {
+  background: #f6b3ac;
+}
+
+.blue {
+  background: #97c9fb;
+}
+
+.yellow {
+  background: #f4d965;
+}
+
+.mint {
+  background: #9fe0cf;
+}
+
+.sky {
+  background: #94c7f8;
+}
+
+@media (max-width: 768px) {
+  .bar {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px;
+  }
+}
+===== components/layout/BottomActionBar.tsx =====
+
+import styles from "./BottomActionBar.module.css";
+
+const items = [
+  { icon: "📖", label: "My page", color: "pink" },
+  { icon: "📄", label: "My Bunny", color: "blue" },
+  { icon: "📚", label: "Test", color: "yellow" },
+  { icon: "📗", label: "Record", color: "mint" },
+  { icon: "👥", label: "Shop", color: "sky" },
+];
+
+export default function BottomActionBar() {
+  return (
+    <section className={styles.bar}>
+      {items.map((item) => (
+        <button key={item.label} className={styles.item}>
+          <div className={`${styles.icon} ${styles[item.color]}`}>{item.icon}</div>
+          <span className={styles.label}>{item.label}</span>
+        </button>
+      ))}
+    </section>
+  );
+}
+===== components/layout/TopBar.tsx =====
+
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import styles from "./TopBar.module.css";
+
+export default function TopBar() {
+  const router = useRouter();
+
+  const [bunnyName, setBunnyName] = useState("로그인");
+  const [coins, setCoins] = useState(0);
+
+  useEffect(() => {
+  const getUserInfo = async () => {
+    const { data, error } = await supabase.auth.getUser();
+
+    if (error) {
+      console.error(error.message);
+      return;
+    }
+
+    const user = data.user;
+
+    if (!user) return;
+
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("bunny_name, coins")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError) {
+      console.error("프로필 불러오기 실패:", profileError);
+      return;
+    }
+
+    setBunnyName(profile?.bunny_name ?? "로그인");
+    setCoins(profile?.coins ?? 0);
+  };
+
+  getUserInfo();
+
+  window.addEventListener("coin-updated", getUserInfo);
+
+  return () => {
+    window.removeEventListener("coin-updated", getUserInfo);
+  };
+}, []);
+
+  return (
+    <header className={styles.topbar}>
+      <div className={styles.brand}>
+        <span className={styles.brandIcon}>🥕</span>
+        <span className={styles.brandText}>Phonics Bunny</span>
+      </div>
+
+      <div className={styles.right}>
+        <div
+          className={styles.userBox}
+          onClick={() => router.push("/mypage")}
+        >
+          <span className={styles.coin}>🥕</span>
+          <span className={styles.coinText}>{coins}</span>
+
+          <span className={styles.divider}>|</span>
+
+          <span className={styles.role}>
+          {bunnyName} ›
+          </span>
+        </div>
+      </div>
+    </header>
+  );
+}
+===== components/layout/TopBar.module.css =====
+
+.topbar {
+  height: 86px;
+  padding: 0 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: transparent;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brandIcon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.brandText {
+  font-size: 28px;
+  font-weight: 900;
+  color: #3d3d3d;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+}
+
+.userBox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px 22px;
+
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+
+  border-radius: 999px;
+
+  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  box-shadow: 0 8px 20px rgba(92, 127, 149, 0.08);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.userBox:hover {
+  transform: translateY(-2px);
+
+  background: rgba(255, 255, 255, 0.92);
+
+  box-shadow:
+    0 12px 24px rgba(92, 127, 149, 0.12);
+}
+
+.userBox:active {
+  transform: scale(0.97);
+}
+
+.coin {
+  font-size: 20px;
+}
+
+.coinText {
+  font-size: 18px;
+  font-weight: 900;
+  color: #3d3d3d;
+}
+
+.divider {
+  font-size: 18px;
+  color: #c6b18d;
+}
+
+.role {
+  font-size: 18px;
+  font-weight: 900;
+  color: #4b3f39;
+}
+===== components/layout/Sidebar.module.css =====
+
+.sidebar {
+  padding: 16px 14px 16px 16px;
+  box-sizing: border-box;
+  height: 100%;
+  overflow: hidden;
+}
+
+.titleBox {
+  height: 72px;
+  border-radius: 999px;
+
+  background: rgba(255, 245, 210, 0.76);
+  backdrop-filter: blur(10px);
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0 20px;
+  margin-bottom: 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  box-shadow:
+    0 8px 22px rgba(255, 185, 170, 0.1);
+}
+
+.titleIcon {
+  width: 30px;
+  height: 30px;
+  color: #ff8a3d;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titleText {
+  font-size: 18px;
+  font-weight: 900;
+  color: #5c4338;
+}
+
+.menuPanel {
+  background: rgba(255, 250, 240, 0.55);
+  backdrop-filter: blur(14px);
+
+  border: 1px solid rgba(255, 255, 255, 0.42);
+
+  border-radius: 28px;
+  overflow: hidden;
+
+  box-shadow:
+    0 10px 28px rgba(255, 190, 170, 0.12);
+}
+
+.menuItem {
+  height: 78px;
+  padding: 0 18px;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  text-decoration: none;
+  color: inherit;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.42);
+
+  transition:
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.menuItem:last-child {
+  border-bottom: none;
+}
+
+.menuItem:hover {
+  background: rgba(255, 244, 230, 0.58);
+}
+
+.menuIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+
+  background: rgba(255, 244, 225, 0.82);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #9b6b52;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+
+  transition:
+    color 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.menuItem:hover .menuIcon {
+  color: #ff7f9b;
+  transform: scale(1.08);
+}
+
+.menuLabel {
+  font-size: 16px;
+  font-weight: 800;
+  color: #5a4740;
+}
+
+.active {
+  background: rgba(255, 242, 214, 0.78);
+}
+
+.active .menuIcon {
+  color: #ff7f9b;
+  background: rgba(255, 231, 190, 0.9);
+}
+
+.active .menuLabel {
+  color: #9b6238;
+}
+
+@media (max-width: 1024px) {
+  .sidebar {
+    display: none;
+  }
+}
+===== components/layout/AppShell.tsx =====
+
+"use client";
+
+import { usePathname } from "next/navigation";
+import Sidebar from "./Sidebar";
+import TopBar from "./TopBar";
+import styles from "./AppShell.module.css";
+
+export default function AppShell({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const isShopPage = pathname.startsWith("/shop");
+
+  return (
+    <div className={styles.page}>
+      <div className={styles.frame}>
+        {!isShopPage && <TopBar />}
+
+        <div className={`${styles.body} ${isShopPage ? styles.shopBody : ""}`}>
+          {!isShopPage && <Sidebar />}
+
+          <main className={`${styles.main} ${isShopPage ? styles.shopMain : ""}`}>
+            {children}
+          </main>
+        </div>
+      </div>
+    </div>
+  );
+}
+===== components/layout/AppShell.module.css =====
+
+.page {
+  height: 100vh;
+  background: #efefef;
+  padding: 16px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.frame {
+  width: 100%;
+  max-width: 1360px;
+  height: calc(100vh - 32px);
+  margin: 0 auto;
+
+  background-image: url("/dashboard/home-bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 34px;
+  overflow: hidden;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.06);
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  height: calc(100% - 86px);
+  background: transparent;
+}
+
+.main {
+  height: 100%;
+  padding: 14px 18px 14px 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.shopBody {
+  display: block;
+  height: 100%;
+}
+
+.shopMain {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden;
+  background: transparent !important;
+}
+
+@media (max-width: 1024px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+
+  .main {
+    padding: 12px;
+    overflow: auto;
+  }
+
+  .shopMain {
+    padding: 0 !important;
+    overflow: hidden;
+  }
+}
+===== components/layout/Sidebar.tsx =====
+
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  House,
+  Notebook,
+  ChatCircleDots,
+  BookOpen,
+  ShoppingBag,
+  UsersThree,
+  Carrot,
+} from "@phosphor-icons/react";
+import styles from "./Sidebar.module.css";
+
+const menus = [
+  { icon: House, label: "Home", href: "/dashboard" },
+  { icon: Notebook, label: "Phonics", href: "/english" },
+  { icon: ChatCircleDots, label: "Conversation", href: "/conversation" },
+  { icon: BookOpen, label: "Book", href: "/book" },
+  { icon: ShoppingBag, label: "Shop", href: "/shop" },
+  { icon: UsersThree, label: "Community", href: "/community" },
+];
+
+export default function Sidebar() {
+  const pathname = usePathname();
+
+  if (pathname.startsWith("/shop")) {
+    return null;
+  }
+
+  const getCurrentTitle = () => {
+    if (pathname.startsWith("/english")) return "Phonics";
+    if (pathname.startsWith("/conversation")) return "Conversation";
+    if (pathname.startsWith("/book")) return "Book";
+    if (pathname.startsWith("/community")) return "Community";
+    return "Home";
+  };
+
+  return (
+    <aside className={styles.sidebar}>
+      <div className={styles.titleBox}>
+        <span className={styles.titleIcon}>
+          <Carrot size={26} weight="duotone" />
+        </span>
+        <span className={styles.titleText}>{getCurrentTitle()}</span>
+      </div>
+
+      <div className={styles.menuPanel}>
+        {menus.map((menu) => {
+          const Icon = menu.icon;
+
+          const isActive =
+            menu.href === "/dashboard"
+              ? pathname === "/dashboard"
+              : pathname.startsWith(menu.href);
+
+          return (
+            <Link
+              key={menu.href}
+              href={menu.href}
+              className={`${styles.menuItem} ${isActive ? styles.active : ""}`}
+            >
+              <span className={styles.menuIcon}>
+                <Icon size={28} weight="duotone" />
+              </span>
+              <span className={styles.menuLabel}>{menu.label}</span>
+            </Link>
+          );
+        })}
+      </div>
+    </aside>
+  );
+}
+===== components/ActionButton.tsx =====
+
+"use client";
+
+import Link from "next/link";
+import styles from "./ActionButton.module.css";
+
+export type ActionButtonVariant =
+  | "listen"
+  | "aiListen"
+  | "record"
+  | "recording"
+  | "playback"
+  | "analyze"
+  | "download"
+  | "close"
+  | "retry";
+
+type ActionButtonProps = {
+  variant: ActionButtonVariant;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  onClick?: () => void;
+  disabled?: boolean;
+  href?: string;
+  size?: "md" | "sm";
+};
+
+export default function ActionButton({
+  variant,
+  icon,
+  children,
+  onClick,
+  disabled,
+  href,
+  size = "md",
+}: ActionButtonProps) {
+  const className = `${styles.button} ${styles[variant]} ${
+    size === "sm" ? styles.sm : ""
+  }`;
+
+  if (href) {
+    return (
+      <Link href={href} className={className}>
+        <span className={styles.icon}>{icon}</span>
+        <span>{children}</span>
+      </Link>
+    );
+  }
+
+  return (
+    <button className={className} onClick={onClick} disabled={disabled}>
+      <span className={styles.icon}>{icon}</span>
+      <span>{children}</span>
+    </button>
+  );
+}
+===== components/HelpTooltip.tsx =====
+
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import styles from "./HelpTooltip.module.css";
+
+type HelpSection = {
+  heading: string;
+  items: string[];
+};
+
+type HelpTooltipProps = {
+  title: string;
+  sections: HelpSection[];
+};
+
+export default function HelpTooltip({ title, sections }: HelpTooltipProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  // 패널 바깥을 클릭하면 자동으로 닫힘
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
+
+  return (
+    <div className={styles.container} ref={containerRef}>
+      <button
+        type="button"
+        className={styles.trigger}
+        onClick={() => setIsOpen((prev) => !prev)}
+        aria-label="이용 안내"
+        aria-expanded={isOpen}
+      >
+        ?
+      </button>
+
+      {isOpen && (
+        <div className={styles.panel} role="dialog" aria-label={title}>
+          <div className={styles.panelHeader}>
+            <strong>{title}</strong>
+            <button
+              type="button"
+              className={styles.closeButton}
+              onClick={() => setIsOpen(false)}
+              aria-label="닫기"
+            >
+              ×
+            </button>
+          </div>
+
+          {sections.map((section, sectionIndex) => (
+            <div key={sectionIndex} className={styles.section}>
+              <p className={styles.sectionHeading}>{section.heading}</p>
+              <ul className={styles.list}>
+                {section.items.map((item, itemIndex) => (
+                  <li key={itemIndex}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+===== components/HelpTooltip.module.css =====
+
+.container {
+  position: relative;
+  display: inline-flex;
+}
+
+.trigger {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #f0e6d6;
+  background: #ffffff;
+  color: #d84f83;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.trigger:hover {
+  background: #fdf0f4;
+}
+
+.trigger:active {
+  transform: translateY(1px);
+}
+
+.panel {
+  position: absolute;
+  top: 46px;
+  right: 0;
+  width: 320px;
+  max-height: 380px;
+  overflow-y: auto;
+  z-index: 20;
+
+  background: #ffffff;
+  border: 1px solid #f0e6d6;
+  border-radius: 16px;
+  box-shadow: 0 14px 30px rgba(120, 90, 60, 0.14);
+  padding: 14px 16px;
+
+  animation: fadeInUp 0.15s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #3d3428;
+}
+
+.closeButton {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  color: #a89c88;
+  padding: 0 2px;
+}
+
+.section {
+  margin-bottom: 12px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.sectionHeading {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  color: #d84f83;
+  text-transform: uppercase;
+}
+
+.list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #6b5644;
+}
+
+@media (max-width: 600px) {
+  .panel {
+    width: 260px;
+    max-height: 320px;
+  }
+}
+===== components/Toast.tsx =====
+
+// components/Toast.tsx
+"use client";
+
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
+import styles from "./Toast.module.css";
+
+type ToastItem = {
+  id: number;
+  message: string;
+};
+
+type ToastContextType = {
+  showToast: (message: string) => void;
+};
+
+const ToastContext = createContext<ToastContextType | null>(null);
+
+export function useToast() {
+  const ctx = useContext(ToastContext);
+
+  if (!ctx) {
+    throw new Error("useToast는 ToastProvider 안에서만 사용할 수 있어");
+  }
+
+  return ctx;
+}
+
+export function ToastProvider({ children }: { children: React.ReactNode }) {
+  const [toasts, setToasts] = useState<ToastItem[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
+  const idRef = useRef(0);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const showToast = useCallback((message: string) => {
+    const id = idRef.current++;
+    setToasts((prev) => [...prev, { id, message }]);
+
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    }, 2400);
+  }, []);
+
+  return (
+    <ToastContext.Provider value={{ showToast }}>
+      {children}
+
+      {isMounted &&
+        createPortal(
+          <div className={styles.toastStack}>
+            {toasts.map((toast) => (
+              <div key={toast.id} className={styles.toast}>
+                <span className={styles.toastText}>{toast.message}</span>
+              </div>
+            ))}
+          </div>,
+          document.body
+        )}
+    </ToastContext.Provider>
+  );
+}

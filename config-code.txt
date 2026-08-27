@@ -1,0 +1,755 @@
+
+===== lib/rewardCoin.ts =====
+
+import { supabase } from "@/lib/supabase";
+
+export type RewardType =
+  | "alphabet"
+  | "short-vowels"
+  | "long-vowels"
+  | "blend-sounds"
+  | "sight-words"
+  | "conversation"
+  | "book";
+
+const REWARD_AMOUNT: Record<RewardType, number> = {
+  alphabet: 1,
+  "short-vowels": 1,
+  "long-vowels": 1,
+  "blend-sounds": 1,
+  "sight-words": 1,
+  conversation: 2,
+  book: 3,
+};
+
+const DAILY_LIMIT = 100;
+const CONTENT_LIMIT = 5;
+
+export async function rewardCoin({
+  contentId,
+  contentType,
+  title,
+}: {
+  contentId: string;
+  contentType: RewardType;
+  title: string;
+}) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return {
+      success: false,
+      message: "로그인이 필요해요.",
+    };
+  }
+
+  const rewardAmount = REWARD_AMOUNT[contentType];
+
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  const { data: todayLogs, error: todayError } = await supabase
+    .from("coin_logs")
+    .select("amount")
+    .eq("user_id", user.id)
+    .eq("type", "earn")
+    .gte("created_at", todayStart.toISOString());
+
+  if (todayError) {
+    console.error("오늘 코인 기록 확인 실패:", todayError);
+
+    return {
+      success: false,
+      message: "오늘 코인 기록을 확인하지 못했어요.",
+    };
+  }
+
+  const todayEarned =
+    todayLogs?.reduce((sum, log) => sum + (log.amount ?? 0), 0) ?? 0;
+
+  if (todayEarned >= DAILY_LIMIT) {
+    return {
+      success: false,
+      message: "오늘 받을 수 있는 코인을 모두 받았어요.",
+    };
+  }
+
+  const availableAmount = Math.min(
+    rewardAmount,
+    DAILY_LIMIT - todayEarned
+  );
+
+  const { data: rewardData, error: rewardError } = await supabase
+    .from("learning_rewards")
+    .select("reward_count")
+    .eq("user_id", user.id)
+    .eq("content_id", contentId)
+    .maybeSingle();
+
+  if (rewardError) {
+    console.error("학습 보상 기록 확인 실패:", rewardError);
+
+    return {
+      success: false,
+      message: "학습 보상 기록을 확인하지 못했어요.",
+    };
+  }
+
+  const currentCount = rewardData?.reward_count ?? 0;
+
+  if (currentCount >= CONTENT_LIMIT) {
+    return {
+      success: false,
+      message: "이 학습은 코인을 5번까지 받았어요.",
+    };
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("coins")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError) {
+    console.error("프로필 불러오기 실패:", profileError);
+
+    return {
+      success: false,
+      message: "프로필 정보를 불러오지 못했어요.",
+    };
+  }
+
+  const newCoin = (profile?.coins ?? 0) + availableAmount;
+
+  const { error: coinUpdateError } = await supabase
+    .from("profiles")
+    .update({
+      coins: newCoin,
+    })
+    .eq("id", user.id);
+
+  if (coinUpdateError) {
+    console.error("코인 지급 실패:", coinUpdateError);
+
+    return {
+      success: false,
+      message: "코인 지급에 실패했어요.",
+    };
+  }
+
+  if (rewardData) {
+    const { error: updateRewardError } = await supabase
+      .from("learning_rewards")
+      .update({
+        reward_count: currentCount + 1,
+        last_rewarded_at: new Date().toISOString(),
+      })
+      .eq("user_id", user.id)
+      .eq("content_id", contentId);
+
+    if (updateRewardError) {
+      console.error("보상 횟수 업데이트 실패:", updateRewardError);
+    }
+  } else {
+    const { error: insertRewardError } = await supabase
+      .from("learning_rewards")
+      .insert({
+        user_id: user.id,
+        content_id: contentId,
+        content_type: contentType,
+        reward_count: 1,
+      });
+
+    if (insertRewardError) {
+      console.error("보상 기록 생성 실패:", insertRewardError);
+    }
+  }
+
+  const { error: coinLogError } = await supabase.from("coin_logs").insert({
+    user_id: user.id,
+    type: "earn",
+    amount: availableAmount,
+    reason: `${title} 학습 완료`,
+  });
+
+  if (coinLogError) {
+    console.error("코인 기록 저장 실패:", coinLogError);
+  }
+
+  const { error: learningLogError } = await supabase
+    .from("learning_logs")
+    .insert({
+      user_id: user.id,
+      category: contentType,
+      title,
+      action: "학습 완료",
+    });
+
+  if (learningLogError) {
+    console.error("학습 기록 저장 실패:", learningLogError);
+  }
+
+  if (typeof window !== "undefined") {
+  window.dispatchEvent(new Event("coin-updated"));
+  }
+
+  return {
+    success: true,
+    message: `🥕 ${availableAmount}코인을 받았어요!`,
+  };
+}
+===== lib/audioToWav.ts =====
+
+// 저장 위치: lib/audioToWav.ts
+// 녹음된 webm Blob을 Azure Speech가 요구하는 16kHz mono WAV로 변환하고,
+// 같은 오디오 데이터에서 목소리 크기(볼륨) 점수(0~10)도 함께 계산합니다.
+
+export type ConvertedRecording = {
+  wavBlob: Blob;
+  volumeScore: number; // 0 ~ 10점
+};
+
+export async function convertRecordingToWav(
+  sourceBlob: Blob
+): Promise<ConvertedRecording> {
+  const arrayBuffer = await sourceBlob.arrayBuffer();
+
+  const AudioContextClass =
+    window.AudioContext || (window as any).webkitAudioContext;
+  const audioContext = new AudioContextClass();
+
+  const decoded = await audioContext.decodeAudioData(arrayBuffer.slice(0));
+
+  const targetSampleRate = 16000;
+  const offlineContext = new OfflineAudioContext(
+    1,
+    Math.ceil(decoded.duration * targetSampleRate),
+    targetSampleRate
+  );
+
+  const source = offlineContext.createBufferSource();
+  source.buffer = decoded;
+  source.connect(offlineContext.destination);
+  source.start(0);
+
+  const renderedBuffer = await offlineContext.startRendering();
+  const channelData = renderedBuffer.getChannelData(0);
+
+  const volumeScore = calculateVolumeScore(channelData);
+  const wavBlob = encodeWav(channelData, targetSampleRate);
+
+  await audioContext.close();
+
+  return { wavBlob, volumeScore };
+}
+
+// RMS(평균 음량)를 기준으로 0~10점 매핑.
+// MIN_RMS / MAX_RMS는 실제 아이들 목소리로 테스트해보면서 조정하면 돼.
+function calculateVolumeScore(samples: Float32Array): number {
+  let sumSquares = 0;
+  for (let i = 0; i < samples.length; i++) {
+    sumSquares += samples[i] * samples[i];
+  }
+  const rms = Math.sqrt(sumSquares / samples.length);
+
+  const MIN_RMS = 0.01; // 이 이하면 "너무 작은 목소리" → 0점
+  const MAX_RMS = 0.2; // 이 이상이면 "충분히 큰 목소리" → 10점
+
+  if (rms <= MIN_RMS) return 0;
+  if (rms >= MAX_RMS) return 10;
+
+  return Math.round(((rms - MIN_RMS) / (MAX_RMS - MIN_RMS)) * 10);
+}
+
+// Float32 PCM 샘플을 16bit PCM WAV 파일 형식으로 직접 인코딩
+function encodeWav(samples: Float32Array, sampleRate: number): Blob {
+  const buffer = new ArrayBuffer(44 + samples.length * 2);
+  const view = new DataView(buffer);
+
+  const writeString = (offset: number, str: string) => {
+    for (let i = 0; i < str.length; i++) {
+      view.setUint8(offset + i, str.charCodeAt(i));
+    }
+  };
+
+  writeString(0, "RIFF");
+  view.setUint32(4, 36 + samples.length * 2, true);
+  writeString(8, "WAVE");
+  writeString(12, "fmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true); // PCM
+  view.setUint16(22, 1, true); // mono
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true);
+  view.setUint16(32, 2, true);
+  view.setUint16(34, 16, true);
+  writeString(36, "data");
+  view.setUint32(40, samples.length * 2, true);
+
+  let offset = 44;
+  for (let i = 0; i < samples.length; i++) {
+    const s = Math.max(-1, Math.min(1, samples[i]));
+    view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+    offset += 2;
+  }
+
+  return new Blob([buffer], { type: "audio/wav" });
+}
+===== lib/mypageStats.ts =====
+
+// 저장 위치: lib/mypageStats.ts
+// My Page에서 보여줄 학습 통계(스트릭, 발음 점수 추이, 단어 요약)를 집계합니다.
+
+import { supabase } from "@/lib/supabase";
+
+export const SECTION_LABELS: Record<string, string> = {
+  "short-vowels": "단모음",
+  "long-vowels": "장모음",
+  "blend-sounds": "블렌드",
+  "sight-words": "사이트워드",
+  book: "북",
+  conversation: "회화",
+};
+
+export type SectionTrend = {
+  contentType: string;
+  label: string;
+  points: number[]; // 다운샘플링된 점수 추이 (시간순)
+  latestAvg: number; // 최근 5개 평균
+};
+
+export type WordSummaryItem = {
+  word: string;
+  count: number;
+  avgScore: number;
+};
+
+export type MyPageStats = {
+  streakDays: number;
+  weekLearningCount: number;
+  overallAvgScore: number | null;
+  sectionTrends: SectionTrend[];
+  mostPracticedWords: WordSummaryItem[];
+  weakWords: WordSummaryItem[];
+};
+
+const EMPTY_STATS: MyPageStats = {
+  streakDays: 0,
+  weekLearningCount: 0,
+  overallAvgScore: null,
+  sectionTrends: [],
+  mostPracticedWords: [],
+  weakWords: [],
+};
+
+function toDateKey(iso: string) {
+  return new Date(iso).toDateString();
+}
+
+function average(nums: number[]): number {
+  if (nums.length === 0) return 0;
+  return nums.reduce((sum, n) => sum + n, 0) / nums.length;
+}
+
+// 날짜 키 배열(중복 가능)을 받아 오늘 기준 연속 학습일을 계산
+function calcStreak(dateKeys: string[]): number {
+  if (dateKeys.length === 0) return 0;
+
+  const uniqueDays = Array.from(new Set(dateKeys)).sort(
+    (a, b) => new Date(b).getTime() - new Date(a).getTime()
+  );
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const cursor = new Date(today);
+
+  // 오늘 기록이 없으면 어제부터 이어지는지 확인 (오늘이 아직 안 끝났을 수 있으므로)
+  if (uniqueDays[0] !== today.toDateString()) {
+    cursor.setDate(cursor.getDate() - 1);
+    if (uniqueDays[0] !== cursor.toDateString()) {
+      return 0;
+    }
+  }
+
+  let streak = 0;
+
+  for (const dayKey of uniqueDays) {
+    if (dayKey === cursor.toDateString()) {
+      streak += 1;
+      cursor.setDate(cursor.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
+
+// 점수 배열을 최대 maxPoints개 구간으로 나눠 평균낸 값으로 다운샘플링 (차트용)
+function downsample(scores: number[], maxPoints = 8): number[] {
+  if (scores.length <= maxPoints) return scores;
+
+  const chunkSize = Math.ceil(scores.length / maxPoints);
+  const result: number[] = [];
+
+  for (let i = 0; i < scores.length; i += chunkSize) {
+    result.push(Math.round(average(scores.slice(i, i + chunkSize))));
+  }
+
+  return result;
+}
+
+export async function getMyPageStats(userId: string): Promise<MyPageStats> {
+  const [learningRes, pronunciationRes] = await Promise.all([
+    supabase.from("learning_logs").select("created_at").eq("user_id", userId),
+    supabase
+      .from("pronunciation_logs")
+      .select("word, content_type, score, created_at")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: true }),
+  ]);
+
+  if (learningRes.error) {
+    console.error("학습 기록 통계 조회 실패:", learningRes.error);
+  }
+
+  if (pronunciationRes.error) {
+    console.error("발음 기록 통계 조회 실패:", pronunciationRes.error);
+  }
+
+  const learningLogs = learningRes.data ?? [];
+  const pronunciationLogs = pronunciationRes.data ?? [];
+
+  // 연속 학습일 - learning_logs 기준 (알파벳 포함 전체 활동)
+  const streakDays = calcStreak(
+    learningLogs.map((log) => toDateKey(log.created_at))
+  );
+
+  // 이번 주 학습 수
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+
+  const weekLearningCount = learningLogs.filter(
+    (log) => new Date(log.created_at) >= weekAgo
+  ).length;
+
+  if (pronunciationLogs.length === 0) {
+    return { ...EMPTY_STATS, streakDays, weekLearningCount };
+  }
+
+  // 전체 평균 발음 점수
+  const overallAvgScore = Math.round(
+    average(
+      pronunciationLogs
+        .map((log) => log.score)
+        .filter((score): score is number => typeof score === "number")
+    )
+  );
+
+  // 섹션별 점수 추이
+  const byType = new Map<string, number[]>();
+
+  pronunciationLogs.forEach((log) => {
+    if (typeof log.score !== "number") return;
+    const key = log.content_type ?? "기타";
+    const arr = byType.get(key) ?? [];
+    arr.push(log.score);
+    byType.set(key, arr);
+  });
+
+  const sectionTrends: SectionTrend[] = Array.from(byType.entries()).map(
+    ([contentType, scores]) => ({
+      contentType,
+      label: SECTION_LABELS[contentType] ?? contentType,
+      points: downsample(scores),
+      latestAvg: Math.round(average(scores.slice(-5))),
+    })
+  );
+
+  // 단어별 연습 횟수 / 평균 점수
+  const byWord = new Map<string, { total: number; count: number }>();
+
+  pronunciationLogs.forEach((log) => {
+    if (!log.word || typeof log.score !== "number") return;
+    const prev = byWord.get(log.word) ?? { total: 0, count: 0 };
+    byWord.set(log.word, {
+      total: prev.total + log.score,
+      count: prev.count + 1,
+    });
+  });
+
+  const wordSummaries: WordSummaryItem[] = Array.from(byWord.entries()).map(
+    ([word, { total, count }]) => ({
+      word,
+      count,
+      avgScore: Math.round(total / count),
+    })
+  );
+
+  const mostPracticedWords = [...wordSummaries]
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+
+  const weakWords = [...wordSummaries]
+    .filter((item) => item.avgScore < 80)
+    .sort((a, b) => a.avgScore - b.avgScore)
+    .slice(0, 5);
+
+  return {
+    streakDays,
+    weekLearningCount,
+    overallAvgScore,
+    sectionTrends,
+    mostPracticedWords,
+    weakWords,
+  };
+}
+===== lib/logEngagement.ts =====
+
+// lib/logEngagement.ts
+import { supabase } from "@/lib/supabase";
+
+export type EngagementAction = "listen" | "listen_line" | "playback";
+
+// 코인 지급 캡(5번)과 무관하게, 실제 듣기/내 녹음 듣기 횟수를 무제한으로 기록
+export async function logEngagement({
+  contentId,
+  contentType,
+  action,
+}: {
+  contentId: string;
+  contentType: string;
+  action: EngagementAction;
+}) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return;
+
+  const { error } = await supabase.from("content_engagement_logs").insert({
+    user_id: user.id,
+    content_id: contentId,
+    content_type: contentType,
+    action,
+  });
+
+  if (error) {
+    console.error("참여 기록 저장 실패:", error);
+  }
+}
+===== lib/supabase.ts =====
+
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    storage:
+      typeof window !== "undefined" ? window.sessionStorage : undefined,
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+  },
+});
+
+===== lib/getWeakWords.ts =====
+
+// lib/getWeakWords.ts
+import { supabase } from "@/lib/supabase";
+import { conversationCategories } from "@/app/(main)/conversation/data";
+
+export type LearningLevel = "beginner" | "elementary" | "intermediate" | "advanced";
+
+export type WeakWordSummary = {
+  weakWords: string[];
+  studiedTypes: string[];
+  level: LearningLevel;
+  masteredWordCount: number;
+  highestContentLevel: number;
+};
+
+const MASTERY_MIN_COUNT = 50;
+const MASTERY_MIN_SCORE = 50;
+const SOLID_WORD_MASTERY_COUNT = 10;
+
+const dialogueLevelMap: Map<string, number> = new Map(
+  conversationCategories.flatMap((category) =>
+    category.dialogues.map((dialogue) => [dialogue.id, dialogue.level] as const)
+  )
+);
+
+const WORD_CONTENT_TYPES = ["short-vowels", "long-vowels", "blend-sounds", "sight-words"];
+
+type ContentStats = {
+  recordCount: number;
+  scoreSum: number;
+  scoreCount: number;
+  listenCount: number; // listen + listen_line 합산 (볼륨 기준)
+  fullListenCount: number; // listen만 (완주 여부 기준, conversation 게이트용)
+  playbackCount: number;
+};
+
+function isMastered(stats: ContentStats, contentType: string): boolean {
+  const avgScore = stats.scoreCount > 0 ? stats.scoreSum / stats.scoreCount : 0;
+
+  const passesCoreBar =
+    stats.recordCount >= MASTERY_MIN_COUNT &&
+    stats.listenCount >= MASTERY_MIN_COUNT &&
+    stats.playbackCount >= MASTERY_MIN_COUNT &&
+    avgScore >= MASTERY_MIN_SCORE;
+
+  if (!passesCoreBar) return false;
+
+  // Conversation은 개별 줄 다시듣기만으로 50번을 채울 수 있어서,
+  // 최소 한 번은 전체듣기(handlePlayAll)를 완주했는지 추가로 확인
+  if (contentType === "conversation" && stats.fullListenCount < 1) return false;
+
+  return true;
+}
+
+async function getHighestContentLevel(
+  userId: string,
+  statsByContentId: Map<string, ContentStats>,
+  contentTypeById: Map<string, string>
+): Promise<number> {
+  let highest = 0;
+
+  statsByContentId.forEach((stats, contentId) => {
+    const type = contentTypeById.get(contentId) ?? "";
+
+    if (type === "book") {
+      const match = contentId.match(/^book-level(\d+)-/);
+      if (match && isMastered(stats, type)) {
+        const level = Number(match[1]);
+        if (level > highest) highest = level;
+      }
+    } else if (type === "conversation") {
+      const dialogueId = contentId.replace(/^conversation-/, "");
+      const level = dialogueLevelMap.get(dialogueId);
+      if (level && isMastered(stats, type)) {
+        if (level > highest) highest = level;
+      }
+    }
+  });
+
+  return highest;
+}
+
+function computeLevel(
+  highestContentLevel: number,
+  solidWordPractice: boolean
+): LearningLevel {
+  if (highestContentLevel >= 4) return "advanced";
+  if (highestContentLevel === 3) return solidWordPractice ? "advanced" : "intermediate";
+  if (highestContentLevel === 2) return solidWordPractice ? "intermediate" : "elementary";
+  return solidWordPractice ? "elementary" : "beginner";
+}
+
+export async function getWeakWords(userId: string): Promise<WeakWordSummary> {
+  const { data: pronunciationData, error: pronunciationError } = await supabase
+    .from("pronunciation_logs")
+    .select("content_id, content_type, word, score")
+    .eq("user_id", userId);
+
+  const { data: engagementData, error: engagementError } = await supabase
+    .from("content_engagement_logs")
+    .select("content_id, content_type, action")
+    .eq("user_id", userId);
+
+  const statsByContentId = new Map<string, ContentStats>();
+  const contentTypeById = new Map<string, string>();
+  const wordById = new Map<string, string>();
+  const typeSet = new Set<string>();
+
+  const getOrCreateStats = (contentId: string): ContentStats => {
+    const existing = statsByContentId.get(contentId);
+    if (existing) return existing;
+    const fresh: ContentStats = {
+      recordCount: 0,
+      scoreSum: 0,
+      scoreCount: 0,
+      listenCount: 0,
+      fullListenCount: 0,
+      playbackCount: 0,
+    };
+    statsByContentId.set(contentId, fresh);
+    return fresh;
+  };
+
+  if (!pronunciationError && pronunciationData) {
+    pronunciationData.forEach((row) => {
+      if (!row.content_id) return;
+
+      contentTypeById.set(row.content_id, row.content_type ?? "");
+      typeSet.add(row.content_type ?? "");
+      if (row.word) wordById.set(row.content_id, row.word);
+
+      const stats = getOrCreateStats(row.content_id);
+      stats.recordCount += 1;
+
+      if (typeof row.score === "number") {
+        stats.scoreSum += row.score;
+        stats.scoreCount += 1;
+      }
+    });
+  }
+
+  if (!engagementError && engagementData) {
+    engagementData.forEach((row) => {
+      if (!row.content_id) return;
+
+      const stats = getOrCreateStats(row.content_id);
+
+      if (row.action === "listen") {
+        stats.listenCount += 1;
+        stats.fullListenCount += 1;
+      } else if (row.action === "listen_line") {
+        stats.listenCount += 1;
+      } else if (row.action === "playback") {
+        stats.playbackCount += 1;
+      }
+    });
+  }
+
+  const weakWords = Array.from(statsByContentId.entries())
+    .filter(([contentId]) => WORD_CONTENT_TYPES.includes(contentTypeById.get(contentId) ?? ""))
+    .map(([contentId, stats]) => ({
+      word: wordById.get(contentId) ?? "",
+      avg: stats.scoreCount > 0 ? stats.scoreSum / stats.scoreCount : 0,
+    }))
+    .filter((entry) => entry.word && entry.avg < 70)
+    .sort((a, b) => a.avg - b.avg)
+    .slice(0, 5)
+    .map((entry) => entry.word);
+
+  let masteredWordCount = 0;
+  statsByContentId.forEach((stats, contentId) => {
+    const type = contentTypeById.get(contentId) ?? "";
+    if (WORD_CONTENT_TYPES.includes(type) && isMastered(stats, type)) {
+      masteredWordCount += 1;
+    }
+  });
+
+  const highestContentLevel = await getHighestContentLevel(
+    userId,
+    statsByContentId,
+    contentTypeById
+  );
+
+  const solidWordPractice = masteredWordCount >= SOLID_WORD_MASTERY_COUNT;
+  const level = computeLevel(highestContentLevel, solidWordPractice);
+
+  return {
+    weakWords,
+    studiedTypes: Array.from(typeSet).filter(Boolean),
+    level,
+    masteredWordCount,
+    highestContentLevel,
+  };
+}

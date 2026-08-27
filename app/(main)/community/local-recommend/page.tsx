@@ -2,11 +2,82 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  CaretLeft,
+  MagnifyingGlass,
+  MapPin,
+  PencilSimple,
+  Sparkle,
+  GraduationCap,
+  BookOpen,
+  Books,
+  Coffee,
+} from "@phosphor-icons/react";
 import styles from "./local-recommend.module.css";
+
+type KakaoLatLng = {
+  getLat: () => number;
+  getLng: () => number;
+};
+
+type KakaoMap = {
+  setBounds: (bounds: KakaoLatLngBounds) => void;
+  setCenter: (latlng: KakaoLatLng) => void;
+  setLevel: (level: number) => void;
+  panTo: (latlng: KakaoLatLng) => void;
+};
+
+type KakaoMarker = {
+  setMap: (map: KakaoMap | null) => void;
+};
+
+type KakaoLatLngBounds = {
+  extend: (latlng: KakaoLatLng) => void;
+};
+
+type KakaoPlacesSearchOptions = {
+  location?: KakaoLatLng;
+  radius?: number;
+};
+
+type KakaoPlacesService = {
+  keywordSearch: (
+    keyword: string,
+    callback: (data: KakaoPlace[], status: string) => void,
+    options?: KakaoPlacesSearchOptions
+  ) => void;
+};
+
+type KakaoMapsNamespace = {
+  load: (callback: () => void) => void;
+  LatLng: new (lat: number | string, lng: number | string) => KakaoLatLng;
+  LatLngBounds: new () => KakaoLatLngBounds;
+  Map: new (
+    container: HTMLElement,
+    options: { center: KakaoLatLng; level: number }
+  ) => KakaoMap;
+  Marker: new (options: {
+    map: KakaoMap;
+    position: KakaoLatLng;
+  }) => KakaoMarker;
+  event: {
+    addListener: (
+      target: KakaoMarker,
+      type: string,
+      handler: () => void
+    ) => void;
+  };
+  services: {
+    Places: new () => KakaoPlacesService;
+    Status: { OK: string };
+  };
+};
 
 declare global {
   interface Window {
-    kakao: any;
+    kakao: {
+      maps: KakaoMapsNamespace;
+    };
   }
 }
 
@@ -33,22 +104,22 @@ type KakaoPlace = {
 const categories: {
   id: PlaceCategory;
   label: string;
-  icon: string;
+  icon: React.ElementType;
   keyword: string;
 }[] = [
-  { id: "all", label: "전체", icon: "✨", keyword: "영어학원" },
-  { id: "kindergarten", label: "영어유치원", icon: "🏫", keyword: "영어유치원" },
-  { id: "academy", label: "영어학원", icon: "📚", keyword: "영어학원" },
-  { id: "library", label: "도서관", icon: "📖", keyword: "영어 도서관" },
-  { id: "bookcafe", label: "영어북카페", icon: "☕", keyword: "영어 북카페" },
+  { id: "all", label: "전체", icon: Sparkle, keyword: "영어학원" },
+  { id: "kindergarten", label: "영어유치원", icon: GraduationCap, keyword: "영어유치원" },
+  { id: "academy", label: "영어학원", icon: BookOpen, keyword: "영어학원" },
+  { id: "library", label: "도서관", icon: Books, keyword: "영어 도서관" },
+  { id: "bookcafe", label: "영어북카페", icon: Coffee, keyword: "영어 북카페" },
 ];
 
 export default function LocalRecommendPage() {
   const router = useRouter();
 
   const mapRef = useRef<HTMLDivElement | null>(null);
-  const kakaoMapRef = useRef<any>(null);
-  const markersRef = useRef<any[]>([]);
+  const kakaoMapRef = useRef<KakaoMap | null>(null);
+  const markersRef = useRef<KakaoMarker[]>([]);
 
   const [activeCategory, setActiveCategory] = useState<PlaceCategory>("academy");
   const [keyword, setKeyword] = useState("광진구 영어학원");
@@ -65,9 +136,10 @@ export default function LocalRecommendPage() {
     markersRef.current = [];
   };
 
-  const searchPlaces = (searchKeyword: string, center?: any) => {
+  const searchPlaces = (searchKeyword: string, center?: KakaoLatLng) => {
     if (!window.kakao || !kakaoMapRef.current) return;
 
+    const kakaoMap = kakaoMapRef.current;
     const trimmedKeyword = searchKeyword.trim();
 
     if (!trimmedKeyword) {
@@ -88,7 +160,7 @@ export default function LocalRecommendPage() {
 
     placesService.keywordSearch(
       trimmedKeyword,
-      (data: KakaoPlace[], status: any) => {
+      (data: KakaoPlace[], status: string) => {
         setIsLoading(false);
 
         if (status !== window.kakao.maps.services.Status.OK) {
@@ -106,13 +178,13 @@ export default function LocalRecommendPage() {
           const position = new window.kakao.maps.LatLng(place.y, place.x);
 
           const marker = new window.kakao.maps.Marker({
-            map: kakaoMapRef.current,
+            map: kakaoMap,
             position,
           });
 
           window.kakao.maps.event.addListener(marker, "click", () => {
             setSelectedPlaceId(place.id);
-            kakaoMapRef.current.panTo(position);
+            kakaoMap.panTo(position);
           });
 
           markersRef.current.push(marker);
@@ -121,7 +193,7 @@ export default function LocalRecommendPage() {
 
         setPlaces(data);
         setSelectedPlaceId(data[0]?.id ?? "");
-        kakaoMapRef.current.setBounds(bounds);
+        kakaoMap.setBounds(bounds);
       },
       searchOptions
     );
@@ -254,26 +326,33 @@ export default function LocalRecommendPage() {
         className={styles.backButton}
         onClick={() => router.push("/community")}
       >
-        ←
+        <CaretLeft size={20} weight="bold" />
       </button>
 
-      <header className={styles.header}>
-        <div>
-          <span className={styles.label}>Kakao Map Community</span>
-          <h1>우리 동네 영어 추천</h1>
-          <p>
-            카카오 지도에서 주변 영어학원, 영어유치원, 영어 프로그램을 확인해요.
-          </p>
+      <div className={styles.headerCard}>
+        <div className={styles.headerInfo}>
+          <div className={styles.headerIcon}>
+            <MapPin size={24} weight="bold" />
+          </div>
+
+          <div>
+            <span className={styles.eyebrow}>KAKAO MAP COMMUNITY</span>
+            <h1>우리 동네 영어 추천</h1>
+            <p>
+              카카오 지도에서 주변 영어학원, 영어유치원, 영어 프로그램을 확인해요.
+            </p>
+          </div>
         </div>
 
         <button className={styles.writeButton} onClick={handleWriteQuestion}>
+          <PencilSimple size={16} weight="bold" />
           질문 남기기
         </button>
-      </header>
+      </div>
 
       <div className={styles.searchRow}>
         <div className={styles.searchBox}>
-          <span>🔍</span>
+          <MagnifyingGlass size={17} weight="bold" />
           <input
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
@@ -285,23 +364,28 @@ export default function LocalRecommendPage() {
         </div>
 
         <button className={styles.locationButton} onClick={handleCurrentLocation}>
-          📍 현재 위치 기준
+          <MapPin size={16} weight="bold" />
+          현재 위치 기준
         </button>
       </div>
 
       <div className={styles.categoryRow}>
-        {categories.map((category) => (
-          <button
-            key={category.id}
-            className={`${styles.categoryButton} ${
-              activeCategory === category.id ? styles.activeCategory : ""
-            }`}
-            onClick={() => handleCategoryClick(category)}
-          >
-            <span>{category.icon}</span>
-            {category.label}
-          </button>
-        ))}
+        {categories.map((category) => {
+          const Icon = category.icon;
+
+          return (
+            <button
+              key={category.id}
+              className={`${styles.categoryButton} ${
+                activeCategory === category.id ? styles.activeCategory : ""
+              }`}
+              onClick={() => handleCategoryClick(category)}
+            >
+              <Icon size={14} weight="bold" />
+              {category.label}
+            </button>
+          );
+        })}
       </div>
 
       <div className={styles.content}>
@@ -335,7 +419,7 @@ export default function LocalRecommendPage() {
                   </div>
 
                   <div className={styles.ratingRow}>
-                    <span>📍 카카오맵 장소</span>
+                    <span>카카오맵 장소</span>
                     {place.phone && <span>{place.phone}</span>}
                   </div>
 
@@ -368,7 +452,7 @@ export default function LocalRecommendPage() {
               </div>
 
               <div className={styles.detailStats}>
-                <span>📍 카카오맵</span>
+                <span>카카오맵</span>
                 {selectedPlace.phone && <span>{selectedPlace.phone}</span>}
                 {selectedPlace.distance && <span>{selectedPlace.distance}m</span>}
               </div>

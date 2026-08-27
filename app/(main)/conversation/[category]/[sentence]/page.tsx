@@ -13,6 +13,7 @@ import {
 } from "@phosphor-icons/react";
 import ActionButton from "@/components/ActionButton";
 import { rewardCoin } from "@/lib/rewardCoin";
+import { logEngagement } from "@/lib/logEngagement";
 import { convertRecordingToWav } from "@/lib/audioToWav";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/Toast";
@@ -93,6 +94,13 @@ export default function ConversationDetailPage() {
     try {
       setActiveLineIndex(index);
       await playOne(item.lines[index].audio);
+
+      // 개별 줄 다시 듣기도 듣기 횟수에 포함 (단, 전체듣기 완주와는 별도로 집계)
+      logEngagement({
+        contentId: `conversation-${item.id}`,
+        contentType: "conversation",
+        action: "listen_line",
+      });
     } catch {
       alert("소리 파일을 찾을 수 없거나 재생할 수 없어.");
     } finally {
@@ -118,6 +126,13 @@ export default function ConversationDetailPage() {
       });
 
       showToast(result.message);
+
+      // 코인 캡과 무관하게 실제 전체듣기 완료 횟수를 기록 (레벨 판정용)
+      logEngagement({
+        contentId: `conversation-${item.id}`,
+        contentType: "conversation",
+        action: "listen", // 전체 완주는 반드시 "listen"
+      });
     } catch {
       alert("소리 파일을 찾을 수 없거나 재생할 수 없어.");
     } finally {
@@ -223,6 +238,16 @@ export default function ConversationDetailPage() {
 
     try {
       const audio = new Audio(myRecordingUrl);
+
+      audio.onended = () => {
+        // 코인 보상은 없지만, 내 녹음 듣기 완료 횟수를 레벨 판정용으로 기록
+        logEngagement({
+          contentId: `conversation-${item.id}`,
+          contentType: "conversation",
+          action: "playback",
+        });
+      };
+
       await audio.play();
     } catch (error) {
       console.error(error);

@@ -29,6 +29,7 @@ type Comment = {
   content: string;
   author: string;
   created_at: string;
+  avatarUrl?: string;
 };
 
 type SupabasePost = {
@@ -124,7 +125,37 @@ export default function CommunityPostPage() {
       return;
     }
 
-    setComments(data || []);
+    const rows = (data || []) as Comment[];
+    const uniqueUserIds = Array.from(
+      new Set(rows.map((item) => item.user_id).filter(Boolean))
+    );
+
+    let avatarMap: Record<string, string | null> = {};
+
+    if (uniqueUserIds.length > 0) {
+      const { data: profilesData } = await supabase
+        .from("profiles")
+        .select("id, avatar_url")
+        .in("id", uniqueUserIds);
+
+      avatarMap = (profilesData || []).reduce(
+        (
+          acc: Record<string, string | null>,
+          item: { id: string; avatar_url: string | null }
+        ) => {
+          acc[item.id] = item.avatar_url;
+          return acc;
+        },
+        {}
+      );
+    }
+
+    setComments(
+      rows.map((item) => ({
+        ...item,
+        avatarUrl: avatarMap[item.user_id] || undefined,
+      }))
+    );
   };
 
   const fetchLikes = async (userId: string | null) => {
@@ -164,12 +195,19 @@ export default function CommunityPostPage() {
     }
 
     setRelatedPosts(
-      (data || []).map((item: any) => ({
-        id: String(item.id),
-        title: item.title,
-        image: item.image_url || undefined,
-        date: new Date(item.created_at).toLocaleDateString("ko-KR"),
-      }))
+      (data || []).map(
+        (item: {
+          id: number;
+          title: string;
+          image_url: string | null;
+          created_at: string;
+        }) => ({
+          id: String(item.id),
+          title: item.title,
+          image: item.image_url || undefined,
+          date: new Date(item.created_at).toLocaleDateString("ko-KR"),
+        })
+      )
     );
   };
 
@@ -185,12 +223,13 @@ export default function CommunityPostPage() {
     if (!postData) return;
 
     const ranked = postData
-      .map((item: any) => ({
+      .map((item: { id: number; title: string }) => ({
         id: String(item.id),
         title: item.title,
         likes:
-          likeData?.filter((like: any) => like.post_id === item.id).length ||
-          0,
+          likeData?.filter(
+            (like: { post_id: number }) => like.post_id === item.id
+          ).length || 0,
       }))
       .sort((a, b) => b.likes - a.likes)
       .slice(0, 4);
@@ -232,6 +271,18 @@ export default function CommunityPostPage() {
 
     const item = data as SupabasePost;
 
+    let authorAvatarUrl: string | undefined;
+
+    if (item.user_id) {
+      const { data: authorProfile } = await supabase
+        .from("profiles")
+        .select("avatar_url")
+        .eq("id", item.user_id)
+        .single();
+
+      authorAvatarUrl = authorProfile?.avatar_url || undefined;
+    }
+
     setPost({
       id: String(item.id),
       category: item.category,
@@ -239,6 +290,7 @@ export default function CommunityPostPage() {
       content: item.content,
       image: item.image_url || undefined,
       author: item.author?.includes("@") ? "학부모" : item.author || "학부모",
+      avatarUrl: authorAvatarUrl,
       date: new Date(item.created_at).toLocaleDateString("ko-KR"),
       likes: item.likes || 0,
       comments: item.comments || [],
@@ -426,9 +478,17 @@ export default function CommunityPostPage() {
             <div className={styles.info}>
               <div
                 className={styles.authorAvatar}
-                style={{ background: colorForName(post.author) }}
+                style={post.avatarUrl ? undefined : { background: colorForName(post.author) }}
               >
-                {post.author.charAt(0)}
+                {post.avatarUrl ? (
+                  <img
+                    src={post.avatarUrl}
+                    alt={post.author}
+                    className={styles.avatarImg}
+                  />
+                ) : (
+                  post.author.charAt(0)
+                )}
               </div>
               <strong>{post.author}</strong>
               <span>· {post.date}</span>
@@ -481,9 +541,17 @@ export default function CommunityPostPage() {
                 <div key={comment.id} className={styles.commentCard}>
                   <div
                     className={styles.commentAvatar}
-                    style={{ background: colorForName(comment.author) }}
+                    style={comment.avatarUrl ? undefined : { background: colorForName(comment.author) }}
                   >
-                    {comment.author.charAt(0)}
+                    {comment.avatarUrl ? (
+                      <img
+                        src={comment.avatarUrl}
+                        alt={comment.author}
+                        className={styles.avatarImg}
+                      />
+                    ) : (
+                      comment.author.charAt(0)
+                    )}
                   </div>
 
                   <div className={styles.commentBody}>

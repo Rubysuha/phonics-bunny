@@ -20,6 +20,7 @@ export type CommunityPost = {
   content: string;
   image?: string;
   author: string;
+  avatarUrl?: string;
   date: string;
   likes: number;
   comments: string[];

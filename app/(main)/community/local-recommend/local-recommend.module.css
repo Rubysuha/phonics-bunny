@@ -1,19 +1,17 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
 .page {
   position: absolute;
   inset: 0;
 
+  overflow-y: auto;
+
   padding: 34px 34px 48px 108px;
   box-sizing: border-box;
 
-  overflow-y: auto;
-  overflow-x: hidden;
+  background: #faf6f1;
 
-  border-radius: 34px;
-
-  background:
-    radial-gradient(circle at top left, rgba(255, 231, 197, 0.92), transparent 34%),
-    radial-gradient(circle at bottom right, rgba(222, 217, 255, 0.82), transparent 36%),
-    linear-gradient(180deg, #fff9f1 0%, #fff4ea 100%);
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
 }
 
 .backButton {
@@ -21,105 +19,139 @@
   top: 34px;
   left: 34px;
 
-  width: 58px;
-  height: 58px;
-
-  border: none;
-  border-radius: 20px;
-
-  background: rgba(255, 255, 255, 0.9);
-  color: #8b6548;
-
-  font-size: 32px;
-  font-weight: 900;
-
-  cursor: pointer;
-
-  box-shadow: 0 10px 22px rgba(120, 85, 55, 0.12);
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 20px;
-
-  margin-bottom: 18px;
-}
-
-.label {
-  display: inline-flex;
-
-  margin-bottom: 8px;
-
-  color: #d28b57;
-  font-size: 14px;
-  font-weight: 950;
-}
-
-.header h1 {
-  margin: 0;
-
-  color: #704a35;
-
-  font-size: 46px;
-  font-weight: 950;
-  letter-spacing: -1px;
-}
-
-.header p {
-  margin: 8px 0 0;
-
-  color: #9a745c;
-
-  font-size: 17px;
-  font-weight: 800;
-}
-
-.writeButton {
+  width: 46px;
   height: 46px;
 
-  border: none;
-  border-radius: 999px;
+  border: 1px solid #e8e0d2;
+  border-radius: 8px;
 
-  padding: 0 20px;
+  background: #ffffff;
+  color: #2b2420;
 
-  background: linear-gradient(180deg, #ffb9c7 0%, #ff91a8 100%);
-  color: #7a2c3e;
-
-  font-size: 14px;
-  font-weight: 950;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   cursor: pointer;
-
-  box-shadow: 0 8px 18px rgba(120, 85, 55, 0.1);
 }
 
-.searchRow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 180px;
-  gap: 12px;
+/* ── header card ── */
+
+.headerCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  border: 1px solid #ede6da;
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  padding: 22px 24px;
+  box-sizing: border-box;
 
   margin-bottom: 14px;
 }
 
-.searchBox {
-  height: 54px;
+.headerInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
 
-  border-radius: 999px;
+.headerIcon {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
 
-  background: rgba(255, 255, 255, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.88);
+  border-radius: 8px;
+
+  background: #e3ede7;
+  color: #4f8a6f;
 
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+}
 
-  padding: 0 20px;
+.eyebrow {
+  display: inline-flex;
+  margin-bottom: 4px;
 
-  box-shadow:
-    0 10px 24px rgba(120, 85, 55, 0.09),
-    inset 0 2px 0 rgba(255, 255, 255, 0.8);
+  color: #4f8a6f;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.headerCard h1 {
+  margin: 0;
+  color: #2b2420;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.headerCard p {
+  margin: 4px 0 0;
+  color: #8b8074;
+  font-size: 13.5px;
+  font-weight: 400;
+}
+
+.writeButton {
+  height: 42px;
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  border: none;
+  border-radius: 8px;
+
+  padding: 0 16px;
+
+  background: #c1573c;
+  color: #fff8f4;
+
+  font-size: 13.5px;
+  font-weight: 600;
+
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ── search row ── */
+
+.searchRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+
+  margin-bottom: 12px;
+}
+
+.searchBox {
+  height: 44px;
+
+  border: 1px solid #e8e0d2;
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0 16px;
+}
+
+.searchBox svg {
+  flex-shrink: 0;
+  color: #ab9f8f;
 }
 
 .searchBox input {
@@ -129,127 +161,132 @@
   outline: none;
   background: transparent;
 
-  color: #704a35;
-  font-size: 15px;
-  font-weight: 850;
+  color: #2b2420;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .searchBox input::placeholder {
-  color: #b28d76;
+  color: #ab9f8f;
+  font-weight: 400;
 }
 
 .locationButton {
-  height: 54px;
+  height: 44px;
+  flex-shrink: 0;
 
-  border: none;
-  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 
-  background: linear-gradient(180deg, #fff0d7 0%, #ffd9b5 100%);
-  color: #704a35;
+  border: 1px solid #e8e0d2;
+  border-radius: 8px;
 
-  font-size: 14px;
-  font-weight: 950;
-
-  cursor: pointer;
-
-  box-shadow: 0 8px 18px rgba(120, 85, 55, 0.1);
-}
-
-.categoryRow {
-  display: flex;
-  gap: 10px;
-
-  overflow-x: auto;
-  padding-bottom: 2px;
-  margin-bottom: 16px;
-}
-
-.categoryButton {
-  height: 42px;
-
-  border: 1px solid rgba(239, 217, 190, 0.85);
-  border-radius: 999px;
-
-  background: rgba(255, 255, 255, 0.72);
-  color: #7c5a44;
+  background: #ffffff;
+  color: #6f6459;
 
   padding: 0 16px;
 
-  font-size: 14px;
-  font-weight: 950;
+  font-size: 13.5px;
+  font-weight: 600;
 
   cursor: pointer;
   white-space: nowrap;
+}
 
+/* ── category pills ── */
+
+.categoryRow {
   display: flex;
+  gap: 6px;
+
+  overflow-x: auto;
+  padding-bottom: 2px;
+  margin-bottom: 14px;
+}
+
+.categoryButton {
+  height: 36px;
+  flex-shrink: 0;
+
+  display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
+
+  border: 1px solid #e8e0d2;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #6f6459;
+
+  padding: 0 14px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+  white-space: nowrap;
 }
 
 .activeCategory {
-  background: linear-gradient(180deg, #fff0d7 0%, #ffd9b5 100%);
-  color: #704a35;
-
-  border-color: #f0bd86;
-
-  box-shadow: 0 6px 14px rgba(210, 145, 95, 0.13);
+  background: #2b2420;
+  color: #fff8f4;
+  border-color: #2b2420;
 }
+
+/* ── content: list + map ── */
 
 .content {
   display: grid;
-  grid-template-columns: 390px minmax(0, 1fr);
-  gap: 18px;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 14px;
 
-  min-height: 560px;
-}
-
-.listPanel,
-.mapPanel {
-  border-radius: 28px;
-
-  background: rgba(255, 255, 255, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.84);
-
-  box-shadow:
-    0 12px 26px rgba(120, 85, 55, 0.1),
-    inset 0 2px 0 rgba(255, 255, 255, 0.86);
+  min-height: 540px;
 }
 
 .listPanel {
-  padding: 22px;
+  border: 1px solid #ede6da;
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  padding: 18px;
   box-sizing: border-box;
 
   overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .panelHeader {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .panelHeader h2 {
   margin: 0;
 
-  color: #704a35;
-  font-size: 22px;
-  font-weight: 950;
+  color: #2b2420;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .panelHeader span {
-  color: #d28b57;
-  font-size: 14px;
-  font-weight: 950;
+  color: #c1573c;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .placeList {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 
-  max-height: 488px;
   overflow-y: auto;
   padding-right: 4px;
 }
@@ -257,78 +294,78 @@
 .placeCard {
   width: 100%;
 
-  border: none;
-  border-radius: 24px;
+  border: 1px solid #ede6da;
+  border-radius: 8px;
 
-  background: rgba(255, 248, 238, 0.92);
-  border: 1px solid rgba(239, 217, 190, 0.85);
+  background: #fdfbf8;
 
-  padding: 16px;
+  padding: 14px;
+  box-sizing: border-box;
 
   text-align: left;
   cursor: pointer;
 
-  transition:
-    transform 0.15s ease,
-    background 0.15s ease,
-    border 0.15s ease;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
 .placeCard:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.96);
+  border-color: #e0d5c4;
 }
 
 .selectedCard {
-  background: #fff2dc;
-  border-color: #f0bd86;
+  background: #f7e4dc;
+  border-color: #c1573c;
 }
 
 .placeTop {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
 }
 
 .placeTop strong {
-  color: #5f3d2b;
-  font-size: 18px;
-  font-weight: 950;
+  color: #2b2420;
+  font-size: 14.5px;
+  font-weight: 700;
 }
 
 .placeTop p {
-  margin: 6px 0 0;
+  margin: 4px 0 0;
 
-  color: #9a745c;
-  font-size: 13px;
-  font-weight: 800;
+  color: #8b8074;
+  font-size: 12px;
+  font-weight: 400;
 }
 
 .placeTop em {
-  color: #d28b57;
-  font-size: 13px;
+  flex-shrink: 0;
+
+  color: #c1573c;
+  font-size: 12px;
   font-style: normal;
-  font-weight: 950;
+  font-weight: 700;
   white-space: nowrap;
 }
 
 .ratingRow {
   display: flex;
+  align-items: center;
   gap: 10px;
 
-  margin-top: 10px;
+  margin-top: 8px;
 
-  color: #a17b61;
-  font-size: 13px;
-  font-weight: 900;
+  color: #9a8f82;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .description {
-  margin: 10px 0 12px;
+  margin: 8px 0 10px;
 
-  color: #8a644a;
-  font-size: 14px;
-  font-weight: 800;
+  color: #8b8074;
+  font-size: 12.5px;
+  font-weight: 400;
   line-height: 1.45;
 }
 
@@ -339,119 +376,123 @@
 }
 
 .tagRow span {
-  padding: 6px 10px;
+  padding: 4px 9px;
 
   border-radius: 999px;
 
-  background: #ffe3c2;
-  color: #9b5d25;
+  background: #f2efe8;
+  color: #6f6459;
 
-  font-size: 12px;
-  font-weight: 950;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .mapPanel {
-  padding: 22px;
+  border: 1px solid #ede6da;
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  padding: 14px;
   box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .mapBox {
   flex: 1;
-  min-height: 390px;
+  min-height: 380px;
 
-  border-radius: 26px;
+  border-radius: 6px;
   overflow: hidden;
 
-  background: #f3eadb;
-  border: 1px solid rgba(239, 217, 190, 0.85);
+  background: #f3ede2;
 }
 
 .realMap {
   width: 100%;
   height: 100%;
-  min-height: 390px;
+  min-height: 380px;
 }
 
 .detailBox {
-  border-radius: 24px;
+  border: 1px solid #ede6da;
+  border-radius: 8px;
 
-  background: rgba(255, 248, 238, 0.94);
-  border: 1px solid rgba(239, 217, 190, 0.85);
+  background: #fdfbf8;
 
-  padding: 20px;
+  padding: 16px;
   box-sizing: border-box;
 }
 
 .detailBox h2 {
   margin: 0;
 
-  color: #5f3d2b;
-  font-size: 24px;
-  font-weight: 950;
+  color: #2b2420;
+  font-size: 17px;
+  font-weight: 700;
 }
 
 .detailBox p {
-  margin: 6px 0 0;
+  margin: 4px 0 0;
 
-  color: #9a745c;
-  font-size: 14px;
-  font-weight: 800;
+  color: #8b8074;
+  font-size: 13px;
+  font-weight: 400;
 }
 
 .detailStats {
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: 10px;
 
-  margin-top: 12px;
+  margin-top: 10px;
 
-  color: #a17b61;
-  font-size: 14px;
-  font-weight: 950;
+  color: #9a8f82;
+  font-size: 12.5px;
+  font-weight: 500;
 }
 
 .actionRow {
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: 8px;
 
-  margin-top: 16px;
+  margin-top: 14px;
 }
 
 .actionRow button {
-  height: 40px;
+  height: 36px;
 
-  border: none;
-  border-radius: 999px;
+  border: 1px solid #e8e0d2;
+  border-radius: 8px;
 
-  background: linear-gradient(180deg, #fff0d7 0%, #ffd9b5 100%);
-  color: #704a35;
+  background: #ffffff;
+  color: #2b2420;
 
-  padding: 0 18px;
+  padding: 0 14px;
 
-  font-size: 14px;
-  font-weight: 950;
+  font-size: 12.5px;
+  font-weight: 600;
 
   cursor: pointer;
 }
 
 .emptyBox {
-  border-radius: 22px;
+  border-radius: 8px;
 
-  background: rgba(255, 250, 243, 0.9);
+  background: #fdfbf8;
+  border: 1px solid #ede6da;
 
   padding: 34px 18px;
 
-  color: #9a745c;
-
+  color: #9a8f82;
   text-align: center;
 
-  font-size: 15px;
-  font-weight: 900;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 @media (max-width: 1180px) {
@@ -467,10 +508,7 @@
     max-height: none;
   }
 
-  .mapBox {
-    min-height: 420px;
-  }
-
+  .mapBox,
   .realMap {
     min-height: 420px;
   }
@@ -486,19 +524,21 @@
     left: 22px;
   }
 
-  .header {
+  .headerCard {
     flex-direction: column;
-  }
-
-  .header h1 {
-    font-size: 36px;
+    align-items: flex-start;
   }
 
   .writeButton {
     width: 100%;
+    justify-content: center;
   }
 
   .searchRow {
     grid-template-columns: 1fr;
+  }
+
+  .locationButton {
+    justify-content: center;
   }
 }

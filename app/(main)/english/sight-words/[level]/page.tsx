@@ -1,9 +1,9 @@
 "use client";
 
 import { rewardCoin } from "@/lib/rewardCoin";
+import { logEngagement } from "@/lib/logEngagement";
 import { useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import {
   SpeakerHigh,
@@ -63,7 +63,7 @@ export default function SightWordLevelPage() {
     notFound();
   }
 
-  const handleListen = async (audioPath: string, word: string) => {
+  const handleListen = async (audioPath: string, word: string, slug: string) => {
     try {
       const audio = new Audio(audioPath);
 
@@ -75,6 +75,12 @@ export default function SightWordLevelPage() {
         });
 
         showToast(result.message);
+
+        logEngagement({
+          contentId: `sight-words-${slug}`,
+          contentType: "sight-words",
+          action: "listen",
+        });
       };
 
       await audio.play();
@@ -187,7 +193,7 @@ export default function SightWordLevelPage() {
     showToast(result.message);
   };
 
-  const handlePlayMine = async (word: string) => {
+  const handlePlayMine = async (word: string, slug: string) => {
     const myRecordingUrl = recordings[word];
 
     if (!myRecordingUrl) {
@@ -197,6 +203,15 @@ export default function SightWordLevelPage() {
 
     try {
       const audio = new Audio(myRecordingUrl);
+
+      audio.onended = () => {
+        logEngagement({
+          contentId: `sight-words-${slug}`,
+          contentType: "sight-words",
+          action: "playback",
+        });
+      };
+
       await audio.play();
     } catch (error) {
       console.error(error);
@@ -365,7 +380,7 @@ export default function SightWordLevelPage() {
                       variant="listen"
                       size="sm"
                       icon={<SpeakerHigh size={16} weight="fill" />}
-                      onClick={() => handleListen(item.audio, item.word)}
+                      onClick={() => handleListen(item.audio, item.word, item.slug)}
                     >
                       듣기
                     </ActionButton>
@@ -395,7 +410,7 @@ export default function SightWordLevelPage() {
                       variant="playback"
                       size="sm"
                       icon={<Play size={16} weight="fill" />}
-                      onClick={() => handlePlayMine(item.word)}
+                      onClick={() => handlePlayMine(item.word, item.slug)}
                     >
                       재생
                     </ActionButton>

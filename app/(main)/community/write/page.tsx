@@ -2,6 +2,15 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import {
+  CaretLeft,
+  Carrot,
+  MapPin,
+  Camera,
+  BookOpen,
+  Question,
+  Sparkle,
+} from "@phosphor-icons/react";
 import { supabase } from "@/lib/supabase";
 import styles from "./write.module.css";
 import {
@@ -10,6 +19,30 @@ import {
 } from "../data";
 
 type WriteCategoryId = CommunityCategoryId;
+
+const categoryIcon: Record<CommunityCategoryId, React.ElementType> = {
+  "study-proof": Camera,
+  "english-tip": BookOpen,
+  "question": Question,
+  "bunny-proud": Sparkle,
+  "local-recommend": MapPin,
+};
+
+const categoryColor: Record<CommunityCategoryId, string> = {
+  "study-proof": "#c1573c",
+  "english-tip": "#8a7a4f",
+  "question": "#4f7ea8",
+  "bunny-proud": "#8a5fa0",
+  "local-recommend": "#4f8a6f",
+};
+
+const categoryTint: Record<CommunityCategoryId, string> = {
+  "study-proof": "#f7e4dc",
+  "english-tip": "#f2efe0",
+  "question": "#e6eef4",
+  "bunny-proud": "#ece3f0",
+  "local-recommend": "#e3ede7",
+};
 
 export default function CommunityWritePage() {
   const router = useRouter();
@@ -54,6 +87,10 @@ export default function CommunityWritePage() {
   const selectedCategory = writeCategories.find(
     (item) => item.id === category
   );
+
+  const SelectedIcon = categoryIcon[category] ?? BookOpen;
+  const selectedColor = categoryColor[category] ?? "#c1573c";
+  const selectedTint = categoryTint[category] ?? "#f2efe0";
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -183,18 +220,20 @@ export default function CommunityWritePage() {
   return (
     <section className={styles.page}>
       <button className={styles.backButton} onClick={() => router.back()}>
-        ←
+        <CaretLeft size={20} weight="bold" />
       </button>
 
       <div className={styles.layout}>
         <aside className={styles.sidePanel}>
-          <div className={styles.sideBadge}>Community</div>
+          <span className={styles.sideBadge}>COMMUNITY</span>
 
           <h1>글쓰기</h1>
           <p>학습 경험, 질문, Bunny 자랑을 자유롭게 공유해 보세요.</p>
 
           <div className={styles.rewardBox}>
-            <span>🥕</span>
+            <span>
+              <Carrot size={19} weight="bold" />
+            </span>
             <div>
               <strong>글쓰기 보상</strong>
               <p>게시글 업로드 시 +3 Coin</p>
@@ -202,7 +241,9 @@ export default function CommunityWritePage() {
           </div>
 
           <div className={styles.selectedBox}>
-            <span>{selectedCategory?.icon}</span>
+            <span style={{ background: selectedTint, color: selectedColor }}>
+              <SelectedIcon size={19} weight="bold" />
+            </span>
             <div>
               <strong>{selectedCategory?.title}</strong>
               <p>{selectedCategory?.description}</p>
@@ -213,7 +254,10 @@ export default function CommunityWritePage() {
         <main className={styles.card}>
           {placeName && (
             <div className={styles.placeInfoBox}>
-              <strong>📍 선택한 장소</strong>
+              <strong>
+                <MapPin size={14} weight="bold" />
+                선택한 장소
+              </strong>
               <p>{placeName}</p>
               <span>{placeAddress || "주소 정보 없음"}</span>
             </div>
@@ -226,19 +270,27 @@ export default function CommunityWritePage() {
             </div>
 
             <div className={styles.categoryGrid}>
-              {writeCategories.map((item) => (
-                <button
-                  key={item.id}
-                  className={`${styles.categoryButton} ${
-                    category === item.id ? styles.active : ""
-                  }`}
-                  onClick={() => setCategory(item.id)}
-                >
-                  <span>{item.icon}</span>
-                  <strong>{item.title}</strong>
-                  <em>{item.description}</em>
-                </button>
-              ))}
+              {writeCategories.map((item) => {
+                const Icon = categoryIcon[item.id] ?? BookOpen;
+                const color = categoryColor[item.id] ?? "#c1573c";
+                const tint = categoryTint[item.id] ?? "#f2efe0";
+
+                return (
+                  <button
+                    key={item.id}
+                    className={`${styles.categoryButton} ${
+                      category === item.id ? styles.active : ""
+                    }`}
+                    onClick={() => setCategory(item.id)}
+                  >
+                    <span style={{ background: tint, color }}>
+                      <Icon size={18} weight="bold" />
+                    </span>
+                    <strong>{item.title}</strong>
+                    <em>{item.description}</em>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -271,7 +323,7 @@ export default function CommunityWritePage() {
 
             {!imagePreview ? (
               <label className={styles.imageUploadBox}>
-                <span>📷</span>
+                <Camera size={30} weight="light" />
                 <strong>사진 추가하기</strong>
                 <em>이미지를 선택하면 미리보기가 보여요.</em>
 
@@ -317,7 +369,7 @@ export default function CommunityWritePage() {
               onClick={handleSubmit}
               disabled={isUploading}
             >
-              {isUploading ? "업로드 중..." : "업로드 +3🥕"}
+              {isUploading ? "업로드 중..." : "업로드 +3 코인"}
             </button>
           </div>
         </main>

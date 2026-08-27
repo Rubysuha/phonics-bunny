@@ -1,10 +1,10 @@
 "use client";
 
 import { rewardCoin } from "@/lib/rewardCoin";
+import { logEngagement } from "@/lib/logEngagement";
 import { useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import {
   SpeakerHigh,
@@ -80,6 +80,12 @@ export default function LongVowelDetailPage() {
         });
 
         showToast(result.message);
+
+        logEngagement({
+          contentId: `long-vowels-${item.slug}`,
+          contentType: "long-vowels",
+          action: "listen",
+        });
       };
 
       await audio.play();
@@ -101,6 +107,12 @@ export default function LongVowelDetailPage() {
         });
 
         showToast(result.message);
+
+        logEngagement({
+          contentId: `long-vowels-${item.slug}`,
+          contentType: "long-vowels",
+          action: "listen",
+        });
       };
 
       await audio.play();
@@ -207,6 +219,15 @@ export default function LongVowelDetailPage() {
 
     try {
       const audio = new Audio(myRecordingUrl);
+
+      audio.onended = () => {
+        logEngagement({
+          contentId: `long-vowels-${item.slug}`,
+          contentType: "long-vowels",
+          action: "playback",
+        });
+      };
+
       await audio.play();
     } catch (error) {
       console.error(error);
