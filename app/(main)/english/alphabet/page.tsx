@@ -68,7 +68,7 @@ export default function AlphabetPage() {
 
           <div className={styles.bottomRow}>
             <BackButton href="/english">
-              English로 돌아가기
+              Phonics로 돌아가기
             </BackButton>
           </div>
         </div>
