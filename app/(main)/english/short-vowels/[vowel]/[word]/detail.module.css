@@ -66,14 +66,7 @@
   position: relative;
 }
 
-.listenButton,
-.recordButton,
-.recordingButton,
-.playMineButton,
-.downloadButton,
-.closeButton,
-.analyzeButton,
-.retryButton {
+.closeButton, .retryButton {
   border: none;
   text-decoration: none;
   cursor: pointer;
@@ -85,45 +78,8 @@
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.listenButton:hover,
-.recordButton:hover,
-.recordingButton:hover,
-.playMineButton:hover,
-.downloadButton:hover,
-.closeButton:hover,
-.analyzeButton:hover,
-.retryButton:hover {
+.closeButton:hover, .retryButton:hover {
   transform: translateY(-1px);
-}
-
-.listenButton {
-  background: linear-gradient(180deg, #9ed6ff 0%, #7ac4f7 100%);
-  color: #21455d;
-}
-
-.recordButton {
-  background: linear-gradient(180deg, #ffc0b4 0%, #ff9f8e 100%);
-  color: #7b3326;
-}
-
-.recordButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.recordingButton {
-  background: linear-gradient(180deg, #ff9aa0 0%, #ff7d85 100%);
-  color: #6f1f26;
-}
-
-.playMineButton {
-  background: linear-gradient(180deg, #d4efb3 0%, #b7df87 100%);
-  color: #355317;
-}
-
-.hiddenFileInput {
-  display: none;
 }
 
 .bottomRow {
@@ -134,28 +90,12 @@
   margin-top: 18px;
 }
 
-.downloadButton {
-  background: linear-gradient(180deg, #ffe8a8 0%, #ffd979 100%);
-  color: #6c5200;
-}
-
 .closeButton {
   background: linear-gradient(180deg, #bce5ff 0%, #91d0fa 100%);
   color: #28506d;
 }
 
 /* ── AI 발음 분석 버튼 ── */
-.analyzeButton {
-  background: linear-gradient(180deg, #d9b3ff 0%, #bd8cf0 100%);
-  color: #3f2266;
-}
-
-.analyzeButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.08);
-}
 
 /* ── 녹음 전 3-2-1 카운트다운 오버레이 ── */
 .countdownOverlay {

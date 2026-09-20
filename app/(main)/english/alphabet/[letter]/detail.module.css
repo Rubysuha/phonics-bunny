@@ -66,11 +66,6 @@
   position: relative;
 }
 
-.listenButton,
-.recordButton,
-.recordingButton,
-.playMineButton,
-.downloadButton,
 .closeButton {
   border: none;
   text-decoration: none;
@@ -83,43 +78,8 @@
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.listenButton:hover,
-.recordButton:hover,
-.recordingButton:hover,
-.playMineButton:hover,
-.downloadButton:hover,
 .closeButton:hover {
   transform: translateY(-1px);
-}
-
-.listenButton {
-  background: linear-gradient(180deg, #9ed6ff 0%, #7ac4f7 100%);
-  color: #21455d;
-}
-
-.recordButton {
-  background: linear-gradient(180deg, #ffc0b4 0%, #ff9f8e 100%);
-  color: #7b3326;
-}
-
-.recordButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.recordingButton {
-  background: linear-gradient(180deg, #ff9aa0 0%, #ff7d85 100%);
-  color: #6f1f26;
-}
-
-.playMineButton {
-  background: linear-gradient(180deg, #d4efb3 0%, #b7df87 100%);
-  color: #355317;
-}
-
-.hiddenFileInput {
-  display: none;
 }
 
 .bottomRow {
@@ -128,11 +88,6 @@
   gap: 14px;
   flex-wrap: wrap;
   margin-top: 18px;
-}
-
-.downloadButton {
-  background: linear-gradient(180deg, #ffe8a8 0%, #ffd979 100%);
-  color: #6c5200;
 }
 
 .closeButton {

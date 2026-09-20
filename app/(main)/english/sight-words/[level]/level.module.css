@@ -92,20 +92,6 @@
     inset 0 3px 0 rgba(255, 255, 255, 0.95);
 }
 
-.cardStar {
-  position: absolute;
-  top: 18px;
-  left: 18px;
-  width: 34px;
-  height: 34px;
-  border-radius: 13px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.48);
-  font-size: 20px;
-}
-
 .word {
   position: relative;
   z-index: 2;
@@ -125,73 +111,7 @@
   width: 100%;
 }
 
-.listenButton,
-.recordButton,
-.recordingButton,
-.playMineButton,
-.analyzeButton {
-  border: none;
-  text-decoration: none;
-  cursor: pointer;
-  border-radius: 999px;
-  padding: 9px 13px;
-  font-size: 13px;
-  font-weight: 900;
-  box-shadow:
-    0 5px 0 rgba(0, 0, 0, 0.08),
-    0 8px 16px rgba(100, 90, 90, 0.08);
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-.listenButton:hover,
-.recordButton:hover,
-.recordingButton:hover,
-.playMineButton:hover,
-.analyzeButton:hover {
-  transform: translateY(-1px);
-}
-
-.listenButton {
-  background: linear-gradient(180deg, #9ed6ff 0%, #7ac4f7 100%);
-  color: #21455d;
-}
-
-.recordButton {
-  background: linear-gradient(180deg, #ffc0b4 0%, #ff9f8e 100%);
-  color: #7b3326;
-}
-
-.recordButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.recordingButton {
-  background: linear-gradient(180deg, #ff9aa0 0%, #ff7d85 100%);
-  color: #6f1f26;
-}
-
-.playMineButton {
-  background: linear-gradient(180deg, #d4efb3 0%, #b7df87 100%);
-  color: #355317;
-}
-
 /* ── AI 발음 분석 버튼: 녹음이 있는 카드에만 새 줄로 나타남 ── */
-.analyzeButton {
-  flex-basis: 100%;
-  margin-top: 2px;
-  background: linear-gradient(180deg, #d9b3ff 0%, #bd8cf0 100%);
-  color: #3f2266;
-}
-
-.analyzeButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
 
 .yellow {
   background:
@@ -250,23 +170,6 @@
 }
 
 .backButton:hover {
-  transform: translateY(-1px);
-}
-
-.downloadButton {
-  border: none;
-  cursor: pointer;
-  background: linear-gradient(180deg, #ffe8a8 0%, #ffd979 100%);
-  color: #6c5200;
-  font-size: 16px;
-  font-weight: 900;
-  padding: 12px 24px;
-  border-radius: 999px;
-  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.08);
-  transition: transform 0.15s ease;
-}
-
-.downloadButton:hover {
   transform: translateY(-1px);
 }
 

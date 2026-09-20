@@ -133,15 +133,6 @@
   background-size: 18px 18px, 100% 100%;
 }
 
-.cardIcon {
-  color: #d9663f;
-  filter: drop-shadow(0 6px 10px rgba(120, 90, 60, 0.15));
-}
-
-.practiceCard .cardIcon {
-  color: #338066;
-}
-
 .textRow {
   display: flex;
   align-items: center;
