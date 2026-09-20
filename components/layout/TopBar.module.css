@@ -88,3 +88,30 @@
   font-weight: 900;
   color: #4b3f39;
 }
+
+@media (max-width: 600px) {
+  .topbar {
+    padding: 0 14px;
+    gap: 8px;
+  }
+
+  .brandIcon {
+    font-size: 24px;
+  }
+
+  .brandText {
+    font-size: 20px;
+  }
+
+  .userBox {
+    gap: 8px;
+    padding: 8px 14px;
+  }
+
+  .coin,
+  .coinText,
+  .divider,
+  .role {
+    font-size: 15px;
+  }
+}

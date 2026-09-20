@@ -1670,6 +1670,9 @@
 
   pointer-events: auto;
 
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+
   animation:
     showcaseBunnyEnter
       0.9s
@@ -1710,6 +1713,8 @@
   object-position: center bottom;
 
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 
   filter:
     drop-shadow(
@@ -2414,7 +2419,6 @@
   .showcaseRing,
   .showcaseRays,
   .showcaseBunnyButton,
-  .showcaseBunnyImage,
   .showcaseGroundShadow,
   .particles span {
     animation: none !important;

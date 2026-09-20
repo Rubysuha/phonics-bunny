@@ -80,7 +80,7 @@ export async function rewardCoin({
 
   const { data: rewardData, error: rewardError } = await supabase
     .from("learning_rewards")
-    .select("reward_count")
+    .select("reward_count, last_rewarded_at")
     .eq("user_id", user.id)
     .eq("content_id", contentId)
     .maybeSingle();
@@ -94,7 +94,11 @@ export async function rewardCoin({
     };
   }
 
-  const currentCount = rewardData?.reward_count ?? 0;
+  const isNewDay =
+    !rewardData?.last_rewarded_at ||
+    new Date(rewardData.last_rewarded_at) < todayStart;
+
+  const currentCount = isNewDay ? 0 : rewardData?.reward_count ?? 0;
 
   if (currentCount >= CONTENT_LIMIT) {
     return {
@@ -140,7 +144,7 @@ export async function rewardCoin({
     const { error: updateRewardError } = await supabase
       .from("learning_rewards")
       .update({
-        reward_count: currentCount + 1,
+        reward_count: isNewDay ? 1 : currentCount + 1,
         last_rewarded_at: new Date().toISOString(),
       })
       .eq("user_id", user.id)

@@ -1,0 +1,1094 @@
+.page {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.hero {
+  position: relative;
+
+  flex: 1;
+
+  border-radius: 30px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.58
+    );
+
+  backdrop-filter:
+    blur(12px);
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.55
+    );
+
+  box-shadow:
+    0 18px 42px
+    rgba(
+      120,
+      90,
+      120,
+      0.1
+    );
+
+  padding:
+    clamp(
+      26px,
+      3vw,
+      38px
+    )
+    clamp(
+      18px,
+      3vw,
+      34px
+    )
+    clamp(
+      30px,
+      3.5vw,
+      42px
+    );
+
+  box-sizing:
+    border-box;
+}
+
+.inner {
+  width: 100%;
+
+  max-width: 1080px;
+
+  margin: 0 auto;
+}
+
+/* ─────────────────────────────
+   Header
+───────────────────────────── */
+
+.header {
+  text-align: center;
+
+  margin-bottom:
+    clamp(
+      26px,
+      3vw,
+      38px
+    );
+}
+
+.eyebrow {
+  margin:
+    0 0 6px;
+
+  font-size:
+    clamp(
+      10px,
+      1vw,
+      12px
+    );
+
+  font-weight: 900;
+
+  letter-spacing:
+    0.16em;
+
+  color: #ba9a7f;
+}
+
+.title {
+  margin: 0;
+
+  font-size:
+    clamp(
+      42px,
+      5vw,
+      54px
+    );
+
+  font-weight: 950;
+
+  letter-spacing:
+    -1px;
+
+  color: #59443a;
+}
+
+.subtitle {
+  margin:
+    10px 0 0;
+
+  color: #8b7b72;
+
+  font-size:
+    clamp(
+      15px,
+      1.7vw,
+      17px
+    );
+
+  font-weight: 700;
+}
+
+/* ─────────────────────────────
+   Grid
+───────────────────────────── */
+
+.grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(
+        0,
+        1fr
+      )
+    );
+
+  gap:
+    clamp(
+      16px,
+      2vw,
+      22px
+    );
+
+  align-items: stretch;
+}
+
+/* ─────────────────────────────
+   Card
+───────────────────────────── */
+
+.card {
+  min-height: auto;
+
+  border: none;
+
+  border-radius: 30px;
+
+  padding:
+    clamp(
+      20px,
+      2.4vw,
+      26px
+    )
+    clamp(
+      18px,
+      2.2vw,
+      24px
+    )
+    clamp(
+      18px,
+      2vw,
+      22px
+    );
+
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  align-items:
+    flex-start;
+
+  text-align: left;
+
+  font-family: inherit;
+
+  box-sizing:
+    border-box;
+
+  box-shadow:
+    0 12px 28px
+    rgba(
+      80,
+      60,
+      80,
+      0.09
+    ),
+    inset
+    0 2px 0
+    rgba(
+      255,
+      255,
+      255,
+      0.75
+    );
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.card:hover {
+  transform:
+    translateY(-5px);
+
+  box-shadow:
+    0 18px 34px
+    rgba(
+      80,
+      60,
+      80,
+      0.13
+    ),
+    inset
+    0 2px 0
+    rgba(
+      255,
+      255,
+      255,
+      0.85
+    );
+}
+
+.card:active {
+  transform:
+    translateY(-1px);
+}
+
+/* ─────────────────────────────
+   Card Colors
+───────────────────────────── */
+
+.phonicsCard {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(
+        233,
+        245,
+        255,
+        0.96
+      )
+      0%,
+      rgba(
+        245,
+        250,
+        255,
+        0.96
+      )
+      100%
+    );
+
+  border:
+    1px solid
+    rgba(
+      174,
+      214,
+      245,
+      0.75
+    );
+}
+
+.conversationCard {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(
+        255,
+        235,
+        241,
+        0.96
+      )
+      0%,
+      rgba(
+        255,
+        247,
+        249,
+        0.96
+      )
+      100%
+    );
+
+  border:
+    1px solid
+    rgba(
+      245,
+      188,
+      205,
+      0.75
+    );
+}
+
+.readingCard {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(
+        234,
+        248,
+        232,
+        0.96
+      )
+      0%,
+      rgba(
+        248,
+        253,
+        246,
+        0.96
+      )
+      100%
+    );
+
+  border:
+    1px solid
+    rgba(
+      184,
+      220,
+      178,
+      0.75
+    );
+}
+
+/* ─────────────────────────────
+   Icon
+───────────────────────────── */
+
+.iconBox {
+  width:
+    clamp(
+      64px,
+      7vw,
+      88px
+    );
+
+  height:
+    clamp(
+      64px,
+      7vw,
+      88px
+    );
+
+  border-radius:
+    clamp(
+      18px,
+      2.2vw,
+      26px
+    );
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom:
+    clamp(
+      16px,
+      2vw,
+      26px
+    );
+
+  flex-shrink: 0;
+}
+
+.iconBox svg {
+  width:
+    clamp(
+      34px,
+      4vw,
+      50px
+    );
+
+  height:
+    clamp(
+      34px,
+      4vw,
+      50px
+    );
+}
+
+.phonicsIcon {
+  background: #dceefb;
+
+  color: #4d84ac;
+}
+
+.conversationIcon {
+  background: #f9dce7;
+
+  color: #c85d83;
+}
+
+.readingIcon {
+  background: #dff1dc;
+
+  color: #5c9864;
+}
+
+/* ─────────────────────────────
+   Content
+───────────────────────────── */
+
+.cardContent {
+  width: 100%;
+
+  flex: 1;
+}
+
+.cardContent h2 {
+  margin: 0;
+
+  font-size:
+    clamp(
+      20px,
+      2.1vw,
+      25px
+    );
+
+  font-weight: 950;
+
+  color: #4f4038;
+
+  line-height: 1.25;
+}
+
+.cardSubtitle {
+  margin:
+    8px 0 0;
+
+  font-size:
+    clamp(
+      12px,
+      1.3vw,
+      14px
+    );
+
+  font-weight: 900;
+
+  color: #927d70;
+
+  line-height: 1.45;
+}
+
+.description {
+  margin:
+    clamp(
+      14px,
+      1.6vw,
+      20px
+    )
+    0
+    0;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  line-height: 1.65;
+
+  color: #7b706a;
+
+  word-break:
+    keep-all;
+}
+
+/* ─────────────────────────────
+   Phonics Progress
+───────────────────────────── */
+
+.progressArea {
+  width: 100%;
+
+  margin-top:
+    clamp(
+      18px,
+      2vw,
+      24px
+    );
+
+  padding-top: 15px;
+
+  border-top:
+    1px solid
+    rgba(
+      100,
+      120,
+      135,
+      0.1
+    );
+}
+
+.progressTop {
+  display: flex;
+
+  align-items: center;
+  justify-content:
+    space-between;
+
+  gap: 10px;
+
+  margin-bottom: 8px;
+}
+
+.progressText {
+  color: #65849a;
+
+  font-size: 11px;
+
+  font-weight: 900;
+}
+
+.progressPercent {
+  color: #52758d;
+
+  font-size: 11px;
+
+  font-weight: 950;
+}
+
+.progressTrack {
+  width: 100%;
+
+  height: 7px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background:
+    rgba(
+      150,
+      185,
+      208,
+      0.22
+    );
+}
+
+.progressBar {
+  height: 100%;
+
+  border-radius:
+    inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      #8ebbd9,
+      #71a7ca
+    );
+
+  transition:
+    width 0.4s ease;
+}
+
+.progressLoading {
+  margin: 0;
+
+  color: #8ca1af;
+
+  font-size: 11px;
+
+  font-weight: 800;
+}
+
+/* ─────────────────────────────
+   Start Row
+───────────────────────────── */
+
+.startRow {
+  width: 100%;
+
+  margin-top:
+    clamp(
+      18px,
+      2vw,
+      26px
+    );
+
+  display: flex;
+  align-items: center;
+  justify-content:
+    space-between;
+
+  font-size: 16px;
+
+  font-weight: 950;
+
+  color: #59443a;
+}
+
+.arrow {
+  width:
+    clamp(
+      34px,
+      4vw,
+      42px
+    );
+
+  height:
+    clamp(
+      34px,
+      4vw,
+      42px
+    );
+
+  border-radius: 50%;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.78
+    );
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  box-shadow:
+    0 5px 12px
+    rgba(
+      80,
+      60,
+      80,
+      0.08
+    );
+}
+
+.arrow svg {
+  width:
+    clamp(
+      16px,
+      1.8vw,
+      20px
+    );
+
+  height:
+    clamp(
+      16px,
+      1.8vw,
+      20px
+    );
+}
+
+/* ─────────────────────────────
+   Guide
+───────────────────────────── */
+
+.guideBox {
+  margin-top: 24px;
+
+  border-radius: 26px;
+
+  padding:
+    20px 24px;
+
+  box-sizing:
+    border-box;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.72
+    );
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.75
+    );
+
+  display: flex;
+
+  align-items: center;
+  justify-content:
+    space-between;
+
+  gap: 20px;
+
+  box-shadow:
+    0 10px 24px
+    rgba(
+      100,
+      80,
+      70,
+      0.07
+    );
+}
+
+.guideBox strong {
+  color: #59443a;
+
+  font-size: 16px;
+
+  font-weight: 950;
+}
+
+.guideBox p {
+  margin:
+    6px 0 0;
+
+  color: #8b7b72;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  line-height: 1.5;
+
+  word-break:
+    keep-all;
+}
+
+.guideBadge {
+  flex-shrink: 0;
+
+  padding:
+    10px 16px;
+
+  border-radius: 999px;
+
+  background: #fff1da;
+
+  color: #a57849;
+
+  font-size: 13px;
+
+  font-weight: 900;
+}
+
+/* ─────────────────────────────
+   Tablet
+───────────────────────────── */
+
+@media (
+  min-width: 768px
+) and (
+  max-width: 1000px
+) {
+  .grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(
+          0,
+          1fr
+        )
+      );
+  }
+
+  .card:last-child {
+    grid-column:
+      1 / -1;
+
+    width:
+      calc(
+        50% - 8px
+      );
+
+    justify-self:
+      center;
+  }
+}
+
+/* ─────────────────────────────
+   Phone
+───────────────────────────── */
+
+@media (
+  max-width: 767px
+) {
+  .hero {
+    padding:
+      24px
+      16px
+      28px;
+
+    border-radius: 24px;
+  }
+
+  .header {
+    margin-bottom: 22px;
+  }
+
+  .title {
+    font-size: 40px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .grid {
+    grid-template-columns:
+      1fr;
+
+    gap: 14px;
+  }
+
+  .card {
+    border-radius: 24px;
+
+    padding: 18px;
+
+    display: grid;
+
+    grid-template-columns:
+      auto
+      minmax(
+        0,
+        1fr
+      );
+
+    grid-template-areas:
+      "icon content"
+      "start start";
+
+    column-gap: 16px;
+
+    row-gap: 12px;
+
+    align-items: center;
+  }
+
+  .iconBox {
+    grid-area: icon;
+
+    margin-bottom: 0;
+
+    align-self:
+      start;
+
+    width:
+      clamp(
+        58px,
+        16vw,
+        70px
+      );
+
+    height:
+      clamp(
+        58px,
+        16vw,
+        70px
+      );
+
+    border-radius: 20px;
+  }
+
+  .iconBox svg {
+    width:
+      clamp(
+        30px,
+        9vw,
+        40px
+      );
+
+    height:
+      clamp(
+        30px,
+        9vw,
+        40px
+      );
+  }
+
+  .cardContent {
+    grid-area:
+      content;
+
+    min-width: 0;
+  }
+
+  .cardContent h2 {
+    font-size:
+      clamp(
+        18px,
+        5vw,
+        20px
+      );
+  }
+
+  .cardSubtitle {
+    margin-top: 5px;
+
+    font-size: 12px;
+  }
+
+  .description {
+    margin-top: 8px;
+
+    font-size:
+      12.5px;
+
+    line-height: 1.5;
+  }
+
+  .progressArea {
+    margin-top: 11px;
+
+    padding-top: 11px;
+  }
+
+  .startRow {
+    grid-area:
+      start;
+
+    margin-top: 2px;
+
+    padding-top: 10px;
+
+    border-top:
+      1px solid
+      rgba(
+        110,
+        90,
+        80,
+        0.08
+      );
+
+    font-size: 14px;
+  }
+
+  .arrow {
+    width:
+      clamp(
+        32px,
+        9vw,
+        38px
+      );
+
+    height:
+      clamp(
+        32px,
+        9vw,
+        38px
+      );
+  }
+
+  .guideBox {
+    margin-top: 16px;
+
+    padding:
+      16px 18px;
+
+    border-radius: 22px;
+
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+
+    gap: 12px;
+  }
+
+  .guideBox strong {
+    font-size: 14px;
+  }
+
+  .guideBox p {
+    font-size: 12px;
+  }
+
+  .guideBadge {
+    padding:
+      8px 12px;
+
+    font-size: 12px;
+  }
+}
+
+/* ─────────────────────────────
+   Small Phone
+───────────────────────────── */
+
+@media (
+  max-width: 420px
+) {
+  .hero {
+    padding:
+      20px
+      12px
+      24px;
+  }
+
+  .header {
+    margin-bottom: 18px;
+  }
+
+  .eyebrow {
+    font-size: 9px;
+  }
+
+  .title {
+    font-size: 36px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .card {
+    padding: 15px;
+
+    column-gap: 12px;
+
+    row-gap: 10px;
+  }
+
+  .iconBox {
+    width: 56px;
+    height: 56px;
+
+    border-radius: 18px;
+  }
+
+  .iconBox svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .cardContent h2 {
+    font-size: 17px;
+  }
+
+  .cardSubtitle {
+    font-size: 11px;
+  }
+
+  .description {
+    margin-top: 6px;
+
+    font-size: 12px;
+
+    line-height: 1.45;
+  }
+
+  .progressText,
+  .progressPercent,
+  .progressLoading {
+    font-size: 10px;
+  }
+
+  .startRow {
+    padding-top: 8px;
+
+    font-size: 13px;
+  }
+
+  .guideBox {
+    padding:
+      14px 16px;
+  }
+}

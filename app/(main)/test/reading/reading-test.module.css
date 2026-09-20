@@ -1,0 +1,547 @@
+.page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.hero {
+  position: relative;
+
+  flex: 1;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  border-radius: 30px;
+
+  padding:
+    clamp(28px, 3vw, 38px)
+    clamp(18px, 3vw, 34px)
+    clamp(34px, 4vw, 46px);
+
+  box-sizing: border-box;
+
+  background:
+    rgba(255, 255, 255, 0.58);
+
+  backdrop-filter:
+    blur(12px);
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.55);
+
+  box-shadow:
+    0 18px 42px
+    rgba(120, 90, 120, 0.1);
+}
+
+.inner {
+  position: relative;
+
+  width: 100%;
+  max-width: 1080px;
+
+  margin: 0 auto;
+}
+
+/* Back */
+
+.backButton {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 46px;
+  height: 46px;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    rgba(255, 255, 255, 0.86);
+
+  color: #6d7568;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 7px 16px
+    rgba(70, 90, 70, 0.08);
+}
+
+/* Header */
+
+.header {
+  max-width: 700px;
+
+  margin:
+    0 auto
+    clamp(28px, 3vw, 38px);
+
+  padding:
+    0 60px;
+
+  text-align: center;
+}
+
+.headerIcon {
+  width: 62px;
+  height: 62px;
+
+  margin:
+    0 auto 13px;
+
+  border-radius: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #dff1dc;
+
+  color: #5c9864;
+}
+
+.headerIcon svg {
+  width: 35px;
+  height: 35px;
+}
+
+.eyebrow {
+  margin:
+    0 0 6px;
+
+  color: #7ca482;
+
+  font-size: 11px;
+
+  font-weight: 900;
+
+  letter-spacing: 0.17em;
+}
+
+.title {
+  margin: 0;
+
+  color: #59443a;
+
+  font-size:
+    clamp(
+      35px,
+      4.5vw,
+      48px
+    );
+
+  font-weight: 950;
+
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  margin:
+    10px 0 0;
+
+  color: #8b7b72;
+
+  font-size:
+    clamp(
+      14px,
+      1.6vw,
+      17px
+    );
+
+  font-weight: 700;
+
+  line-height: 1.5;
+}
+
+/* Grid */
+
+.grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 17px;
+}
+
+/* Cards */
+
+.levelCard {
+  min-height: 215px;
+
+  padding: 22px;
+
+  border:
+    1px solid #d8e8d5;
+
+  border-radius: 27px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #eef8ec,
+      #fbfef9
+    );
+
+  font-family: inherit;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+
+  position: relative;
+
+  box-shadow:
+    0 10px 24px
+    rgba(70, 90, 70, 0.07);
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.levelCard:hover {
+  transform:
+    translateY(-4px);
+
+  box-shadow:
+    0 16px 30px
+    rgba(70, 90, 70, 0.11);
+}
+
+.levelNumber {
+  width: 52px;
+  height: 52px;
+
+  border-radius: 17px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #dcefd8;
+
+  color: #56865d;
+
+  font-size: 22px;
+
+  font-weight: 950;
+
+  margin-bottom: 18px;
+}
+
+.cardContent {
+  flex: 1;
+}
+
+.levelLabel {
+  margin: 0;
+
+  color: #8ca68a;
+
+  font-size: 9px;
+
+  font-weight: 950;
+
+  letter-spacing:
+    0.13em;
+}
+
+.cardContent h2 {
+  margin:
+    4px 0 0;
+
+  color: #504139;
+
+  font-size: 23px;
+
+  font-weight: 950;
+}
+
+.description {
+  margin:
+    7px 0 0;
+
+  color: #81756e;
+
+  font-size: 13px;
+
+  font-weight: 800;
+}
+
+.storyCount {
+  margin-top: 19px;
+
+  color: #81907d;
+
+  font-size: 11px;
+
+  font-weight: 800;
+}
+
+.storyCount strong {
+  color: #527258;
+
+  font-size: 17px;
+
+  font-weight: 950;
+}
+
+.arrow {
+  position: absolute;
+
+  right: 20px;
+  bottom: 20px;
+
+  width: 33px;
+  height: 33px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    rgba(255, 255, 255, 0.82);
+
+  color: #647362;
+}
+
+.arrow svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Guide */
+
+.guideBox {
+  margin-top: 21px;
+
+  padding:
+    18px 22px;
+
+  border-radius: 23px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  background:
+    rgba(255, 255, 255, 0.72);
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.8);
+}
+
+.guideBox strong {
+  color: #59443a;
+
+  font-size: 14px;
+
+  font-weight: 950;
+}
+
+.guideBox p {
+  margin:
+    4px 0 0;
+
+  color: #8b7b72;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.guideBadge {
+  flex-shrink: 0;
+
+  padding:
+    9px 14px;
+
+  border-radius: 999px;
+
+  background: #e5f3e2;
+
+  color: #658369;
+
+  font-size: 11px;
+
+  font-weight: 900;
+}
+
+/* Tablet */
+
+@media (
+  min-width: 768px
+) and (
+  max-width: 1000px
+) {
+  .grid {
+    grid-template-columns:
+      repeat(
+        2,
+        1fr
+      );
+  }
+}
+
+/* Mobile */
+
+@media (
+  max-width: 767px
+) {
+  .hero {
+    padding:
+      20px
+      16px
+      28px;
+
+    border-radius: 24px;
+  }
+
+  .backButton {
+    position: relative;
+
+    width: 40px;
+    height: 40px;
+
+    margin-bottom: 12px;
+
+    border-radius: 14px;
+  }
+
+  .header {
+    padding: 0;
+
+    margin-bottom: 22px;
+  }
+
+  .headerIcon {
+    width: 54px;
+    height: 54px;
+  }
+
+  .title {
+    font-size: 32px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+
+    gap: 11px;
+  }
+
+  .levelCard {
+    min-height: auto;
+
+    padding: 16px;
+
+    display: grid;
+
+    grid-template-columns:
+      auto
+      1fr
+      auto;
+
+    gap: 14px;
+
+    align-items: center;
+  }
+
+  .levelNumber {
+    width: 50px;
+    height: 50px;
+
+    margin: 0;
+
+    border-radius: 16px;
+  }
+
+  .storyCount {
+    margin-top: 8px;
+  }
+
+  .arrow {
+    position: static;
+  }
+
+  .guideBox {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 10px;
+  }
+}
+
+/* Progress */
+
+.progressArea {
+  margin-top: 12px;
+}
+
+.progressTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin-bottom: 6px;
+
+  color: #6f8f74;
+
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 7px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: rgba(130, 170, 135, 0.2);
+}
+
+.progressBar {
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: linear-gradient(90deg, #8fc79a, #6fae7c);
+
+  transition: width 0.4s ease;
+}
+
+.progressLoading {
+  margin: 0;
+
+  color: #94a894;
+
+  font-size: 11px;
+  font-weight: 800;
+}

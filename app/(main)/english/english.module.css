@@ -18,7 +18,8 @@
   box-shadow: 0 18px 42px rgba(120, 90, 120, 0.1);
 
   margin-bottom: 8px;
-  padding: 28px 28px 34px;
+  padding: clamp(16px, 3vw, 28px) clamp(14px, 3vw, 28px)
+    clamp(24px, 3.5vw, 34px);
 }
 
 .inner {
@@ -34,7 +35,7 @@
 
 .title {
   text-align: center;
-  font-size: 64px;
+  font-size: clamp(38px, 6vw, 64px);
   font-weight: 900;
   color: #2f2f2f;
   margin: 8px 0 14px;
@@ -43,7 +44,7 @@
 
 .englishSubtitle {
   text-align: center;
-  font-size: 22px;
+  font-size: clamp(16px, 2.4vw, 22px);
   font-weight: 900;
   color: #805034;
   margin: 0 0 10px;
@@ -51,24 +52,25 @@
 
 .subtitle {
   text-align: center;
-  font-size: 17px;
+  font-size: clamp(14px, 2vw, 17px);
   font-weight: 700;
   color: #5f6772;
   margin: 0;
 }
 
-/* 핵심 */
+/* 핵심: 화면 폭에 따라 한 줄 카드 수가 자동으로 바뀌고, 마지막 줄은 가운데 정렬 */
 .grid {
-  display: grid;
-  grid-template-columns: repeat(6, 150px);
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 26px 28px;
+  gap: clamp(14px, 2.2vw, 28px);
 }
 
 .card {
   position: relative;
 
-  min-height: 300px;
+  flex: 1 1 min(100%, 260px);
+  max-width: 328px;
 
   border-radius: 28px;
   padding: 18px 18px 16px;
@@ -82,8 +84,6 @@
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease;
-
-  grid-column: span 2;
 }
 
 .card:hover {
@@ -91,18 +91,9 @@
   box-shadow: 0 16px 30px rgba(92, 127, 149, 0.15);
 }
 
-/* 아래 2개 가운데 */
-.card:nth-child(4) {
-  grid-column: 2 / span 2;
-}
-
-.card:nth-child(5) {
-  grid-column: 4 / span 2;
-}
-
 .imageWrap {
   width: 100%;
-  height: 175px;
+  aspect-ratio: 288 / 175;
 
   border-radius: 22px;
   overflow: hidden;
@@ -126,7 +117,7 @@
 }
 
 .cardTitle {
-  font-size: 22px;
+  font-size: clamp(18px, 4.6vw, 22px);
   font-weight: 900;
   margin: 0 0 8px;
 }
@@ -222,39 +213,3 @@
   color: #21945a;
 }
 
-@media (max-width: 1180px) {
-  .grid {
-    grid-template-columns: repeat(2, 320px);
-  }
-
-  .card {
-    grid-column: span 1;
-  }
-
-  .card:nth-child(4),
-  .card:nth-child(5) {
-    grid-column: span 1;
-  }
-}
-
-@media (max-width: 760px) {
-  .hero {
-    padding: 20px 16px 28px;
-  }
-
-  .title {
-    font-size: 46px;
-  }
-
-  .englishSubtitle {
-    font-size: 18px;
-  }
-
-  .subtitle {
-    font-size: 15px;
-  }
-
-  .grid {
-    grid-template-columns: 320px;
-  }
-}

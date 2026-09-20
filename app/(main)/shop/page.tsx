@@ -1,6 +1,14 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type MouseEvent,
+  type PointerEvent,
+} from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Backpack,
@@ -508,11 +516,21 @@ function ShopPageInner() {
   ========================= */
 
   const handleOpenShowcase = () => {
+    // TODO: 원인 확인 후 진단 로그 제거
+    console.log("[bunny] showcase open", {
+      userAgent: navigator.userAgent,
+      reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)")
+        .matches,
+      touchPoints: navigator.maxTouchPoints,
+    });
+
     setIsBunnyReacting(false);
     setIsShowcaseOpen(true);
   };
 
-  const handleBunnyReaction = () => {
+  const triggerBunnyReaction = (source: string) => {
+    console.log("[bunny] reaction", source);
+
     if (reactionTimerRef.current !== null) {
       window.clearTimeout(reactionTimerRef.current);
     }
@@ -526,6 +544,20 @@ function ShopPageInner() {
     reactionTimerRef.current = window.setTimeout(() => {
       setIsBunnyReacting(false);
     }, 700);
+  };
+
+  // 마우스/터치/펜은 pointerdown으로 통일
+  const handleBunnyPointerDown = (event: PointerEvent<HTMLButtonElement>) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+
+    triggerBunnyReaction(`pointer:${event.pointerType}`);
+  };
+
+  // 키보드(Enter/Space)·보조기기 활성화는 detail === 0인 click으로 들어온다
+  const handleBunnyClick = (event: MouseEvent<HTMLButtonElement>) => {
+    if (event.detail !== 0) return;
+
+    triggerBunnyReaction("keyboard");
   };
 
   /* =========================
@@ -970,12 +1002,14 @@ function ShopPageInner() {
               <button
                 type="button"
                 className={styles.showcaseBunnyButton}
-                onClick={handleBunnyReaction}
+                onPointerDown={handleBunnyPointerDown}
+                onClick={handleBunnyClick}
                 aria-label={`${previewBunny.name} 반응 보기`}
               >
                 <img
                   src={previewBunny.image}
                   alt={previewBunny.name}
+                  draggable={false}
                   className={`${styles.showcaseBunnyImage} ${
                     isBunnyReacting ? styles.showcaseBunnyReacting : ""
                   }`}

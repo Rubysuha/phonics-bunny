@@ -398,32 +398,42 @@ export async function POST(request: NextRequest) {
     const history: ChatMessage[] = body.history ?? [];
     const weakWords: string[] = body.weakWords ?? [];
     const studiedTypes: string[] = body.studiedTypes ?? [];
+    const level: "beginner" | "elementary" | "intermediate" | "advanced" =
+      body.level ?? "beginner";
 
     if (!message || !message.trim()) {
       return NextResponse.json({ error: "메시지가 비어있어요." }, { status: 400 });
     }
 
-    // 학습한 영역 수에 따라 3단계로 난이도를 조절
-    const sectionCount = studiedTypes.length;
+    // 학습 상태로 계산된 4단계(getWeakWords의 LearningLevel)에 맞춰 난이도를 조절
+    const studiedTypesPrefix =
+      studiedTypes.length > 0
+        ? `이 아이는 지금까지 ${studiedTypes.join(", ")} 영역을 공부했어. `
+        : "이 아이는 아직 학습 기록이 거의 없어. ";
 
     let levelHint: string;
-    if (sectionCount === 0) {
-      levelHint =
-        "이 아이는 아직 학습 기록이 거의 없는 왕초보야. 문장은 3~5단어 이내로 아주 짧고 쉽게 유지해. 새로운 단어는 노출하지 마.";
-    } else if (sectionCount <= 2) {
-      levelHint = `이 아이는 지금까지 ${studiedTypes.join(
-        ", "
-      )} 영역을 공부했어. 초급 단계야. 문장은 5~8단어 정도로 쓰고, and, because 같은 쉬운 연결어는 가끔 써도 좋아.`;
-    } else {
-      levelHint = `이 아이는 지금까지 ${studiedTypes.join(
-        ", "
-      )} 영역을 폭넓게 공부한 중급 단계야. 문장은 8~12단어 정도로 조금 더 길게 써도 되고, 짧은 문장 두 개를 연결어로 이어도 좋아.`;
+    switch (level) {
+      case "elementary":
+        levelHint = `${studiedTypesPrefix}초급 단계야. 문장은 5~8단어 정도로 쓰고, and, because 같은 쉬운 연결어는 가끔 써도 좋아.`;
+        break;
+      case "intermediate":
+        levelHint = `${studiedTypesPrefix}중급 단계야. 문장은 8~12단어 정도로 조금 더 길게 써도 되고, 짧은 문장 두 개를 연결어로 이어도 좋아. 응답은 최대 3문장까지 써도 돼.`;
+        break;
+      case "advanced":
+        levelHint = `${studiedTypesPrefix}고급 단계야. 문장은 12~16단어 정도로, but, so, when, that 같은 연결어나 종속절을 자연스럽게 써도 좋아. 응답은 최대 3~4문장까지 써도 돼.`;
+        break;
+      case "beginner":
+      default:
+        levelHint = `${studiedTypesPrefix}왕초보 단계야. 문장은 3~5단어 이내로 아주 짧고 쉽게 유지해. 새로운 단어는 노출하지 마.`;
+        break;
     }
 
     const stretchVocabHint =
-      sectionCount > 0
-        ? "가끔(전체 대화 중 1/3 정도 빈도로) 아이의 현재 수준보다 살짝 어려운 새 단어를 문장 속에 자연스럽게 하나 넣어서 노출시켜. 단, 뜻을 직접 설명하지 말고 앞뒤 문맥만으로 뜻을 짐작할 수 있게 써. 매 턴마다 새 단어를 넣지는 말고, 아이가 편안하게 따라올 수 있는 리듬을 유지해."
-        : "";
+      level === "beginner"
+        ? ""
+        : level === "advanced"
+        ? "가끔(전체 대화 중 절반 정도 빈도로) 아이의 현재 수준보다 살짝 어려운 새 단어를 문장 속에 자연스럽게 하나 넣어서 노출시켜. 단, 뜻을 직접 설명하지 말고 앞뒤 문맥만으로 뜻을 짐작할 수 있게 써. 매 턴마다 새 단어를 넣지는 말고, 아이가 편안하게 따라올 수 있는 리듬을 유지해."
+        : "가끔(전체 대화 중 1/3 정도 빈도로) 아이의 현재 수준보다 살짝 어려운 새 단어를 문장 속에 자연스럽게 하나 넣어서 노출시켜. 단, 뜻을 직접 설명하지 말고 앞뒤 문맥만으로 뜻을 짐작할 수 있게 써. 매 턴마다 새 단어를 넣지는 말고, 아이가 편안하게 따라올 수 있는 리듬을 유지해.";
 
     const weakWordHint =
       weakWords.length > 0
@@ -459,7 +469,7 @@ ${stretchVocabHint}
 - 매 응답 끝에는 아이가 대답하기 쉬운 짧은 질문을 하나 던져서 대화를 이어가
 - 아이가 문법이나 발음을 틀려도 지적하지 말고, 자연스럽게 맞는 표현으로 다시 말해주면서 넘어가
 - 아이의 말이 이해가 안 되면 짧고 쉬운 말로 다시 물어봐
-- 응답은 보통 1~2문장으로 유지하되, 중급 단계에서는 최대 3문장까지 써도 돼
+- 응답은 보통 1~2문장으로 유지해. 단, [난이도 규칙]에서 문장 수를 더 허용했다면 그 기준까지는 써도 돼
 
 [안전 규칙]
 - 절대 무섭거나 슬프거나 폭력적인 주제를 꺼내지 마. 항상 밝고 긍정적인 주제(가족, 음식, 동물, 학교, 취미)로 대화해

@@ -1,0 +1,697 @@
+.page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.hero {
+  position: relative;
+
+  flex: 1;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  border-radius: 30px;
+
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.55);
+
+  box-shadow:
+    0 18px 42px rgba(120, 90, 120, 0.1);
+
+  padding:
+    clamp(28px, 3vw, 38px)
+    clamp(18px, 3vw, 34px)
+    clamp(34px, 4vw, 46px);
+
+  box-sizing: border-box;
+}
+
+.inner {
+  position: relative;
+
+  width: 100%;
+  max-width: 1080px;
+
+  margin: 0 auto;
+}
+
+/* ─────────────────────────────
+   Back
+───────────────────────────── */
+
+.backButton {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 46px;
+  height: 46px;
+
+  border: none;
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.82);
+
+  color: #75645b;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 7px 16px rgba(90, 70, 70, 0.08);
+
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease;
+}
+
+.backButton:hover {
+  transform: translateX(-2px);
+
+  background: rgba(255, 255, 255, 0.98);
+}
+
+/* ─────────────────────────────
+   Header
+───────────────────────────── */
+
+.header {
+  text-align: center;
+
+  margin-bottom:
+    clamp(28px, 3vw, 38px);
+
+  padding: 0 60px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+
+  color: #7da1bd;
+
+  font-size: 11px;
+  font-weight: 900;
+
+  letter-spacing: 0.17em;
+}
+
+.title {
+  margin: 0;
+
+  color: #59443a;
+
+  font-size:
+    clamp(36px, 4.5vw, 50px);
+
+  font-weight: 950;
+
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  margin: 9px 0 0;
+
+  color: #8b7b72;
+
+  font-size:
+    clamp(14px, 1.6vw, 17px);
+
+  font-weight: 700;
+}
+
+/* ─────────────────────────────
+   Grid
+───────────────────────────── */
+
+.grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 18px;
+
+  align-items: stretch;
+}
+
+/* ─────────────────────────────
+   Cards
+───────────────────────────── */
+
+.card {
+  min-height: auto;
+
+  border-radius: 28px;
+
+  border: 1px solid transparent;
+
+  padding: 22px;
+
+  box-sizing: border-box;
+
+  font-family: inherit;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+
+  box-shadow:
+    0 10px 24px rgba(70, 60, 70, 0.08),
+    inset 0 2px 0 rgba(255, 255, 255, 0.7);
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+
+  box-shadow:
+    0 16px 30px rgba(70, 60, 70, 0.12),
+    inset 0 2px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* ─────────────────────────────
+   Category Colors
+───────────────────────────── */
+
+.alphabetCard {
+  background:
+    linear-gradient(
+      180deg,
+      #eef7ff 0%,
+      #f8fbff 100%
+    );
+
+  border-color:
+    rgba(173, 211, 240, 0.7);
+}
+
+.shortCard {
+  background:
+    linear-gradient(
+      180deg,
+      #fff1f4 0%,
+      #fff9fa 100%
+    );
+
+  border-color:
+    rgba(244, 194, 207, 0.72);
+}
+
+.longCard {
+  background:
+    linear-gradient(
+      180deg,
+      #fff8df 0%,
+      #fffcf2 100%
+    );
+
+  border-color:
+    rgba(236, 211, 135, 0.68);
+}
+
+.blendCard {
+  background:
+    linear-gradient(
+      180deg,
+      #f2eeff 0%,
+      #fbf9ff 100%
+    );
+
+  border-color:
+    rgba(201, 188, 242, 0.72);
+}
+
+.sightCard {
+  background:
+    linear-gradient(
+      180deg,
+      #eaf8ed 0%,
+      #f8fcf8 100%
+    );
+
+  border-color:
+    rgba(182, 219, 185, 0.72);
+}
+
+/* ─────────────────────────────
+   Badge
+───────────────────────────── */
+
+.badge {
+  width:
+    clamp(64px, 6vw, 78px);
+
+  height:
+    clamp(64px, 6vw, 78px);
+
+  border-radius:
+    clamp(20px, 2vw, 24px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 20px;
+
+  font-size:
+    clamp(20px, 2.3vw, 30px);
+
+  font-weight: 950;
+
+  letter-spacing: -1px;
+
+  flex-shrink: 0;
+}
+
+.alphabetBadge {
+  color: #477b9e;
+  background: #dceefa;
+}
+
+.shortBadge {
+  color: #b85172;
+  background: #f8dce5;
+}
+
+.longBadge {
+  color: #a78128;
+  background: #faeabb;
+}
+
+.blendBadge {
+  color: #735eb2;
+  background: #e6defa;
+}
+
+.sightBadge {
+  color: #55885b;
+  background: #dcefdc;
+
+  font-size:
+    clamp(16px, 1.8vw, 22px);
+}
+
+/* ─────────────────────────────
+   Text
+───────────────────────────── */
+
+.cardContent {
+  flex: 1;
+}
+
+.cardContent h2 {
+  margin: 0;
+
+  color: #4d4039;
+
+  font-size:
+    clamp(20px, 2vw, 24px);
+
+  font-weight: 950;
+
+  line-height: 1.25;
+}
+
+.cardSubtitle {
+  margin: 6px 0 0;
+
+  color: #947f74;
+
+  font-size: 13px;
+
+  font-weight: 900;
+
+  line-height: 1.4;
+}
+
+.description {
+  margin: 15px 0 0;
+
+  color: #766b65;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  line-height: 1.65;
+
+  word-break: keep-all;
+}
+
+/* ─────────────────────────────
+   Card Bottom
+───────────────────────────── */
+
+.bottomRow {
+  margin-top: 20px;
+
+  padding-top: 14px;
+
+  border-top:
+    1px solid
+    rgba(100, 80, 70, 0.08);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stageInfo {
+  display: flex;
+  align-items: baseline;
+
+  gap: 5px;
+
+  color: #8b7b72;
+
+  font-size: 12px;
+
+  font-weight: 800;
+}
+
+.stageNumber {
+  color: #59443a;
+
+  font-size: 19px;
+
+  font-weight: 950;
+}
+
+.arrow {
+  width:
+    clamp(34px, 3.5vw, 40px);
+
+  height:
+    clamp(34px, 3.5vw, 40px);
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.78);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #736158;
+
+  box-shadow:
+    0 4px 10px rgba(80, 60, 70, 0.07);
+}
+
+.arrow svg {
+  width:
+    clamp(15px, 1.7vw, 20px);
+
+  height:
+    clamp(15px, 1.7vw, 20px);
+}
+
+/* ─────────────────────────────
+   Notice
+───────────────────────────── */
+
+.notice {
+  margin-top: 20px;
+
+  border-radius: 24px;
+
+  background: rgba(255, 255, 255, 0.72);
+
+  padding: 18px 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.75);
+
+  box-shadow:
+    0 8px 20px rgba(100, 80, 70, 0.06);
+}
+
+.notice strong {
+  color: #59443a;
+
+  font-size: 15px;
+
+  font-weight: 950;
+}
+
+.notice p {
+  margin: 4px 0 0;
+
+  color: #8b7b72;
+
+  font-size: 12.5px;
+
+  font-weight: 700;
+
+  line-height: 1.5;
+
+  word-break: keep-all;
+}
+
+.noticeBadge {
+  flex-shrink: 0;
+
+  padding: 9px 14px;
+
+  border-radius: 999px;
+
+  background: #fff3ce;
+
+  color: #96742d;
+
+  font-size: 12px;
+
+  font-weight: 900;
+}
+
+/* ─────────────────────────────
+   Tablet
+───────────────────────────── */
+
+@media (
+  min-width: 768px
+) and (
+  max-width: 1000px
+) {
+  .grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  /*
+    5번째 Sight Words 카드를
+    가운데 정렬
+  */
+  .card:last-child {
+    grid-column: 1 / -1;
+
+    width:
+      calc(50% - 9px);
+
+    justify-self: center;
+  }
+}
+
+/* ─────────────────────────────
+   Mobile
+───────────────────────────── */
+
+@media (
+  max-width: 767px
+) {
+  .hero {
+    padding:
+      22px
+      16px
+      28px;
+
+    border-radius: 24px;
+  }
+
+  .backButton {
+    position: relative;
+
+    width: 40px;
+    height: 40px;
+
+    border-radius: 14px;
+
+    margin-bottom: 14px;
+  }
+
+  .header {
+    padding: 0;
+
+    margin-bottom: 22px;
+  }
+
+  .title {
+    font-size: 34px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+
+    gap: 13px;
+  }
+
+  /*
+    모바일은 카드 내부를 가로형으로 압축
+  */
+  .card {
+    border-radius: 23px;
+
+    padding: 16px;
+
+    display: grid;
+
+    grid-template-columns:
+      auto
+      minmax(0, 1fr);
+
+    grid-template-areas:
+      "badge content"
+      "bottom bottom";
+
+    column-gap: 14px;
+
+    row-gap: 10px;
+
+    align-items: start;
+  }
+
+  .badge {
+    grid-area: badge;
+
+    width: 58px;
+    height: 58px;
+
+    margin-bottom: 0;
+
+    border-radius: 18px;
+
+    font-size: 22px;
+  }
+
+  .sightBadge {
+    font-size: 16px;
+  }
+
+  .cardContent {
+    grid-area: content;
+  }
+
+  .cardContent h2 {
+    font-size: 18px;
+  }
+
+  .cardSubtitle {
+    margin-top: 4px;
+
+    font-size: 11.5px;
+  }
+
+  .description {
+    margin-top: 7px;
+
+    font-size: 12px;
+
+    line-height: 1.45;
+  }
+
+  .bottomRow {
+    grid-area: bottom;
+
+    margin-top: 0;
+
+    padding-top: 10px;
+  }
+
+  .stageNumber {
+    font-size: 17px;
+  }
+
+  .notice {
+    margin-top: 15px;
+
+    padding: 15px 17px;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 10px;
+  }
+}
+
+/* ─────────────────────────────
+   Small Mobile
+───────────────────────────── */
+
+@media (
+  max-width: 420px
+) {
+  .hero {
+    padding:
+      18px
+      12px
+      24px;
+  }
+
+  .title {
+    font-size: 31px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .card {
+    padding: 14px;
+
+    column-gap: 11px;
+  }
+
+  .badge {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 16px;
+
+    font-size: 20px;
+  }
+
+  .sightBadge {
+    font-size: 14px;
+  }
+
+  .cardContent h2 {
+    font-size: 17px;
+  }
+
+  .description {
+    font-size: 11.5px;
+  }
+}

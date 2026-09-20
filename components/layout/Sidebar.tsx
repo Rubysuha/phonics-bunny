@@ -7,6 +7,7 @@ import {
   Notebook,
   ChatCircleDots,
   BookOpen,
+  ClipboardText,
   ShoppingBag,
   UsersThree,
   Carrot,
@@ -18,6 +19,7 @@ const menus = [
   { icon: Notebook, label: "Phonics", href: "/english" },
   { icon: ChatCircleDots, label: "Conversation", href: "/conversation" },
   { icon: BookOpen, label: "Book", href: "/book" },
+  { icon: ClipboardText, label: "Test", href: "/test" },
   { icon: ShoppingBag, label: "Shop", href: "/shop" },
   { icon: UsersThree, label: "Community", href: "/community" },
 ];
@@ -33,6 +35,7 @@ export default function Sidebar() {
     if (pathname.startsWith("/english")) return "Phonics";
     if (pathname.startsWith("/conversation")) return "Conversation";
     if (pathname.startsWith("/book")) return "Book";
+    if (pathname.startsWith("/test")) return "Test";
     if (pathname.startsWith("/community")) return "Community";
     return "Home";
   };

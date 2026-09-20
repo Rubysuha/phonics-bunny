@@ -1,7 +1,8 @@
 .page {
   height: 100vh;
+  height: 100dvh;
   background: #efefef;
-  padding: 16px;
+  padding: clamp(8px, 2.2vw, 16px);
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -9,7 +10,7 @@
 .frame {
   width: 100%;
   max-width: 1360px;
-  height: calc(100vh - 32px);
+  height: 100%;
   margin: 0 auto;
 
   background-image: url("/dashboard/home-bg.png");
