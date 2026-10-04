@@ -21,6 +21,14 @@ import {
 import { supabase } from "@/lib/supabase";
 import styles from "../post.module.css";
 import { defaultPosts, communityCategories, type CommunityPost } from "../../data";
+import {
+  avatarColors,
+  categoryColor,
+  categoryTint,
+  DEFAULT_CATEGORY_COLOR,
+  DEFAULT_CATEGORY_TINT,
+} from "../../categoryTheme";
+import BunnyMark from "../../BunnyMark";
 
 type Comment = {
   id: number;
@@ -65,24 +73,6 @@ const categoryIcon: Record<string, React.ElementType> = {
   "bunny-proud": Sparkle,
   "local-recommend": MapPin,
 };
-
-const categoryColor: Record<string, string> = {
-  "study-proof": "#c1573c",
-  "english-tip": "#8a7a4f",
-  "question": "#4f7ea8",
-  "bunny-proud": "#8a5fa0",
-  "local-recommend": "#4f8a6f",
-};
-
-const categoryTint: Record<string, string> = {
-  "study-proof": "#f7e4dc",
-  "english-tip": "#f2efe0",
-  "question": "#e6eef4",
-  "bunny-proud": "#ece3f0",
-  "local-recommend": "#e3ede7",
-};
-
-const avatarColors = ["#c1573c", "#4f7ea8", "#8a5fa0", "#4f8a6f", "#8a7a4f"];
 
 const colorForName = (name: string) => {
   const sum = name.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
@@ -437,8 +427,8 @@ export default function CommunityPostPage() {
   }
 
   const Icon = categoryIcon[post.category] ?? BookOpen;
-  const color = categoryColor[post.category] ?? "#c1573c";
-  const tint = categoryTint[post.category] ?? "#f2efe8";
+  const color = categoryColor[post.category] ?? DEFAULT_CATEGORY_COLOR;
+  const tint = categoryTint[post.category] ?? DEFAULT_CATEGORY_TINT;
   const categoryTitle =
     communityCategories.find((item) => item.id === post.category)?.title ??
     "커뮤니티";
@@ -463,11 +453,11 @@ export default function CommunityPostPage() {
 
               <span className={styles.topStats}>
                 <span>
-                  <Heart size={12} weight="bold" />
+                  <Heart size={14} weight="regular" />
                   {likeCount}
                 </span>
                 <span>
-                  <ChatCircle size={12} weight="bold" />
+                  <ChatCircle size={14} weight="regular" />
                   {comments.length}
                 </span>
               </span>
@@ -513,7 +503,7 @@ export default function CommunityPostPage() {
               }`}
               onClick={handleLike}
             >
-              <Heart size={14} weight={isLiked ? "fill" : "bold"} />
+              <Heart size={16} weight={isLiked ? "fill" : "bold"} />
               {likeCount}
             </button>
 
@@ -581,7 +571,7 @@ export default function CommunityPostPage() {
           className={`${styles.sideCard} ${styles.listButton}`}
           onClick={() => router.push("/community")}
         >
-          <ListBullets size={15} weight="bold" />
+          <ListBullets size={16} weight="bold" />
           커뮤니티 목록으로
         </button>
 
@@ -601,7 +591,7 @@ export default function CommunityPostPage() {
                   {item.image ? (
                     <img src={item.image} alt={item.title} />
                   ) : (
-                    <Icon size={14} weight="light" color={color} />
+                    <Icon size={17} weight="light" color={color} />
                   )}
                 </div>
                 <div>
@@ -632,7 +622,9 @@ export default function CommunityPostPage() {
           )}
         </section>
 
-        <section className={styles.sideCard}>
+        <section className={`${styles.sideCard} ${styles.guideCard}`}>
+          <BunnyMark size={34} className={styles.guideBunny} />
+
           <h2>커뮤니티 이용 안내</h2>
 
           <div className={styles.guideRow}>

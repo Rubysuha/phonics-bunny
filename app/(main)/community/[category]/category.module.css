@@ -1,62 +1,118 @@
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
 
+/*
+  Community 공통 디자인 규칙 (메인 Community 화면 기준)
+  색 · 모서리 · 테두리 · 그림자 값을 변수로 두고
+  모든 하위 페이지가 같은 값을 사용
+*/
 .page {
+  --ink: #16243a;
+  --ink-soft: #192b3e;
+  --text: #35485c;
+  --muted: #6f8192;
+  --muted-soft: #8796a4;
+  --line: #e1e8ee;
+  --line-strong: #d3dfe9;
+  --navy: #285c91;
+  --navy-deep: #1f4a76;
+  --coral: #ff6652;
+  --coral-soft: #fff0ed;
+  --soft-blue: #eaf4ff;
+  --soft-gray: #f4f8fb;
+  --card-shadow: 0 8px 24px rgba(50, 80, 110, 0.05);
+  --hover-shadow: 0 9px 21px rgba(55, 86, 116, 0.08);
+
   position: absolute;
   inset: 0;
-
-  overflow-y: auto;
-
-  padding: 34px 34px 48px 108px;
   box-sizing: border-box;
+  overflow-y: auto;
+  padding: 28px 34px 48px 104px;
 
-  background: #faf6f1;
+  background:
+    radial-gradient(
+      circle at 78% 4%,
+      rgba(219, 238, 255, 0.8) 0,
+      rgba(219, 238, 255, 0) 24%
+    ),
+    linear-gradient(180deg, #f8fbff 0%, #f4f9fd 100%);
 
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
+    Roboto,
+    sans-serif;
+
+  color: var(--ink);
 }
 
-.inner {
-  max-width: 820px;
-  margin: 0 auto;
+.page ::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
 }
 
+.page ::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #d8e2ea;
+}
+
+/* 뒤로가기 */
 .backButton {
   position: absolute;
-  top: 34px;
+  top: 28px;
   left: 34px;
+  z-index: 2;
 
-  width: 46px;
-  height: 46px;
-
-  border: 1px solid #e8e0d2;
-  border-radius: 8px;
-
-  background: #ffffff;
-  color: #2b2420;
+  width: 48px;
+  height: 48px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  border: 1px solid #e3eaf1;
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.94);
+  color: #17253a;
+
   cursor: pointer;
+
+  box-shadow: 0 5px 16px rgba(53, 83, 114, 0.06);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-/* ── category header card ── */
+.backButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(53, 83, 114, 0.1);
+}
 
+.inner {
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+/* 카테고리 헤더 카드 */
 .categoryCard {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
 
-  border: 1px solid #ede6da;
-  border-radius: 8px;
-
-  background: #ffffff;
-
+  margin-bottom: 14px;
   padding: 22px 24px;
   box-sizing: border-box;
 
-  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+
+  background: #ffffff;
+
+  box-shadow: var(--card-shadow);
 }
 
 .categoryInfo {
@@ -68,15 +124,15 @@
 }
 
 .categoryIcon {
-  width: 52px;
-  height: 52px;
+  width: 54px;
+  height: 54px;
   flex-shrink: 0;
-
-  border-radius: 8px;
 
   display: flex;
   align-items: center;
   justify-content: center;
+
+  border-radius: 15px;
 }
 
 .categoryText {
@@ -85,120 +141,147 @@
 
 .eyebrow {
   display: inline-flex;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1.2px;
+  color: #6283a5;
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
 }
 
 .categoryText h1 {
   margin: 0;
-  color: #2b2420;
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.4px;
+
+  color: #142238;
+
+  font-size: 26px;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.8px;
 }
 
 .categoryText p {
-  margin: 4px 0 0;
-  color: #8b8074;
-  font-size: 13.5px;
-  font-weight: 400;
+  margin: 6px 0 0;
+
+  color: var(--muted);
+
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.55;
 }
 
 .headerRight {
+  flex-shrink: 0;
+
   display: flex;
   align-items: center;
-  gap: 16px;
-  flex-shrink: 0;
+  gap: 14px;
 }
 
 .countLine {
-  color: #9a8f82;
-  font-size: 13px;
-  font-weight: 500;
+  color: var(--muted-soft);
+
+  font-size: 12.5px;
+  font-weight: 600;
   white-space: nowrap;
 }
 
 .writeButton {
-  height: 42px;
+  height: 44px;
   flex-shrink: 0;
+  padding: 0 17px;
 
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 7px;
 
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
 
-  padding: 0 16px;
+  background: linear-gradient(135deg, #ff745e 0%, #ff5844 100%);
+  color: #ffffff;
 
-  background: #c1573c;
-  color: #fff8f4;
-
+  font-family: inherit;
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: 700;
+  white-space: nowrap;
 
   cursor: pointer;
-  white-space: nowrap;
+
+  box-shadow: 0 7px 18px rgba(255, 95, 73, 0.2);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-/* ── post list (mirrors main feed) ── */
+.writeButton:hover {
+  transform: translateY(-2px);
+}
 
+/* 게시글 카드 (메인 feedCard 와 같은 규칙) */
 .postList {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 9px;
 }
 
 .postCard {
+  width: 100%;
+  min-height: 108px;
+
   display: grid;
-  grid-template-columns: 96px minmax(0, 1fr);
+  grid-template-columns: 92px minmax(0, 1fr);
   gap: 14px;
 
-  width: 100%;
+  padding: 12px;
+  box-sizing: border-box;
 
-  border: 1px solid #ede6da;
-  border-radius: 8px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
 
   background: #ffffff;
 
-  padding: 14px;
-  box-sizing: border-box;
-
+  font-family: inherit;
   text-align: left;
+
   cursor: pointer;
 
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .postCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(43, 36, 32, 0.08);
-  border-color: #e8e0d2;
+  border-color: #cfdde8;
+  box-shadow: var(--hover-shadow);
 }
 
 .postImage {
-  width: 96px;
-  height: 96px;
-  flex-shrink: 0;
-
-  border-radius: 6px;
-  overflow: hidden;
+  width: 92px;
+  height: 82px;
+  align-self: center;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background: #f3ede2;
+  overflow: hidden;
+
+  border-radius: 10px;
+
+  background: #eef4f8;
 }
 
 .postImage img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
+  object-fit: cover;
 }
 
 .postBody {
@@ -209,24 +292,29 @@
   justify-content: center;
 }
 
-.postTop {
-  display: flex;
+.postCategory {
+  width: fit-content;
+
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
 
-  margin-bottom: 6px;
+  margin-bottom: 5px;
+  padding: 4px 9px;
 
-  color: #9a8f82;
-  font-size: 11.5px;
-  font-weight: 500;
+  border-radius: 999px;
+
+  font-size: 10.5px;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .postBody h2 {
   margin: 0 0 4px;
 
-  color: #2b2420;
-  font-size: 15.5px;
-  font-weight: 700;
+  color: var(--ink-soft);
+
+  font-size: 14.5px;
+  font-weight: 800;
   letter-spacing: -0.2px;
 
   overflow: hidden;
@@ -235,12 +323,13 @@
 }
 
 .postBody p {
-  margin: 0 0 8px;
+  margin: 0 0 7px;
 
-  color: #8b8074;
+  color: #718293;
+
   font-size: 12.5px;
-  font-weight: 400;
-  line-height: 1.5;
+  font-weight: 500;
+  line-height: 1.45;
 
   overflow: hidden;
   display: -webkit-box;
@@ -253,63 +342,87 @@
   align-items: center;
   gap: 12px;
 
-  color: #9a8f82;
+  color: #8a99a8;
+
   font-size: 11.5px;
   font-weight: 600;
 }
 
-.postFooter span {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
+.postAuthor {
+  min-width: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
+.postStats {
+  margin-left: auto;
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.postStats span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Empty */
 .emptyBox {
-  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+
+  padding: 40px 20px;
+
+  border: 1px solid #e2e9ef;
+  border-radius: 13px;
 
   background: #ffffff;
-  border: 1px solid #ede6da;
+  color: var(--muted-soft);
 
-  padding: 40px;
-
-  color: #9a8f82;
   text-align: center;
 
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 @media (max-width: 760px) {
   .page {
-    padding: 96px 18px 36px;
+    padding: 92px 16px 30px;
   }
 
   .backButton {
-    top: 22px;
-    left: 22px;
+    top: 20px;
+    left: 18px;
   }
 
   .categoryCard {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+
+    padding: 18px;
   }
 
   .headerRight {
-    width: 100%;
     justify-content: space-between;
   }
 
-  .writeButton {
-    flex: 1;
-    justify-content: center;
+  .categoryText h1 {
+    font-size: 22px;
   }
 
   .postCard {
-    grid-template-columns: 72px minmax(0, 1fr);
+    grid-template-columns: 74px minmax(0, 1fr);
   }
 
   .postImage {
-    width: 72px;
-    height: 72px;
+    width: 74px;
+    height: 74px;
   }
 }

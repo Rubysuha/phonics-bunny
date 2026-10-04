@@ -1,42 +1,97 @@
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
 
+/*
+  Community 공통 디자인 규칙 (메인 Community 화면 기준)
+  색 · 모서리 · 테두리 · 그림자 값을 변수로 두고
+  모든 하위 페이지가 같은 값을 사용
+*/
 .page {
+  --ink: #16243a;
+  --ink-soft: #192b3e;
+  --text: #35485c;
+  --muted: #6f8192;
+  --muted-soft: #8796a4;
+  --line: #e1e8ee;
+  --line-strong: #d3dfe9;
+  --navy: #285c91;
+  --navy-deep: #1f4a76;
+  --coral: #ff6652;
+  --coral-soft: #fff0ed;
+  --soft-blue: #eaf4ff;
+  --soft-gray: #f4f8fb;
+  --card-shadow: 0 8px 24px rgba(50, 80, 110, 0.05);
+  --hover-shadow: 0 9px 21px rgba(55, 86, 116, 0.08);
+
   position: absolute;
   inset: 0;
-
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 280px;
-  gap: 20px;
-
-  padding: 28px 28px 40px 100px;
   box-sizing: border-box;
-
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 22px;
   overflow: hidden;
+  padding: 28px 34px 40px 104px;
 
-  background: #fbfaf8;
+  background:
+    radial-gradient(
+      circle at 78% 4%,
+      rgba(219, 238, 255, 0.8) 0,
+      rgba(219, 238, 255, 0) 24%
+    ),
+    linear-gradient(180deg, #f8fbff 0%, #f4f9fd 100%);
 
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
+    Roboto,
+    sans-serif;
+
+  color: var(--ink);
 }
 
+.page ::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.page ::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #d8e2ea;
+}
+
+/* 뒤로가기 */
 .backButton {
   position: absolute;
   top: 28px;
-  left: 28px;
+  left: 34px;
+  z-index: 2;
 
-  width: 40px;
-  height: 40px;
-
-  border: 1px solid #e4e0d8;
-  border-radius: 8px;
-
-  background: #ffffff;
-  color: #2b2420;
+  width: 48px;
+  height: 48px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  border: 1px solid #e3eaf1;
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.94);
+  color: #17253a;
+
   cursor: pointer;
+
+  box-shadow: 0 5px 16px rgba(53, 83, 114, 0.06);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.backButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(53, 83, 114, 0.1);
 }
 
 .main {
@@ -44,21 +99,31 @@
   height: 100%;
 
   overflow-y: auto;
+
   padding-right: 4px;
 }
 
+/* 본문 카드 */
 .card {
   width: 100%;
 
-  border: 1px solid #e4e0d8;
-  border-radius: 8px;
+  overflow: hidden;
+
+  border: 1px solid var(--line);
+  border-radius: 16px;
 
   background: #ffffff;
-  overflow: hidden;
+
+  box-shadow: var(--card-shadow);
 }
 
 .body {
-  padding: 22px 24px 18px;
+  padding: 26px 28px 22px;
+
+  color: var(--muted);
+
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .categoryRow {
@@ -67,76 +132,81 @@
   justify-content: space-between;
   gap: 12px;
 
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .category {
+  height: 24px;
+  padding: 0 10px;
+
   display: inline-flex;
   align-items: center;
   gap: 5px;
 
-  height: 22px;
-
-  border-radius: 5px;
-
-  padding: 0 9px;
+  border-radius: 999px;
 
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .topStats {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 
-  color: #9a9186;
-  font-size: 11.5px;
+  color: var(--muted-soft);
+
+  font-size: 12px;
   font-weight: 600;
 }
 
 .topStats span {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
 }
 
 .card h1 {
-  margin: 0 0 12px;
+  margin: 0 0 14px;
 
-  color: #2b2420;
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-  line-height: 1.4;
+  color: #142238;
+
+  font-size: 25px;
+  line-height: 1.35;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .info {
   display: flex;
-  gap: 8px;
   align-items: center;
+  gap: 9px;
 
-  margin-bottom: 16px;
-  padding-bottom: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 18px;
 
-  border-bottom: 1px solid #f0eee8;
+  border-bottom: 1px solid #edf2f6;
 }
 
 .authorAvatar {
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
-
-  border-radius: 50%;
-  overflow: hidden;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  overflow: hidden;
+
+  border-radius: 50%;
+
   color: #ffffff;
-  font-size: 11px;
-  font-weight: 700;
+
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .avatarImg {
@@ -145,33 +215,37 @@
   object-fit: cover;
 }
 
-.info span {
-  color: #9a9186;
-  font-size: 12px;
-  font-weight: 500;
-}
-
 .info strong {
-  color: #2b2420;
-  font-size: 12.5px;
+  color: var(--ink-soft);
+
+  font-size: 13.5px;
   font-weight: 700;
 }
 
+.info span {
+  color: var(--muted-soft);
+
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
 .imageBox {
-  width: 260px;
-  height: 260px;
+  width: 300px;
+  max-width: 100%;
+  height: 300px;
 
-  margin: 0 auto 16px;
-
-  border-radius: 8px;
-  overflow: hidden;
+  margin: 0 auto 20px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background: #f2efe8;
-  border: 1px solid #eae7e0;
+  overflow: hidden;
+
+  border: 1px solid var(--line);
+  border-radius: 12px;
+
+  background: #eef4f8;
 
   cursor: zoom-in;
 }
@@ -179,88 +253,109 @@
 .imageBox img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
+  object-fit: cover;
 
   transition: transform 0.2s ease;
 }
 
 .imageBox:hover img {
-  transform: scale(1.03);
+  transform: scale(1.02);
 }
 
 .content {
   min-height: 60px;
+  margin: 0;
 
-  color: #4a4237;
+  color: #2a3d52;
 
-  font-size: 13.5px;
-  font-weight: 400;
-  line-height: 1.7;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.85;
+  letter-spacing: -0.1px;
 
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .bottom {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 
-  padding: 14px 24px;
+  padding: 14px 28px;
 
-  border-top: 1px solid #e4e0d8;
+  border-top: 1px solid #edf2f6;
+
+  background: #fbfdfe;
 }
 
+/* 좋아요 */
 .likeButton {
-  height: 32px;
+  height: 36px;
+  padding: 0 14px;
 
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 
-  border: 1px solid #e4e0d8;
-  border-radius: 7px;
+  border: 1px solid #dbe5ed;
+  border-radius: 10px;
 
   background: #ffffff;
-  color: #6f6459;
+  color: #6f8192;
 
-  padding: 0 13px;
-
-  font-size: 12.5px;
+  font-family: inherit;
+  font-size: 13px;
   font-weight: 700;
 
   cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.likeButton:hover {
+  transform: translateY(-1px);
+  border-color: #c7d7e4;
 }
 
 .likeButtonActive {
-  border-color: #c1573c;
-  background: #f7e4dc;
-  color: #c1573c;
+  border-color: #ffc9c0;
+
+  background: var(--coral-soft);
+  color: #f0543e;
 }
 
 .commentCount {
-  color: #9a9186;
+  color: var(--muted-soft);
+
   font-size: 12.5px;
   font-weight: 600;
 }
 
+/* 댓글 카드 */
 .commentArea {
   margin-top: 14px;
+  padding: 22px 28px 24px;
 
-  border: 1px solid #e4e0d8;
-  border-radius: 8px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
 
   background: #ffffff;
 
-  padding: 18px 24px 22px;
+  box-shadow: var(--card-shadow);
 }
 
 .commentArea h2 {
   margin: 0 0 14px;
 
-  color: #2b2420;
-  font-size: 13.5px;
-  font-weight: 700;
+  color: var(--ink-soft);
+
+  font-size: 15.5px;
+  font-weight: 800;
 }
 
 .commentInputBox {
@@ -272,46 +367,57 @@
 
 .commentInputBox input {
   flex: 1;
+  min-width: 0;
+  height: 42px;
+  padding: 0 14px;
 
-  height: 38px;
-
-  border: 1px solid #e4e0d8;
-  border-radius: 7px;
+  border: 1px solid #dae5ed;
+  border-radius: 10px;
 
   background: #ffffff;
-  color: #2b2420;
+  color: #21354a;
 
-  padding: 0 13px;
+  outline: none;
 
   font-family: inherit;
-  font-size: 12.5px;
-  font-weight: 400;
+  font-size: 13.5px;
+  font-weight: 500;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .commentInputBox input::placeholder {
-  color: #ab9f8f;
+  color: #98a7b5;
 }
 
 .commentInputBox input:focus {
-  outline: none;
-  border-color: #c1573c;
+  border-color: #7fa6ca;
+  box-shadow: 0 0 0 3px rgba(80, 136, 184, 0.1);
 }
 
 .commentInputBox button {
-  height: 38px;
+  height: 42px;
+  padding: 0 18px;
 
   border: none;
-  border-radius: 7px;
+  border-radius: 10px;
 
-  background: #2b2420;
-  color: #fff8f4;
+  background: var(--navy);
+  color: #ffffff;
 
-  padding: 0 16px;
-
-  font-size: 12.5px;
+  font-family: inherit;
+  font-size: 13.5px;
   font-weight: 700;
 
   cursor: pointer;
+
+  transition: background 0.15s ease;
+}
+
+.commentInputBox button:hover {
+  background: var(--navy-deep);
 }
 
 .commentList {
@@ -322,32 +428,35 @@
 .commentCard {
   display: flex;
   align-items: flex-start;
-  gap: 9px;
+  gap: 10px;
 
-  padding: 11px 2px;
+  padding: 13px 2px;
 
-  border-bottom: 1px solid #f0eee8;
+  border-bottom: 1px solid #edf2f6;
 }
 
 .commentCard:last-child {
   border-bottom: none;
+  padding-bottom: 2px;
 }
 
 .commentAvatar {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
-
-  border-radius: 50%;
-  overflow: hidden;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  overflow: hidden;
+
+  border-radius: 50%;
+
   color: #ffffff;
-  font-size: 11px;
-  font-weight: 700;
+
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .commentBody {
@@ -358,58 +467,78 @@
 .commentTop {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
 }
 
 .commentTop strong {
-  color: #2b2420;
-  font-size: 12px;
+  color: var(--ink-soft);
+
+  font-size: 13px;
   font-weight: 700;
 }
 
 .commentTop small {
-  color: #ab9f8f;
-  font-size: 10.5px;
+  color: #94a2ae;
+
+  font-size: 11.5px;
   font-weight: 500;
 }
 
 .commentCard p {
-  margin: 3px 0 0;
+  margin: 4px 0 0;
 
-  color: #4a4237;
-  font-size: 12.5px;
-  font-weight: 400;
-  line-height: 1.55;
+  color: #33475c;
+
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.6;
+
+  overflow-wrap: anywhere;
 }
 
 .commentCard button {
   flex-shrink: 0;
   align-self: center;
 
-  height: 26px;
+  height: 28px;
+  padding: 0 10px;
 
-  border: 1px solid #e4e0d8;
-  border-radius: 6px;
+  border: 1px solid #dbe5ed;
+  border-radius: 8px;
 
   background: #ffffff;
-  color: #9a9186;
+  color: var(--muted-soft);
 
-  padding: 0 9px;
-
-  font-size: 11px;
-  font-weight: 600;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
 
   cursor: pointer;
 }
 
-.emptyComment {
-  color: #9a9186;
-  font-size: 12.5px;
-  font-weight: 500;
+.commentCard button:hover {
+  border-color: #ffc9c0;
+
+  background: var(--coral-soft);
+  color: #e2573f;
 }
 
-/* ── sidebar ── */
+.emptyComment {
+  margin: 0;
+  padding: 22px 10px;
 
+  border-radius: 12px;
+
+  background: #f8fbfd;
+  color: var(--muted-soft);
+
+  text-align: center;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* 오른쪽 (메인 right sidebar 와 같은 카드) */
 .rightPanel {
   min-width: 0;
   height: 100%;
@@ -419,71 +548,101 @@
   gap: 12px;
 
   overflow-y: auto;
+
+  padding-right: 3px;
 }
 
 .sideCard {
-  border: 1px solid #e4e0d8;
-  border-radius: 8px;
+  position: relative;
 
-  background: #ffffff;
+  padding: 17px;
 
-  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+
+  background: rgba(255, 255, 255, 0.94);
+
+  box-shadow: var(--card-shadow);
 }
 
 .listButton {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
 
-  color: #6f6459;
-  font-size: 12.5px;
+  padding: 14px 17px;
+
+  color: var(--navy);
+
+  font-family: inherit;
+  font-size: 13.5px;
   font-weight: 700;
+  text-align: left;
 
   cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.listButton:hover {
+  transform: translateY(-1px);
+  border-color: #cfdde8;
 }
 
 .sideCard h2 {
-  margin: 0 0 10px;
+  margin: 0 0 9px;
 
-  color: #2b2420;
-  font-size: 13px;
-  font-weight: 700;
+  color: #17283a;
+
+  font-size: 14.5px;
+  font-weight: 800;
 }
 
 .relatedItem {
   width: 100%;
-
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-
-  padding: 6px 2px;
+  padding: 9px 2px;
 
   display: grid;
-  grid-template-columns: 36px 1fr;
-  gap: 9px;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 10px;
   align-items: center;
 
-  cursor: pointer;
+  border: none;
+  border-bottom: 1px solid #edf2f6;
+
+  background: transparent;
+
+  font-family: inherit;
   text-align: left;
+
+  cursor: pointer;
 }
 
-.relatedItem:hover {
-  background: #fbfaf8;
+.relatedItem:last-child,
+.rankItem:last-child {
+  border-bottom: none;
+}
+
+.relatedItem:hover,
+.rankItem:hover {
+  background: #f8fbfd;
 }
 
 .relatedThumb {
-  width: 36px;
-  height: 36px;
-
-  border-radius: 6px;
-  overflow: hidden;
-
-  background: #f2efe8;
+  width: 40px;
+  height: 40px;
 
   display: flex;
   align-items: center;
   justify-content: center;
+
+  overflow: hidden;
+
+  border-radius: 10px;
+
+  background: #eef4f8;
 }
 
 .relatedThumb img {
@@ -495,9 +654,10 @@
 .relatedItem strong {
   display: block;
 
-  color: #2b2420;
-  font-size: 12px;
-  font-weight: 600;
+  color: #253649;
+
+  font-size: 12.5px;
+  font-weight: 700;
 
   overflow: hidden;
   text-overflow: ellipsis;
@@ -506,16 +666,80 @@
 
 .relatedItem span {
   display: block;
-  margin-top: 1px;
+  margin-top: 3px;
 
-  color: #9a9186;
-  font-size: 10.5px;
-  font-weight: 500;
+  color: #94a2ae;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.rankItem {
+  width: 100%;
+  padding: 9px 2px;
+
+  display: grid;
+  grid-template-columns: 29px minmax(0, 1fr);
+  gap: 9px;
+  align-items: center;
+
+  border: none;
+  border-bottom: 1px solid #edf2f6;
+
+  background: transparent;
+
+  font-family: inherit;
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.rankItem strong {
+  width: 29px;
+  height: 29px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #edf5fd;
+  color: #3c78b2;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.rankItem span {
+  display: block;
+
+  color: #253649;
+
+  font-size: 12.5px;
+  font-weight: 700;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 이용 안내 */
+.guideCard {
+  border-color: #d8e8f3;
+
+  background: linear-gradient(135deg, #f3faff 0%, #edf6fc 100%);
+}
+
+.guideBunny {
+  position: absolute;
+  top: 10px;
+  right: 14px;
 }
 
 .guideRow {
   display: flex;
-  gap: 9px;
+  gap: 10px;
 
   margin-bottom: 12px;
 }
@@ -525,96 +749,69 @@
 }
 
 .guideIcon {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   flex-shrink: 0;
-
-  border-radius: 6px;
-  background: #f7e4dc;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  color: #c1573c;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: var(--navy);
 }
 
 .guideRow strong {
   display: block;
-  color: #2b2420;
-  font-size: 11.5px;
-  font-weight: 700;
+
+  color: #214364;
+
+  font-size: 12.5px;
+  font-weight: 800;
 }
 
 .guideRow span {
   display: block;
-  margin-top: 1px;
-  color: #9a9186;
-  font-size: 10.5px;
-  font-weight: 500;
-  line-height: 1.4;
-}
+  margin-top: 2px;
 
-.rankItem {
-  width: 100%;
+  color: #6e899f;
 
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-
-  padding: 6px 2px;
-
-  display: grid;
-  grid-template-columns: 16px 1fr;
-  gap: 9px;
-  align-items: center;
-
-  cursor: pointer;
-  text-align: left;
-}
-
-.rankItem:hover {
-  background: #fbfaf8;
-}
-
-.rankItem strong {
-  color: #c1573c;
   font-size: 11.5px;
-  font-weight: 700;
-}
-
-.rankItem span {
-  display: block;
-  color: #2b2420;
-  font-size: 12px;
-  font-weight: 600;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-weight: 500;
+  line-height: 1.5;
+  word-break: keep-all;
 }
 
 .smallEmpty {
-  color: #9a9186;
-  font-size: 11.5px;
-  font-weight: 500;
+  margin: 0;
+  padding: 16px 8px;
+
+  border-radius: 11px;
+
+  background: #f8fbfd;
+  color: var(--muted-soft);
+
+  text-align: center;
+
+  font-size: 12.5px;
+  font-weight: 600;
 }
 
-/* ── lightbox ── */
-
+/* 이미지 크게 보기 */
 .lightboxOverlay {
   position: fixed;
   inset: 0;
   z-index: 999;
-
-  background: rgba(20, 16, 12, 0.82);
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   padding: 40px;
-  box-sizing: border-box;
+
+  background: rgba(15, 28, 45, 0.82);
 
   cursor: zoom-out;
 }
@@ -623,8 +820,9 @@
   max-width: 100%;
   max-height: 100%;
 
+  border-radius: 12px;
+
   object-fit: contain;
-  border-radius: 8px;
 
   cursor: default;
 }
@@ -635,18 +833,18 @@
   right: 28px;
   z-index: 1000;
 
-  width: 40px;
-  height: 40px;
-
-  border: none;
-  border-radius: 8px;
-
-  background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
+  width: 42px;
+  height: 42px;
 
   display: flex;
   align-items: center;
   justify-content: center;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #17253a;
 
   cursor: pointer;
 }
@@ -654,7 +852,7 @@
 @media (max-width: 1180px) {
   .page {
     grid-template-columns: 1fr;
-    padding: 26px 24px 40px 88px;
+    padding: 28px 28px 40px 96px;
   }
 
   .rightPanel {
@@ -664,33 +862,40 @@
 
 @media (max-width: 760px) {
   .page {
-    padding: 88px 16px 32px;
+    display: block;
+    padding: 92px 16px 30px;
     overflow-y: auto;
   }
 
   .backButton {
     top: 20px;
-    left: 20px;
+    left: 18px;
   }
 
   .main {
+    height: auto;
     overflow: visible;
+    padding-right: 0;
   }
 
   .body {
-    padding: 18px 18px 14px;
+    padding: 20px 18px 16px;
+  }
+
+  .bottom {
+    padding: 12px 18px;
   }
 
   .commentArea {
-    padding: 16px 18px 20px;
+    padding: 18px 18px 20px;
+  }
+
+  .card h1 {
+    font-size: 21px;
   }
 
   .imageBox {
     width: 100%;
-    height: 200px;
-  }
-
-  .card h1 {
-    font-size: 17px;
+    height: 220px;
   }
 }

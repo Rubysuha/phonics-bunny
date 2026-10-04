@@ -17,6 +17,13 @@ import {
   communityCategories,
   type CommunityCategoryId,
 } from "../data";
+import {
+  categoryColor,
+  categoryTint,
+  DEFAULT_CATEGORY_COLOR,
+  DEFAULT_CATEGORY_TINT,
+} from "../categoryTheme";
+import BunnyMark from "../BunnyMark";
 
 type WriteCategoryId = CommunityCategoryId;
 
@@ -26,22 +33,6 @@ const categoryIcon: Record<CommunityCategoryId, React.ElementType> = {
   "question": Question,
   "bunny-proud": Sparkle,
   "local-recommend": MapPin,
-};
-
-const categoryColor: Record<CommunityCategoryId, string> = {
-  "study-proof": "#c1573c",
-  "english-tip": "#8a7a4f",
-  "question": "#4f7ea8",
-  "bunny-proud": "#8a5fa0",
-  "local-recommend": "#4f8a6f",
-};
-
-const categoryTint: Record<CommunityCategoryId, string> = {
-  "study-proof": "#f7e4dc",
-  "english-tip": "#f2efe0",
-  "question": "#e6eef4",
-  "bunny-proud": "#ece3f0",
-  "local-recommend": "#e3ede7",
 };
 
 function CommunityWritePageInner() {
@@ -89,8 +80,8 @@ function CommunityWritePageInner() {
   );
 
   const SelectedIcon = categoryIcon[category] ?? BookOpen;
-  const selectedColor = categoryColor[category] ?? "#c1573c";
-  const selectedTint = categoryTint[category] ?? "#f2efe0";
+  const selectedColor = categoryColor[category] ?? DEFAULT_CATEGORY_COLOR;
+  const selectedTint = categoryTint[category] ?? DEFAULT_CATEGORY_TINT;
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -238,6 +229,8 @@ function CommunityWritePageInner() {
               <strong>글쓰기 보상</strong>
               <p>게시글 업로드 시 +3 Coin</p>
             </div>
+
+            <BunnyMark size={34} className={styles.rewardBunny} />
           </div>
 
           <div className={styles.selectedBox}>
@@ -272,8 +265,8 @@ function CommunityWritePageInner() {
             <div className={styles.categoryGrid}>
               {writeCategories.map((item) => {
                 const Icon = categoryIcon[item.id] ?? BookOpen;
-                const color = categoryColor[item.id] ?? "#c1573c";
-                const tint = categoryTint[item.id] ?? "#f2efe0";
+                const color = categoryColor[item.id] ?? DEFAULT_CATEGORY_COLOR;
+                const tint = categoryTint[item.id] ?? DEFAULT_CATEGORY_TINT;
 
                 return (
                   <button
@@ -281,6 +274,11 @@ function CommunityWritePageInner() {
                     className={`${styles.categoryButton} ${
                       category === item.id ? styles.active : ""
                     }`}
+                    style={
+                      category === item.id
+                        ? { background: tint, borderColor: color }
+                        : undefined
+                    }
                     onClick={() => setCategory(item.id)}
                   >
                     <span style={{ background: tint, color }}>

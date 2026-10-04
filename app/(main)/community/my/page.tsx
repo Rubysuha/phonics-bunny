@@ -27,6 +27,12 @@ import {
   communityCategories,
   type CommunityCategoryId,
 } from "../data";
+import {
+  categoryColor,
+  categoryTint,
+  DEFAULT_CATEGORY_COLOR,
+  DEFAULT_CATEGORY_TINT,
+} from "../categoryTheme";
 
 type MyPost = {
   id: number;
@@ -70,22 +76,6 @@ const categoryIcon: Record<CommunityCategoryId, React.ElementType> = {
   "question": Question,
   "bunny-proud": Sparkle,
   "local-recommend": MapPin,
-};
-
-const categoryColor: Record<CommunityCategoryId, string> = {
-  "study-proof": "#c1573c",
-  "english-tip": "#8a7a4f",
-  "question": "#4f7ea8",
-  "bunny-proud": "#8a5fa0",
-  "local-recommend": "#4f8a6f",
-};
-
-const categoryTint: Record<CommunityCategoryId, string> = {
-  "study-proof": "#f7e4dc",
-  "english-tip": "#f2efe0",
-  "question": "#e6eef4",
-  "bunny-proud": "#ece3f0",
-  "local-recommend": "#e3ede7",
 };
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
@@ -563,8 +553,8 @@ export default function CommunityMyPage() {
         ) : (
           filteredPosts.map((post) => {
             const Icon = categoryIcon[post.category] ?? BookOpen;
-            const color = categoryColor[post.category] ?? "#c1573c";
-            const tint = categoryTint[post.category] ?? "#f2efe0";
+            const color = categoryColor[post.category] ?? DEFAULT_CATEGORY_COLOR;
+            const tint = categoryTint[post.category] ?? DEFAULT_CATEGORY_TINT;
 
             return (
               <div key={post.id} className={styles.postItem}>
@@ -579,7 +569,7 @@ export default function CommunityMyPage() {
                     {post.image_url ? (
                       <img src={post.image_url} alt={post.title} />
                     ) : (
-                      <Icon size={20} weight="light" color={color} />
+                      <Icon size={24} weight="light" color={color} />
                     )}
                   </div>
 
@@ -625,8 +615,8 @@ export default function CommunityMyPage() {
             const related = relatedPosts[comment.post_id];
             const cat = related?.category;
             const Icon = cat ? categoryIcon[cat] ?? BookOpen : ChatCircle;
-            const color = cat ? categoryColor[cat] ?? "#c1573c" : "#9a8f82";
-            const tint = cat ? categoryTint[cat] ?? "#f2efe0" : "#f2efe8";
+            const color = cat ? categoryColor[cat] ?? DEFAULT_CATEGORY_COLOR : "#8796a4";
+            const tint = cat ? categoryTint[cat] ?? DEFAULT_CATEGORY_TINT : DEFAULT_CATEGORY_TINT;
 
             return (
               <div key={comment.id} className={styles.postItem}>
@@ -643,7 +633,7 @@ export default function CommunityMyPage() {
                     {related?.image_url ? (
                       <img src={related.image_url} alt={related.title} />
                     ) : (
-                      <Icon size={20} weight="light" color={color} />
+                      <Icon size={24} weight="light" color={color} />
                     )}
                   </div>
 
@@ -685,8 +675,8 @@ export default function CommunityMyPage() {
             const related = relatedPosts[like.post_id];
             const cat = related?.category;
             const Icon = cat ? categoryIcon[cat] ?? BookOpen : Heart;
-            const color = cat ? categoryColor[cat] ?? "#c1573c" : "#c1573c";
-            const tint = cat ? categoryTint[cat] ?? "#f2efe0" : "#f7e4dc";
+            const color = cat ? categoryColor[cat] ?? DEFAULT_CATEGORY_COLOR : "#ff6652";
+            const tint = cat ? categoryTint[cat] ?? DEFAULT_CATEGORY_TINT : "#fff0ed";
 
             return (
               <div key={like.id} className={styles.postItem}>
@@ -701,7 +691,7 @@ export default function CommunityMyPage() {
                     {related?.image_url ? (
                       <img src={related.image_url} alt={related.title} />
                     ) : (
-                      <Icon size={20} weight="light" color={color} />
+                      <Icon size={24} weight="light" color={color} />
                     )}
                   </div>
 

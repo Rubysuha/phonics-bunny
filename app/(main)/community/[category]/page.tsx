@@ -21,6 +21,13 @@ import {
   type CommunityCategoryId,
   type CommunityPost,
 } from "../data";
+import {
+  categoryColor,
+  categoryTint,
+  DEFAULT_CATEGORY_COLOR,
+  DEFAULT_CATEGORY_TINT,
+} from "../categoryTheme";
+import BunnyMark from "../BunnyMark";
 
 type SupabasePost = {
   id: number;
@@ -41,22 +48,6 @@ const categoryIcon: Record<CommunityCategoryId, React.ElementType> = {
   "question": Question,
   "bunny-proud": Sparkle,
   "local-recommend": MapPin,
-};
-
-const categoryColor: Record<CommunityCategoryId, string> = {
-  "study-proof": "#c1573c",
-  "english-tip": "#8a7a4f",
-  "question": "#4f7ea8",
-  "bunny-proud": "#8a5fa0",
-  "local-recommend": "#4f8a6f",
-};
-
-const categoryTint: Record<CommunityCategoryId, string> = {
-  "study-proof": "#f7e4dc",
-  "english-tip": "#f2efe0",
-  "question": "#e6eef4",
-  "bunny-proud": "#ece3f0",
-  "local-recommend": "#e3ede7",
 };
 
 export default function CommunityCategoryPage() {
@@ -128,8 +119,8 @@ export default function CommunityCategoryPage() {
   }
 
   const Icon = categoryIcon[category.id] ?? BookOpen;
-  const color = categoryColor[category.id] ?? "#c1573c";
-  const tint = categoryTint[category.id] ?? "#f2efe0";
+  const color = categoryColor[category.id] ?? DEFAULT_CATEGORY_COLOR;
+  const tint = categoryTint[category.id] ?? DEFAULT_CATEGORY_TINT;
 
   return (
     <section className={styles.page}>
@@ -180,7 +171,10 @@ export default function CommunityCategoryPage() {
           {isLoading ? (
             <div className={styles.emptyBox}>게시글을 불러오는 중이에요...</div>
           ) : filteredPosts.length === 0 ? (
-            <div className={styles.emptyBox}>아직 게시글이 없어요.</div>
+            <div className={styles.emptyBox}>
+              <BunnyMark size={46} />
+              아직 게시글이 없어요.
+            </div>
           ) : (
             filteredPosts.map((post) => (
               <button
@@ -195,28 +189,35 @@ export default function CommunityCategoryPage() {
                   {post.image ? (
                     <img src={post.image} alt={post.title} />
                   ) : (
-                    <Icon size={26} weight="light" color={color} />
+                    <Icon size={30} weight="light" color={color} />
                   )}
                 </div>
 
                 <div className={styles.postBody}>
-                  <div className={styles.postTop}>
-                    <span>{post.author}</span>
-                    <span>·</span>
-                    <span>{post.date}</span>
-                  </div>
+                  <span
+                    className={styles.postCategory}
+                    style={{ color, background: tint }}
+                  >
+                    {category.title}
+                  </span>
 
                   <h2>{post.title}</h2>
                   <p>{post.content}</p>
 
                   <div className={styles.postFooter}>
-                    <span>
-                      <Heart size={12} weight="bold" />
-                      {post.likes}
+                    <span className={styles.postAuthor}>
+                      {post.author} · {post.date}
                     </span>
-                    <span>
-                      <ChatCircle size={12} weight="bold" />
-                      {post.comments.length}
+
+                    <span className={styles.postStats}>
+                      <span>
+                        <ChatCircle size={15} weight="regular" />
+                        {post.comments.length}
+                      </span>
+                      <span>
+                        <Heart size={15} weight="regular" />
+                        {post.likes}
+                      </span>
                     </span>
                   </div>
                 </div>
