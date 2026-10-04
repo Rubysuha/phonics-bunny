@@ -333,6 +333,48 @@ export default function ReadingStoryQuizPage() {
       );
     };
 
+  /* Next Story */
+
+  const nextStory =
+    currentLevel.stories[
+      currentLevel.stories.findIndex(
+        (item) =>
+          item.slug ===
+          storySlug
+      ) + 1
+    ];
+
+  const handleNextStory =
+    () => {
+      if (!nextStory) {
+        return;
+      }
+
+      setCurrentIndex(
+        0
+      );
+
+      setSelectedChoice(
+        null
+      );
+
+      setScore(
+        0
+      );
+
+      setSaveError(
+        null
+      );
+
+      setIsFinished(
+        false
+      );
+
+      router.push(
+        `/test/reading/${level}/${nextStory.slug}`
+      );
+    };
+
   /* Result */
 
   if (
@@ -365,9 +407,11 @@ export default function ReadingStoryQuizPage() {
             }
           >
             <div
-              className={
-                styles.resultCard
-              }
+              className={`${styles.resultCard} ${
+                passed
+                  ? styles.passCard
+                  : styles.retryCard
+              }`}
             >
               <div
                 className={
@@ -488,8 +532,30 @@ export default function ReadingStoryQuizPage() {
                   styles.resultButtons
                 }
               >
+                {passed &&
+                  nextStory && (
+                    <button
+                      type="button"
+                      className={
+                        styles.nextStageButton
+                      }
+                      onClick={
+                        handleNextStory
+                      }
+                    >
+                      Next Story
+
+                      <ArrowRight
+                        weight="bold"
+                      />
+                    </button>
+                  )}
+
                 <button
                   type="button"
+                  className={
+                    styles.retryButton
+                  }
                   onClick={
                     handleRetry
                   }
@@ -531,8 +597,15 @@ export default function ReadingStoryQuizPage() {
     selectedChoice ===
     currentQuestion.answer;
 
+  /*
+    진행 막대는 답을 고른 문제 수 기준
+    (1번 문제를 풀기 전에는 0%)
+  */
   const progress =
-    ((currentIndex + 1) /
+    ((currentIndex +
+      (isAnswered
+        ? 1
+        : 0)) /
       questions.length) *
     100;
 

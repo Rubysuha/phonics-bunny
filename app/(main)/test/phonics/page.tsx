@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import styles from "./phonics-test.module.css";
+import LoginNotice from "../LoginNotice";
 import { phonicsTestCategories } from "./data";
 import { PHONICS_STAGE_COUNT } from "@/lib/phonicsTestRules";
 
@@ -37,6 +38,8 @@ export default function PhonicsTestPage() {
               Choose what you want to practice!
             </p>
           </div>
+
+          <LoginNotice />
 
           {/* Category Cards */}
           <div className={styles.grid}>

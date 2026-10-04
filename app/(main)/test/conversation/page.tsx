@@ -19,6 +19,8 @@ import {
 
 import styles from "./conversation-test.module.css";
 
+import LoginNotice from "../LoginNotice";
+
 import {
   conversationTopics,
   type ConversationTopicId,
@@ -28,6 +30,23 @@ import {
   getConversationProgress,
   type ConversationProgress,
 } from "@/lib/conversationTestProgress";
+
+import {
+  getConversationPassScore,
+} from "@/lib/conversationTestRules";
+
+/*
+  안내 문구에 쓰는 값
+  (Final을 제외한 Topic 기준)
+*/
+const REGULAR_TOPICS =
+  conversationTopics.filter(
+    (topic) =>
+      !topic.isFinal
+  );
+
+const GUIDE_TOPIC =
+  REGULAR_TOPICS[0];
 
 /* ─────────────────────────────
    Page
@@ -194,6 +213,8 @@ export default function ConversationTestPage() {
               situation.
             </p>
           </header>
+
+          <LoginNotice />
 
           {isLoading ? (
             <div
@@ -454,11 +475,11 @@ export default function ConversationTestPage() {
                     {
                       completedTopics
                     }
-                    {" / 5 Topics Complete"}
+                    {` / ${REGULAR_TOPICS.length} Topics Complete`}
                   </strong>
 
                   <p>
-                    5개 Topic을 모두
+                    {REGULAR_TOPICS.length}개 Topic을 모두
                     통과하면 Final
                     Challenge가 열려요.
                   </p>
@@ -469,7 +490,11 @@ export default function ConversationTestPage() {
                     styles.guideBadge
                   }
                 >
-                  Pass · 7 / 10
+                  {GUIDE_TOPIC
+                    ? `Pass · ${getConversationPassScore(
+                        GUIDE_TOPIC.id
+                      )} / ${GUIDE_TOPIC.questionCount}`
+                    : ""}
                 </span>
               </div>
             </>

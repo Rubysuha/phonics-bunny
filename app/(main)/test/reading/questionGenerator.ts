@@ -20,7 +20,10 @@ export type ReadingQuestionType =
   | "last-event"
   | "missing-word"
   | "word-check"
-  | "title-check";
+  | "title-check"
+  | "word-order"
+  | "word-not"
+  | "sentence-not";
 
 export type ReadingQuestion = {
   id: string;
@@ -256,6 +259,95 @@ function chooseWord(
 }
 
 /*
+  문장 첫 단어의 대문자는 소문자로 바꿔서 꺼냄 (I 는 그대로)
+  보기에 "Apple / cold" 처럼 대소문자가 섞이지 않게 하기 위함
+
+  "Ring! My alarm wakes me up." 처럼 한 줄에 문장이 둘이면
+  각 문장의 첫 단어를 모두 처리
+*/
+function extractPlainWords(
+  sentence: string
+): string[] {
+  return sentence
+    .split(/[.!?]+/)
+    .flatMap(
+      (part) =>
+        extractWords(
+          part
+        ).map(
+          (word, index) =>
+            index === 0 &&
+            word !== "I" &&
+            !word.startsWith("I'")
+              ? word.toLowerCase()
+              : word
+        )
+    );
+}
+
+function capitalize(
+  text: string
+): string {
+  return (
+    text.charAt(0).toUpperCase() +
+    text.slice(1)
+  );
+}
+
+/*
+  이 이야기에 나오지 않는 단어들 (오답 후보)
+
+  대소문자만 다른 같은 단어는 하나로 취급
+  (정답이 2개처럼 보이는 것을 막음)
+*/
+function getOutsideWords(
+  otherSentences: string[],
+  storyWords: Set<string>,
+  random: () => number
+): string[] {
+  const seen =
+    new Set<string>();
+
+  const words =
+    otherSentences
+      .flatMap(
+        extractPlainWords
+      )
+      .filter(
+        (word) => {
+          const clean =
+            word.toLowerCase();
+
+          if (
+            clean.length < 4 ||
+            STOP_WORDS.has(
+              clean
+            ) ||
+            storyWords.has(
+              clean
+            ) ||
+            seen.has(
+              clean
+            )
+          ) {
+            return false;
+          }
+
+          seen.add(
+            clean
+          );
+
+          return true;
+        }
+      );
+
+  return shuffle(
+    words,
+    random
+  );
+}
+
+/*
   오답 후보에서 이 이야기에 나온 단어는 제외
   (정답이 2개가 되는 것을 막음)
 */
@@ -265,25 +357,11 @@ function buildWordChoices(
   storyWords: Set<string>,
   random: () => number
 ): string[] {
-  const normalized =
-    answer.toLowerCase();
-
   const otherWords =
-    getUsefulWords(
-      otherSentences
-    ).filter(
-      (word) => {
-        const clean =
-          word.toLowerCase();
-
-        return (
-          clean !==
-            normalized &&
-          !storyWords.has(
-            clean
-          )
-        );
-      }
+    getOutsideWords(
+      otherSentences,
+      storyWords,
+      random
     );
 
   /*
@@ -304,14 +382,30 @@ function buildWordChoices(
       ? similar
       : otherWords;
 
-  const wrong =
-    shuffle(
-      source,
-      random
-    ).slice(
-      0,
-      2
+  /*
+    정답이 대문자로 시작하면 (문장 첫 단어)
+    오답도 대문자로 맞춰서 정답만 눈에 띄지 않게 함
+  */
+  const startsUpper =
+    answer !== "I" &&
+    /^[A-Z]/.test(
+      answer
     );
+
+  const wrong =
+    source
+      .slice(
+        0,
+        2
+      )
+      .map(
+        (word) =>
+          startsUpper
+            ? capitalize(
+                word
+              )
+            : word
+      );
 
   return shuffle(
     [
@@ -322,33 +416,125 @@ function buildWordChoices(
   );
 }
 
+/*
+  단어 단위로 찾아서 빈칸으로 바꿈
+  (다른 단어의 일부를 지우지 않도록)
+*/
 function createBlankSentence(
   sentence: string,
   word: string
 ): string {
-  const index =
-    sentence
-      .toLowerCase()
-      .indexOf(
-        word.toLowerCase()
-      );
+  const escaped =
+    word.replace(
+      /[.*+?^${}()|[\]\\]/g,
+      "\\$&"
+    );
+
+  const pattern =
+    new RegExp(
+      `(^|[^A-Za-z'])${escaped}(?![A-Za-z'])`,
+      "i"
+    );
 
   if (
-    index === -1
+    !pattern.test(
+      sentence
+    )
   ) {
     return sentence;
   }
 
-  return (
-    sentence.slice(
-      0,
-      index
-    ) +
-    "____" +
-    sentence.slice(
-      index +
-        word.length
-    )
+  return sentence.replace(
+    pattern,
+    "$1____"
+  );
+}
+
+/*
+  같은 단어들의 순서만 바꾼 문장 2개 + 원래 문장
+  단어가 3개보다 적으면 만들 수 없어서 null
+*/
+function buildWordOrderChoices(
+  sentence: string,
+  random: () => number
+): string[] | null {
+  const end =
+    sentence.match(
+      /[.!?]+$/
+    )?.[0] ?? "";
+
+  const words =
+    sentence
+      .slice(
+        0,
+        sentence.length -
+          end.length
+      )
+      .split(/\s+/)
+      .map(
+        (word) =>
+          word.replace(
+            /[,;:]/g,
+            ""
+          )
+      )
+      .filter(Boolean)
+      .map(
+        (word, index) =>
+          index === 0 &&
+          word !== "I" &&
+          !word.startsWith("I'")
+            ? word.toLowerCase()
+            : word
+      );
+
+  if (
+    words.length < 3
+  ) {
+    return null;
+  }
+
+  const original =
+    words.join(" ");
+
+  const wrong =
+    new Set<string>();
+
+  for (
+    let tries = 0;
+    tries < 40 &&
+    wrong.size < 2;
+    tries += 1
+  ) {
+    const mixed =
+      shuffle(
+        words,
+        random
+      ).join(" ");
+
+    if (
+      mixed !== original
+    ) {
+      wrong.add(
+        capitalize(
+          mixed
+        ) + end
+      );
+    }
+  }
+
+  if (
+    wrong.size < 2
+  ) {
+    return null;
+  }
+
+  return shuffle(
+    [
+      sentence,
+      ...wrong,
+    ],
+    random
   );
 }
 
@@ -358,7 +544,7 @@ function createBlankSentence(
 
 /*
   attempt = 0 : 항상 같은 문제 (서버/클라이언트 렌더 일치)
-  attempt > 0 : Try Again 시 문제와 보기를 다시 섞음
+  attempt > 0 : Try Again 시 문제와 보기, 문제 순서를 다시 섞음
 */
 export function generateReadingQuestions(
   level: string,
@@ -435,264 +621,587 @@ export function generateReadingQuestions(
       sentences.length - 1
     ];
 
-  const middleSentence =
-    sentences[
-      Math.floor(
-        sentences.length /
-          2
+  /* 문장 첫 단어의 대문자를 푼 이야기 속 단어들 */
+  const plainStoryWords =
+    uniqueStrings(
+      sentences.flatMap(
+        extractPlainWords
       )
-    ];
-
-  /*
-    Q1
-    이야기 속 실제 문장 찾기
-
-    2문장짜리 이야기는 가운데 문장이
-    마지막 문장과 같아져 Q3과 겹치므로
-    제목 찾기 문제로 대체
-  */
-  const otherTitles =
-    otherStories.map(
-      (story) =>
-        story.title
     );
 
-  const q1:
-    ReadingQuestion =
-    sentences.length >= 3
-      ? {
-          id:
-            `${storySlug}-sentence-1`,
+  /*
+    빈칸 문제
 
-          type:
-            "sentence-choice",
+    한 문장에 두 번 나오는 단어는 빈칸으로 쓰지 않음
+    (남은 문장에 정답이 그대로 보이는 것을 막음)
+  */
+  const buildMissingWord = (
+    blankSentence: string,
+    exclude: Set<string>
+  ): ReadingQuestion => {
+    const counts =
+      new Map<
+        string,
+        number
+      >();
 
-          prompt:
-            "Which sentence is from this story?",
+    extractWords(
+      blankSentence
+    ).forEach(
+      (word) => {
+        const clean =
+          word.toLowerCase();
 
-          choices:
-            buildSentenceChoices(
-              middleSentence,
-              otherSentences,
-              random
-            ),
+        counts.set(
+          clean,
+          (counts.get(
+            clean
+          ) ?? 0) + 1
+        );
+      }
+    );
 
-          answer:
-            middleSentence,
+    const blocked =
+      new Set(
+        exclude
+      );
 
-          explanation:
-            `The story says, “${middleSentence}”`,
+    counts.forEach(
+      (count, word) => {
+        if (
+          count > 1
+        ) {
+          blocked.add(
+            word
+          );
         }
-      : {
-          id:
-            `${storySlug}-title`,
-
-          type:
-            "title-check",
-
-          prompt:
-            "Which title matches this story?",
-
-          choices:
-            buildSentenceChoices(
-              currentStory.title,
-              otherTitles,
-              random
-            ),
-
-          answer:
-            currentStory.title,
-
-          explanation:
-            `The story is called “${currentStory.title}”.`,
-        };
-
-  /*
-    Q2
-    이야기 처음
-  */
-
-  const laterSentences =
-    sentences.slice(1);
-
-  const firstDistractors =
-    [
-      ...laterSentences,
-      ...otherSentences,
-    ];
-
-  const q2:
-    ReadingQuestion = {
-    id:
-      `${storySlug}-first`,
-
-    type:
-      "first-event",
-
-    prompt:
-      "What happens first in the story?",
-
-    choices:
-      buildSentenceChoices(
-        firstSentence,
-        firstDistractors,
-        random
-      ),
-
-    answer:
-      firstSentence,
-
-    explanation:
-      `The story begins with “${firstSentence}”`,
-  };
-
-  /*
-    Q3
-    이야기 마지막
-  */
-
-  const earlierSentences =
-    sentences.slice(
-      0,
-      -1
+      }
     );
 
-  const lastDistractors =
-    [
-      ...earlierSentences,
-      ...otherSentences,
-    ];
+    const missingWord =
+      chooseWord(
+        {
+          ...currentStory,
 
-  const q3:
-    ReadingQuestion = {
-    id:
-      `${storySlug}-last`,
+          sentences: [
+            blankSentence,
+          ],
+        },
+        random,
+        blocked
+      );
 
-    type:
-      "last-event",
+    return {
+      id:
+        `${storySlug}-blank`,
 
-    prompt:
-      "What happens at the end of the story?",
+      type:
+        "missing-word",
 
-    choices:
-      buildSentenceChoices(
-        lastSentence,
-        lastDistractors,
-        random
-      ),
+      prompt:
+        "Choose the missing word.",
 
-    answer:
-      lastSentence,
+      mainText:
+        createBlankSentence(
+          blankSentence,
+          missingWord
+        ),
 
-    explanation:
-      `The story ends with “${lastSentence}”`,
-  };
+      choices:
+        buildWordChoices(
+          missingWord,
+          otherSentences,
+          storyWords,
+          random
+        ),
 
-  /*
-    Q4
-    문장 빈칸
-  */
-
-  const blankSentence =
-    sentences[
-      Math.floor(
-        random() *
-          sentences.length
-      )
-    ];
-
-  const blankStory:
-    BookStory = {
-    ...currentStory,
-
-    sentences: [
-      blankSentence,
-    ],
-  };
-
-  const missingWord =
-    chooseWord(
-      blankStory,
-      random
-    );
-
-  const q4:
-    ReadingQuestion = {
-    id:
-      `${storySlug}-blank`,
-
-    type:
-      "missing-word",
-
-    prompt:
-      "Choose the missing word.",
-
-    mainText:
-      createBlankSentence(
-        blankSentence,
-        missingWord
-      ),
-
-    choices:
-      buildWordChoices(
+      answer:
         missingWord,
+
+      explanation:
+        `The missing word is “${missingWord}”.`,
+    };
+  };
+
+  let questions:
+    ReadingQuestion[];
+
+  if (
+    sentences.length >= 3
+  ) {
+    /* ─────────────────────────────
+       3문장 이상의 이야기
+    ───────────────────────────── */
+
+    /*
+      Q1
+      이야기 속 실제 문장 찾기
+
+      처음에는 가운데 문장,
+      Try Again 때는 처음과 끝을 뺀 문장 중 하나
+    */
+    const middleSentence =
+      attempt === 0
+        ? sentences[
+            Math.floor(
+              sentences.length /
+                2
+            )
+          ]
+        : sentences[
+            1 +
+              Math.floor(
+                random() *
+                  (sentences.length -
+                    2)
+              )
+          ];
+
+    const q1:
+      ReadingQuestion = {
+      id:
+        `${storySlug}-sentence-1`,
+
+      type:
+        "sentence-choice",
+
+      prompt:
+        "Which sentence is from this story?",
+
+      choices:
+        buildSentenceChoices(
+          middleSentence,
+          otherSentences,
+          random
+        ),
+
+      answer:
+        middleSentence,
+
+      explanation:
+        `The story says, “${middleSentence}”`,
+    };
+
+    /* Q2 이야기 처음 */
+    const q2:
+      ReadingQuestion = {
+      id:
+        `${storySlug}-first`,
+
+      type:
+        "first-event",
+
+      prompt:
+        "What happens first in the story?",
+
+      choices:
+        buildSentenceChoices(
+          firstSentence,
+          [
+            ...sentences.slice(1),
+            ...otherSentences,
+          ],
+          random
+        ),
+
+      answer:
+        firstSentence,
+
+      explanation:
+        `The story begins with “${firstSentence}”`,
+    };
+
+    /* Q3 이야기 마지막 */
+    const q3:
+      ReadingQuestion = {
+      id:
+        `${storySlug}-last`,
+
+      type:
+        "last-event",
+
+      prompt:
+        "What happens at the end of the story?",
+
+      choices:
+        buildSentenceChoices(
+          lastSentence,
+          [
+            ...sentences.slice(
+              0,
+              -1
+            ),
+            ...otherSentences,
+          ],
+          random
+        ),
+
+      answer:
+        lastSentence,
+
+      explanation:
+        `The story ends with “${lastSentence}”`,
+    };
+
+    /* Q4 문장 빈칸 */
+    const q4 =
+      buildMissingWord(
+        sentences[
+          Math.floor(
+            random() *
+              sentences.length
+          )
+        ],
+        new Set()
+      );
+
+    /*
+      Q5
+      이야기에서 실제로 나온 단어 찾기
+      (문장 첫 단어였다면 소문자로 보여줌)
+    */
+    const chosenWord =
+      chooseWord(
+        currentStory,
+        random,
+        new Set([
+          q4.answer.toLowerCase(),
+        ])
+      );
+
+    const storyWord =
+      plainStoryWords.includes(
+        chosenWord
+      )
+        ? chosenWord
+        : chosenWord.toLowerCase();
+
+    const q5:
+      ReadingQuestion = {
+      id:
+        `${storySlug}-word`,
+
+      type:
+        "word-check",
+
+      prompt:
+        "Which word appears in this story?",
+
+      choices:
+        buildWordChoices(
+          storyWord,
+          otherSentences,
+          storyWords,
+          random
+        ),
+
+      answer:
+        storyWord,
+
+      explanation:
+        `“${storyWord}” appears in the story.`,
+    };
+
+    questions = [
+      q1,
+      q2,
+      q3,
+      q4,
+      q5,
+    ];
+  } else {
+    /* ─────────────────────────────
+       1~2문장짜리 짧은 이야기 (Level 1)
+
+       처음/마지막 문제를 내면 다섯 문제가
+       모두 같은 단어를 묻게 되므로
+       정답이 서로 다른 유형으로 구성
+    ───────────────────────────── */
+
+    /* 단어가 가장 많은 문장 */
+    const longSentence =
+      [...sentences].sort(
+        (a, b) =>
+          extractWords(b).length -
+          extractWords(a).length
+      )[0];
+
+    const titleWords =
+      new Set(
+        extractWords(
+          currentStory.title
+        ).map(
+          (word) =>
+            word.toLowerCase()
+        )
+      );
+
+    /* Q1 제목 찾기 */
+    const otherTitles =
+      otherStories.map(
+        (story) =>
+          story.title
+      );
+
+    const q1:
+      ReadingQuestion = {
+      id:
+        `${storySlug}-title`,
+
+      type:
+        "title-check",
+
+      prompt:
+        "Which title matches this story?",
+
+      choices:
+        buildSentenceChoices(
+          currentStory.title,
+          otherTitles,
+          random
+        ),
+
+      answer:
+        currentStory.title,
+
+      explanation:
+        `The story is called “${currentStory.title}”.`,
+    };
+
+    /*
+      Q2
+      이야기 속 문장 찾기
+      오답은 같은 단어의 순서만 바꾼 문장
+    */
+    const orderChoices =
+      buildWordOrderChoices(
+        longSentence,
+        random
+      );
+
+    const q2:
+      ReadingQuestion = {
+      id:
+        `${storySlug}-order`,
+
+      type:
+        orderChoices
+          ? "word-order"
+          : "sentence-choice",
+
+      prompt:
+        "Which sentence is from this story?",
+
+      choices:
+        orderChoices ??
+        buildSentenceChoices(
+          longSentence,
+          otherSentences,
+          random
+        ),
+
+      answer:
+        longSentence,
+
+      explanation:
+        `The story says, “${longSentence}”`,
+    };
+
+    /*
+      Q3
+      문장 빈칸
+      제목에 나온 단어 말고 다른 단어가 있으면 그 단어를 사용
+    */
+    const hasOtherWord =
+      extractWords(
+        longSentence
+      ).some(
+        (word) => {
+          const clean =
+            word.toLowerCase();
+
+          return (
+            !STOP_WORDS.has(
+              clean
+            ) &&
+            !titleWords.has(
+              clean
+            )
+          );
+        }
+      );
+
+    const q3 =
+      buildMissingWord(
+        longSentence,
+        hasOtherWord
+          ? titleWords
+          : new Set()
+      );
+
+    /*
+      Q4
+      이야기에 나오지 않는 단어 찾기
+    */
+    const meaningfulWords =
+      plainStoryWords.filter(
+        (word) =>
+          word.length >= 3 &&
+          !STOP_WORDS.has(
+            word.toLowerCase()
+          )
+      );
+
+    const shownWords =
+      shuffle(
+        meaningfulWords.length >= 2
+          ? meaningfulWords
+          : plainStoryWords,
+        random
+      ).slice(
+        0,
+        2
+      );
+
+    const outsideWord =
+      getOutsideWords(
         otherSentences,
         storyWords,
         random
-      ),
+      )[0] ?? "zebra";
 
-    answer:
-      missingWord,
+    /*
+      이야기에 단어가 하나뿐이면 (예: "Run, run, run!")
+      보기 3개를 만들 수 없어서 나온 단어 찾기로 대체
+    */
+    const onlyWord =
+      plainStoryWords[0] ??
+      currentStory.title;
 
-    explanation:
-      `The missing word is “${missingWord}”.`,
-  };
+    const q4:
+      ReadingQuestion =
+      shownWords.length >= 2
+        ? {
+            id:
+              `${storySlug}-word-not`,
+
+            type:
+              "word-not",
+
+            prompt:
+              "Which word is NOT in this story?",
+
+            choices:
+              shuffle(
+                [
+                  ...shownWords,
+                  outsideWord,
+                ],
+                random
+              ),
+
+            answer:
+              outsideWord,
+
+            explanation:
+              `“${outsideWord}” is not in the story.`,
+          }
+        : {
+            id:
+              `${storySlug}-word`,
+
+            type:
+              "word-check",
+
+            prompt:
+              "Which word appears in this story?",
+
+            choices:
+              buildWordChoices(
+                onlyWord,
+                otherSentences,
+                storyWords,
+                random
+              ),
+
+            answer:
+              onlyWord,
+
+            explanation:
+              `“${onlyWord}” appears in the story.`,
+          };
+
+    /*
+      Q5
+      이야기에 없는 문장 찾기
+    */
+    const outsideSentences =
+      otherSentences.filter(
+        (sentence) =>
+          !sentences.includes(
+            sentence
+          ) &&
+          extractWords(
+            sentence
+          ).length >= 2
+      );
+
+    const outsideSentence =
+      outsideSentences[
+        Math.floor(
+          random() *
+            outsideSentences.length
+        )
+      ] ??
+      otherSentences[0] ??
+      "";
+
+    const q5:
+      ReadingQuestion = {
+      id:
+        `${storySlug}-sentence-not`,
+
+      type:
+        "sentence-not",
+
+      prompt:
+        "Which sentence is NOT from this story?",
+
+      choices:
+        shuffle(
+          [
+            ...sentences.slice(
+              0,
+              2
+            ),
+            outsideSentence,
+          ],
+          random
+        ),
+
+      answer:
+        outsideSentence,
+
+      explanation:
+        `“${outsideSentence}” is from a different story.`,
+    };
+
+    questions = [
+      q1,
+      q2,
+      q3,
+      q4,
+      q5,
+    ];
+  }
 
   /*
-    Q5
-    이야기에서 실제로 나온 단어 찾기
+    Try Again 때는 문제 순서도 섞음
   */
-
-  const storyWord =
-    chooseWord(
-      currentStory,
-      random,
-      new Set([
-        missingWord.toLowerCase(),
-      ])
-    );
-
-  const q5:
-    ReadingQuestion = {
-    id:
-      `${storySlug}-word`,
-
-    type:
-      "word-check",
-
-    prompt:
-      "Which word appears in this story?",
-
-    choices:
-      buildWordChoices(
-        storyWord,
-        otherSentences,
-        storyWords,
+  return attempt === 0
+    ? questions
+    : shuffle(
+        questions,
         random
-      ),
-
-    answer:
-      storyWord,
-
-    explanation:
-      `“${storyWord}” appears in the story.`,
-  };
-
-  return [
-    q1,
-    q2,
-    q3,
-    q4,
-    q5,
-  ];
+      );
 }

@@ -1461,16 +1461,16 @@ const friendsQuestions:
       "What should you ask?",
 
     choices: [
-      "Are you okay?",
+      "Are you hurt?",
       "What color is it?",
       "How old is your dog?",
     ],
 
     answer:
-      "Are you okay?",
+      "Are you hurt?",
 
     explanation:
-      "친구가 다쳤을 때 괜찮은지 확인하는 표현이에요.",
+      "친구가 넘어졌을 때 다쳤는지 물어보는 표현이에요.",
   },
 
   {
@@ -1689,10 +1689,31 @@ export function getConversationQuestions(
           topic
         ];
 
-  return arrangeChoices(
-    questions,
+  if (
     attempt === 0
-      ? topic
-      : `${topic}-retry-${attempt}`
+  ) {
+    return arrangeChoices(
+      questions,
+      topic
+    );
+  }
+
+  /*
+    Try Again 때는 문제 순서도 섞어서
+    순서를 외워 푸는 것을 막음
+  */
+  const seed =
+    `${topic}-retry-${attempt}`;
+
+  return shuffle(
+    arrangeChoices(
+      questions,
+      seed
+    ),
+    createRandom(
+      hashString(
+        `${seed}-order`
+      )
+    )
   );
 }

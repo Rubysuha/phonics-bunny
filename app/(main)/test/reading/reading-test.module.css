@@ -1,547 +1,397 @@
+/*
+  Test 하위 화면 공통 틀 (Reading · 초록)
+  /test 메인과 같은 규칙: 하늘섬 배경 + 흰색 카드 + 단색 버튼
+*/
 .page {
+  --accent: #3f9a6c;
+  --accent-deep: #2c7550;
+  --tint: #eff8f2;
+  --edge: #cfe9da;
+  --fill: #fef6e2;
+  --ink: #443f3a;
+  --muted: #777670;
+  --ok: #2f9e6b;
+  --ok-bg: #ecf8f1;
+  --ok-edge: #a9dcc0;
+  --no: #d6544f;
+  --no-bg: #fdf0ef;
+  --no-edge: #f0b8b5;
+  --star: #f2b53a;
+  --card: #fffffff0;
+  --shadow: 0 6px 18px #53647c18;
+
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  min-height: 0;
   overflow: hidden;
+  container-type: size;
+  border-radius: 26px;
+  border: 1px solid #d9d5c9;
+  background: var(--fill);
+  box-shadow: 0 8px 24px #615a7514;
+  color: var(--ink);
+  font-family: inherit;
 }
 
+/*
+  배경 그림(3:2)은 박스 너비 100%, 원본 비율 그대로 위쪽에 맞춤
+  그림 아래 남는 공간은 그림 가운데의 크림색으로 채우고
+  그림이 끝나는 부분은 그라데이션으로 자연스럽게 이어줌
+  (내용과 함께 스크롤되도록 local)
+*/
 .hero {
-  position: relative;
+  --clear: 24cqw;
+  /* 토끼가 가려지지 않도록 비워 두는 위쪽 풍경 높이 */
+  --header: clamp(96px, min(17cqw, 26cqh), 190px);
 
-  flex: 1;
-
-  overflow-y: auto;
+  height: 100%;
   overflow-x: hidden;
-
-  border-radius: 30px;
-
-  padding:
-    clamp(28px, 3vw, 38px)
-    clamp(18px, 3vw, 34px)
-    clamp(34px, 4vw, 46px);
-
+  overflow-y: auto;
   box-sizing: border-box;
-
+  scrollbar-width: thin;
+  scrollbar-color: #c4cbd3 transparent;
   background:
-    rgba(255, 255, 255, 0.58);
-
-  backdrop-filter:
-    blur(12px);
-
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.55);
-
-  box-shadow:
-    0 18px 42px
-    rgba(120, 90, 120, 0.1);
+    linear-gradient(to bottom, transparent, var(--fill))
+      center calc(50.7cqw + 1px) / 100% 16cqw no-repeat,
+    var(--fill) url('/test/reading-bg.webp') center top / 100% auto no-repeat;
+  background-attachment: local;
 }
 
+/*
+  위쪽 줄: 토끼 오른쪽에 뒤로가기 버튼과 제목 판
+  아래 내용은 전체 폭 사용
+*/
 .inner {
-  position: relative;
-
-  width: 100%;
-  max-width: 1080px;
-
-  margin: 0 auto;
+  min-height: 100%;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: minmax(var(--header), auto);
+  align-content: start;
+  column-gap: 12px;
+  padding: 0 5% 22px;
 }
 
-/* Back */
+.inner > * {
+  grid-column: 1 / -1;
+}
 
 .backButton {
-  position: absolute;
-
-  top: 0;
-  left: 0;
-
-  width: 46px;
-  height: 46px;
-
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
+  margin-left: var(--clear);
+  width: 44px;
+  height: 44px;
   padding: 0;
-
-  border: none;
-  border-radius: 16px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background:
-    rgba(255, 255, 255, 0.86);
-
-  color: #6d7568;
-
+  border: 0;
+  border-radius: 14px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
   cursor: pointer;
-
-  box-shadow:
-    0 7px 16px
-    rgba(70, 90, 70, 0.08);
+  transition: transform .18s;
 }
 
-/* Header */
+.backButton:hover {
+  transform: translateX(-2px);
+}
+
+.backButton:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
 
 .header {
-  max-width: 700px;
-
-  margin:
-    0 auto
-    clamp(28px, 3vw, 38px);
-
-  padding:
-    0 60px;
-
-  text-align: center;
-}
-
-.headerIcon {
-  width: 62px;
-  height: 62px;
-
-  margin:
-    0 auto 13px;
-
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  justify-self: start;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 12px 0;
+  padding: 12px 22px;
   border-radius: 20px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: #dff1dc;
-
-  color: #5c9864;
-}
-
-.headerIcon svg {
-  width: 35px;
-  height: 35px;
+  background: #ffffffe6;
+  box-shadow: var(--shadow);
+  text-align: left;
 }
 
 .eyebrow {
-  margin:
-    0 0 6px;
-
-  color: #7ca482;
-
+  margin: 0;
+  color: var(--accent);
   font-size: 11px;
-
-  font-weight: 900;
-
-  letter-spacing: 0.17em;
+  font-weight: 800;
+  letter-spacing: .12em;
 }
 
-.title {
-  margin: 0;
-
-  color: #59443a;
-
-  font-size:
-    clamp(
-      35px,
-      4.5vw,
-      48px
-    );
-
-  font-weight: 950;
-
-  letter-spacing: -1px;
+.title,
+.header h1 {
+  margin: 2px 0 0;
+  font-size: clamp(22px, 2.6cqw, 30px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -.5px;
 }
 
 .subtitle {
-  margin:
-    10px 0 0;
-
-  color: #8b7b72;
-
-  font-size:
-    clamp(
-      14px,
-      1.6vw,
-      17px
-    );
-
-  font-weight: 700;
-
-  line-height: 1.5;
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
 }
 
-/* Grid */
-
-.grid {
+.header {
   display: grid;
-
-  grid-template-columns:
-    repeat(
-      3,
-      minmax(0, 1fr)
-    );
-
-  gap: 17px;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 14px;
+  align-items: center;
 }
 
-/* Cards */
+.headerIcon {
+  grid-row: 1 / span 3;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--tint);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+}
+
+.headerIcon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.header > :not(.headerIcon) {
+  grid-column: 2;
+}
+
+/* 레벨 카드: 기존 순서 그대로 3열 */
+.grid {
+  width: min(100%, 960px);
+  justify-self: center;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
 
 .levelCard {
-  min-height: 215px;
-
-  padding: 22px;
-
-  border:
-    1px solid #d8e8d5;
-
-  border-radius: 27px;
-
-  background:
-    linear-gradient(
-      180deg,
-      #eef8ec,
-      #fbfef9
-    );
-
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  box-sizing: border-box;
+  min-width: 0;
+  border: 1px solid #ffffff;
+  border-radius: 20px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  color: inherit;
   font-family: inherit;
-
   text-align: left;
-
   cursor: pointer;
-
-  display: flex;
-  flex-direction: column;
-
-  position: relative;
-
-  box-shadow:
-    0 10px 24px
-    rgba(70, 90, 70, 0.07);
-
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease;
+  transition: transform .18s, box-shadow .18s;
 }
 
-.levelCard:hover {
-  transform:
-    translateY(-4px);
+.levelCard:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px #53647c25;
+}
 
-  box-shadow:
-    0 16px 30px
-    rgba(70, 90, 70, 0.11);
+.levelCard:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .levelNumber {
-  width: 52px;
-  height: 52px;
-
-  border-radius: 17px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: #dcefd8;
-
-  color: #56865d;
-
-  font-size: 22px;
-
-  font-weight: 950;
-
-  margin-bottom: 18px;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: var(--accent);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 19px;
+  font-weight: 800;
 }
 
 .cardContent {
-  flex: 1;
+  min-width: 0;
 }
 
 .levelLabel {
   margin: 0;
-
-  color: #8ca68a;
-
-  font-size: 9px;
-
-  font-weight: 950;
-
-  letter-spacing:
-    0.13em;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .1em;
 }
 
 .cardContent h2 {
-  margin:
-    4px 0 0;
-
-  color: #504139;
-
-  font-size: 23px;
-
-  font-weight: 950;
+  margin: 2px 0 0;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -.3px;
 }
 
 .description {
-  margin:
-    7px 0 0;
-
-  color: #81756e;
-
-  font-size: 13px;
-
-  font-weight: 800;
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .storyCount {
-  margin-top: 19px;
-
-  color: #81907d;
-
-  font-size: 11px;
-
-  font-weight: 800;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .storyCount strong {
-  color: #527258;
-
-  font-size: 17px;
-
-  font-weight: 950;
+  color: var(--ink);
+  font-weight: 800;
 }
-
-.arrow {
-  position: absolute;
-
-  right: 20px;
-  bottom: 20px;
-
-  width: 33px;
-  height: 33px;
-
-  border-radius: 50%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background:
-    rgba(255, 255, 255, 0.82);
-
-  color: #647362;
-}
-
-.arrow svg {
-  width: 16px;
-  height: 16px;
-}
-
-/* Guide */
-
-.guideBox {
-  margin-top: 21px;
-
-  padding:
-    18px 22px;
-
-  border-radius: 23px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 20px;
-
-  background:
-    rgba(255, 255, 255, 0.72);
-
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.8);
-}
-
-.guideBox strong {
-  color: #59443a;
-
-  font-size: 14px;
-
-  font-weight: 950;
-}
-
-.guideBox p {
-  margin:
-    4px 0 0;
-
-  color: #8b7b72;
-
-  font-size: 12px;
-
-  font-weight: 700;
-}
-
-.guideBadge {
-  flex-shrink: 0;
-
-  padding:
-    9px 14px;
-
-  border-radius: 999px;
-
-  background: #e5f3e2;
-
-  color: #658369;
-
-  font-size: 11px;
-
-  font-weight: 900;
-}
-
-/* Tablet */
-
-@media (
-  min-width: 768px
-) and (
-  max-width: 1000px
-) {
-  .grid {
-    grid-template-columns:
-      repeat(
-        2,
-        1fr
-      );
-  }
-}
-
-/* Mobile */
-
-@media (
-  max-width: 767px
-) {
-  .hero {
-    padding:
-      20px
-      16px
-      28px;
-
-    border-radius: 24px;
-  }
-
-  .backButton {
-    position: relative;
-
-    width: 40px;
-    height: 40px;
-
-    margin-bottom: 12px;
-
-    border-radius: 14px;
-  }
-
-  .header {
-    padding: 0;
-
-    margin-bottom: 22px;
-  }
-
-  .headerIcon {
-    width: 54px;
-    height: 54px;
-  }
-
-  .title {
-    font-size: 32px;
-  }
-
-  .grid {
-    grid-template-columns: 1fr;
-
-    gap: 11px;
-  }
-
-  .levelCard {
-    min-height: auto;
-
-    padding: 16px;
-
-    display: grid;
-
-    grid-template-columns:
-      auto
-      1fr
-      auto;
-
-    gap: 14px;
-
-    align-items: center;
-  }
-
-  .levelNumber {
-    width: 50px;
-    height: 50px;
-
-    margin: 0;
-
-    border-radius: 16px;
-  }
-
-  .storyCount {
-    margin-top: 8px;
-  }
-
-  .arrow {
-    position: static;
-  }
-
-  .guideBox {
-    flex-direction: column;
-
-    align-items: flex-start;
-
-    gap: 10px;
-  }
-}
-
-/* Progress */
 
 .progressArea {
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
 .progressTop {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-
   gap: 10px;
-
-  margin-bottom: 6px;
-
-  color: #6f8f74;
-
+  margin-bottom: 4px;
+  color: var(--accent);
   font-size: 11px;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .progressTrack {
-  width: 100%;
-  height: 7px;
-
+  height: 6px;
   overflow: hidden;
-
   border-radius: 999px;
-
-  background: rgba(130, 170, 135, 0.2);
+  background: #e5e9ed;
 }
 
 .progressBar {
   height: 100%;
-
   border-radius: inherit;
-
-  background: linear-gradient(90deg, #8fc79a, #6fae7c);
-
-  transition: width 0.4s ease;
+  background: var(--accent);
+  transition: width .4s;
 }
 
 .progressLoading {
   margin: 0;
-
-  color: #94a894;
-
+  color: var(--muted);
   font-size: 11px;
+  font-weight: 600;
+}
+
+.arrow {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: grid;
+  place-items: center;
+}
+
+.arrow svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* 아래 안내 */
+.guideBox {
+  width: min(100%, 960px);
+  justify-self: center;
+  box-sizing: border-box;
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 18px;
+  border-radius: 16px;
+  background: #ffffffd9;
+}
+
+.guideBox strong {
+  font-size: 14px;
   font-weight: 800;
+}
+
+.guideBox p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.guideBadge {
+  flex: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--tint);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+@container (max-width: 780px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 폰: 풍경 아래에서 시작, 한 열 */
+@container (max-width: 700px) {
+  .hero {
+    --clear: 0px;
+    --header: 22cqw;
+  }
+
+  .inner {
+    grid-template-rows: auto;
+    padding: 20cqw 14px 20px;
+  }
+
+  .header {
+    padding: 10px 16px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .guideBox {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .levelCard,
+  .backButton,
+  .progressBar {
+    transition: none;
+  }
+
+  .levelCard:hover,
+  .backButton:hover {
+    transform: none;
+  }
 }

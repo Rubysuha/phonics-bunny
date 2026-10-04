@@ -20,7 +20,8 @@ export function getReadingStoryKey(
    Stars
 
    5문제
-   5 = 3개 / 4 = 2개 / 3 = 1개
+   5 = 3개 / 4 = 2개
+   통과(4점)하지 못하면 별 없음
 ───────────────────────────── */
 
 export function getReadingStars(
@@ -32,10 +33,6 @@ export function getReadingStars(
 
   if (score >= READING_PASS_SCORE) {
     return 2;
-  }
-
-  if (score >= READING_PASS_SCORE - 1) {
-    return 1;
   }
 
   return 0;

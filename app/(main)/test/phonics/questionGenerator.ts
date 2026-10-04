@@ -131,6 +131,65 @@ function selectTargets(
   return result;
 }
 
+/*
+  모음 빈칸 문제(5문제마다 3번째)의 정답이
+  같은 모음으로 몰리지 않도록 자리를 바꿔줌
+
+  한 가지 모음만 다루는 Stage에서는 바꿀 단어가 없어 그대로 둠
+*/
+function spreadFillBlankTargets(
+  targets: PhonicsBankItem[]
+): PhonicsBankItem[] {
+  const result = [
+    ...targets,
+  ];
+
+  const usedGroups =
+    new Set<string>();
+
+  for (
+    let i = 2;
+    i < result.length;
+    i += 5
+  ) {
+    const group =
+      result[i].group ?? "";
+
+    if (
+      usedGroups.has(
+        group
+      )
+    ) {
+      const swapIndex =
+        result.findIndex(
+          (item, index) =>
+            index % 5 !== 2 &&
+            !usedGroups.has(
+              item.group ?? ""
+            )
+        );
+
+      if (
+        swapIndex !== -1
+      ) {
+        [
+          result[i],
+          result[swapIndex],
+        ] = [
+          result[swapIndex],
+          result[i],
+        ];
+      }
+    }
+
+    usedGroups.add(
+      result[i].group ?? ""
+    );
+  }
+
+  return result;
+}
+
 /* ─────────────────────────────
    Word Choices
 ───────────────────────────── */
@@ -1400,12 +1459,20 @@ export function generatePhonicsStageQuestions(
     return [];
   }
 
-  const targets =
+  const selectedTargets =
     selectTargets(
       stagePool,
       questionCount,
       random
     );
+
+  const targets =
+    category === "short-vowels" ||
+    category === "long-vowels"
+      ? spreadFillBlankTargets(
+          selectedTargets
+        )
+      : selectedTargets;
 
   return targets.map(
     (

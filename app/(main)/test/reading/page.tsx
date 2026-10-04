@@ -27,6 +27,8 @@ import {
 
 import styles from "./reading-test.module.css";
 
+import LoginNotice from "../LoginNotice";
+
 export default function ReadingTestPage() {
   const router =
     useRouter();
@@ -147,6 +149,8 @@ export default function ReadingTestPage() {
               the stories.
             </p>
           </header>
+
+          <LoginNotice />
 
           {/* Levels */}
 

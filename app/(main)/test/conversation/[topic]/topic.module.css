@@ -1,633 +1,464 @@
+/*
+  Test 하위 화면 공통 틀 (Conversation · 핑크)
+  /test 메인과 같은 규칙: 하늘섬 배경 + 흰색 카드 + 단색 버튼
+*/
 .page {
+  --accent: #d2588a;
+  --accent-deep: #a83e6c;
+  --tint: #fcf0f5;
+  --edge: #f6d3e1;
+  --fill: #fdf0df;
+  --ink: #443f3a;
+  --muted: #777670;
+  --ok: #2f9e6b;
+  --ok-bg: #ecf8f1;
+  --ok-edge: #a9dcc0;
+  --no: #d6544f;
+  --no-bg: #fdf0ef;
+  --no-edge: #f0b8b5;
+  --star: #f2b53a;
+  --card: #fffffff0;
+  --shadow: 0 6px 18px #53647c18;
+
   height: 100%;
-
-  display: flex;
-  flex-direction: column;
-
+  min-height: 0;
   overflow: hidden;
+  container-type: size;
+  border-radius: 26px;
+  border: 1px solid #d9d5c9;
+  background: var(--fill);
+  box-shadow: 0 8px 24px #615a7514;
+  color: var(--ink);
+  font-family: inherit;
 }
 
+/*
+  배경 그림(3:2)은 박스 너비 100%, 원본 비율 그대로 위쪽에 맞춤
+  그림 아래 남는 공간은 그림 가운데의 크림색으로 채우고
+  그림이 끝나는 부분은 그라데이션으로 자연스럽게 이어줌
+  (내용과 함께 스크롤되도록 local)
+*/
 .hero {
-  flex: 1;
+  --clear: 30cqw;
+  /* 문제 카드가 시작되는 높이 (토끼 얼굴 아래) */
+  --header: clamp(90px, min(14cqw, 22cqh), 170px);
 
-  overflow-y: auto;
+  /* 진행 정보 줄의 너비 (가운데에 두어도 토끼를 가리지 않는 폭) */
+  --bar: max(30cqw, 290px);
+
+  height: 100%;
   overflow-x: hidden;
-
-  border-radius: 30px;
-
-  padding:
-    clamp(22px, 3vw, 36px)
-    clamp(16px, 3vw, 34px)
-    clamp(28px, 4vw, 44px);
-
+  overflow-y: auto;
   box-sizing: border-box;
-
+  scrollbar-width: thin;
+  scrollbar-color: #c4cbd3 transparent;
   background:
-    rgba(255, 255, 255, 0.58);
-
-  backdrop-filter:
-    blur(12px);
-
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.55);
-
-  box-shadow:
-    0 18px 42px
-    rgba(120, 90, 120, 0.1);
+    linear-gradient(to bottom, transparent, var(--fill))
+      center calc(50.7cqw + 1px) / 100% 16cqw no-repeat,
+    var(--fill) url('/test/conversation-bg.webp') center top / 100% auto no-repeat;
+  background-attachment: local;
 }
 
 .inner {
-  width: 100%;
-
-  max-width: 920px;
-
-  margin: 0 auto;
+  min-height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(10px, 1.4cqw, 16px) 5% 22px;
 }
 
-/* Top */
-
+/*
+  진행 정보 줄: 토끼 얼굴이 보이도록
+  작은 판으로 만들어 맨 위 가운데에 둠
+*/
 .topRow {
+  box-sizing: border-box;
+  width: min(100%, var(--bar));
+  margin: 0 auto;
   display: grid;
-
-  grid-template-columns:
-    auto
-    1fr
-    auto;
-
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-
-  gap: 16px;
+  gap: 10px;
+  padding: 6px 14px 6px 6px;
+  border-radius: 16px;
+  background: #ffffffeb;
+  box-shadow: var(--shadow);
 }
 
 .backButton {
-  width: 44px;
-  height: 44px;
-
+  width: 36px;
+  height: 36px;
   padding: 0;
-
-  border: none;
-
-  border-radius: 15px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background:
-    rgba(255, 255, 255, 0.86);
-
-  color: #75645b;
-
+  border: 0;
+  border-radius: 12px;
+  background: var(--tint);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
   cursor: pointer;
+}
 
-  box-shadow:
-    0 6px 15px
-    rgba(80, 65, 60, 0.08);
+.backButton svg {
+  width: 20px;
+  height: 20px;
+}
+
+.backButton:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .topicInfo {
   min-width: 0;
-
   display: flex;
   flex-direction: column;
-
-  gap: 2px;
+  gap: 1px;
 }
 
 .quizName {
-  color: #bd869c;
-
-  font-size: 10px;
-
-  font-weight: 950;
-
-  letter-spacing:
-    0.08em;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .06em;
 }
 
 .topicName {
-  color: #55463f;
-
-  font-size:
-    clamp(
-      14px,
-      1.7vw,
-      18px
-    );
-
-  font-weight: 950;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .questionNumber {
   display: flex;
-
   align-items: baseline;
-
   gap: 3px;
-
-  color: #a09289;
-
-  font-size: 14px;
-
-  font-weight: 800;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .questionNumber strong {
-  color: #5f4d44;
-
-  font-size: 22px;
-
-  font-weight: 950;
+  color: var(--accent);
+  font-size: 21px;
+  font-weight: 800;
 }
 
-/* Progress */
-
 .progressTrack {
-  width: 100%;
-  height: 9px;
-
-  margin-top: 18px;
-
-  border-radius: 999px;
-
+  box-sizing: border-box;
+  width: min(100%, var(--bar));
+  margin: 6px auto 0;
+  flex: none;
+  height: 8px;
   overflow: hidden;
-
-  background:
-    rgba(225, 210, 215, 0.6);
+  border-radius: 999px;
+  background: #ffffffe0;
+  box-shadow: inset 0 0 0 1px var(--edge);
 }
 
 .progressBar {
   height: 100%;
-
   border-radius: inherit;
-
-  background:
-    linear-gradient(
-      90deg,
-      #e4a6bc,
-      #cf819e
-    );
-
-  transition:
-    width 0.3s ease;
+  background: var(--accent);
+  transition: width .3s;
 }
 
-/* Question */
-
+/* 문제 카드 */
 .questionCard {
-  width: 100%;
-
-  margin-top:
-    clamp(
-      18px,
-      3vw,
-      28px
-    );
-
-  padding:
-    clamp(
-      24px,
-      4vw,
-      38px
-    );
-
   box-sizing: border-box;
-
-  border-radius: 30px;
-
-  background:
-    rgba(255, 255, 255, 0.9);
-
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.95);
-
-  box-shadow:
-    0 14px 34px
-    rgba(80, 60, 70, 0.08);
-}
-
-.questionHeader {
+  width: min(100%, 860px);
+  margin: 14px auto 0;
+  padding: clamp(16px, 2.2cqw, 24px) clamp(18px, 2.6cqw, 28px);
+  border-radius: 24px;
+  background: #fffffff5;
+  box-shadow: 0 8px 24px #53647c1c;
   text-align: center;
 }
 
-.questionLabel {
-  color: #bd8da0;
-
-  font-size: 10px;
-
-  font-weight: 950;
-
-  letter-spacing:
-    0.14em;
+/* 진행 정보 아래 첫 요소는 토끼 얼굴 아래에서 시작 */
+.questionCard {
+  margin-top: max(12px, calc(var(--header) - 76px));
 }
 
-.situation {
-  max-width: 630px;
+.questionHeader {
+  min-width: 0;
+}
 
-  margin:
-    9px auto 0;
-
-  color: #8c7a71;
-
-  font-size: 13px;
-
-  font-weight: 700;
-
-  line-height: 1.55;
-
-  word-break: keep-all;
+.questionLabel {
+  display: inline-block;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--tint);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .1em;
 }
 
 .prompt {
-  max-width: 650px;
-
-  margin:
-    8px auto 0;
-
-  color: #4e4039;
-
-  font-size:
-    clamp(
-      21px,
-      2.7vw,
-      28px
-    );
-
-  font-weight: 950;
-
-  line-height: 1.3;
+  margin: 10px 0 0;
+  font-size: clamp(19px, 2.3cqw, 25px);
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: -.3px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
-/* Optional Image */
+/* 상황 설명 */
+.situation {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.situation + .prompt {
+  margin-top: 4px;
+}
 
 .imageArea {
-  width: 210px;
-  height: 160px;
-
-  margin:
-    22px auto 0;
-
-  overflow: hidden;
-
-  border-radius: 24px;
-
-  background: #faf7f8;
+  margin: 16px auto 0;
+  display: flex;
+  justify-content: center;
 }
 
 .imageArea img {
-  width: 100%;
-  height: 100%;
-
+  display: block;
+  max-width: 100%;
+  max-height: clamp(120px, 26cqh, 210px);
+  border-radius: 18px;
   object-fit: contain;
 }
 
-/* Dialogue */
-
+/* 대화 말풍선 */
 .dialogueBox {
-  max-width: 650px;
-
-  margin:
-    clamp(
-      24px,
-      4vw,
-      34px
-    )
-    auto
-    0;
-
-  padding:
-    20px;
-
-  box-sizing: border-box;
-
-  border-radius: 24px;
-
-  background: #fbf7f8;
-
-  border:
-    1px solid #f0e4e8;
-
+  max-width: 640px;
+  margin: 14px auto 0;
   display: flex;
   flex-direction: column;
-
-  gap: 10px;
+  gap: 6px;
 }
 
 .bubble {
-  max-width: 78%;
-
-  padding:
-    11px 15px;
-
-  border-radius: 17px;
-
-  font-size:
-    clamp(
-      14px,
-      1.8vw,
-      17px
-    );
-
-  font-weight: 850;
-
+  max-width: 82%;
+  padding: 8px 15px;
+  border-radius: 18px;
+  font-size: clamp(15px, 1.7cqw, 17px);
+  font-weight: 700;
   line-height: 1.45;
+  text-align: left;
+  overflow-wrap: anywhere;
 }
 
 .leftBubble {
   align-self: flex-start;
-
-  background: #ffffff;
-
-  color: #61524b;
-
-  border-bottom-left-radius: 6px;
-
-  box-shadow:
-    0 4px 10px
-    rgba(80, 60, 70, 0.05);
+  border-bottom-left-radius: 5px;
+  background: #f1f3f6;
 }
 
 .rightBubble {
   align-self: flex-end;
-
-  background: #f6dde6;
-
-  color: #805467;
-
-  border-bottom-right-radius: 6px;
+  border-bottom-right-radius: 5px;
+  background: var(--tint);
+  color: var(--accent-deep);
 }
 
-/* Choices */
-
+/* 선택지 */
 .choices {
-  max-width: 690px;
-
-  margin:
-    clamp(
-      25px,
-      4vw,
-      34px
-    )
-    auto
-    0;
-
+  max-width: 700px;
+  margin: 16px auto 0;
   display: grid;
-
   grid-template-columns: 1fr;
-
-  gap: 10px;
+  gap: 8px;
 }
+
 
 .choiceButton {
-  position: relative;
-
-  min-height: 62px;
-
-  padding:
-    12px 15px;
-
-  border:
-    2px solid #eee6e8;
-
-  border-radius: 18px;
-
-  background: #ffffff;
-
-  color: #594a43;
-
-  cursor: pointer;
-
-  font-family: inherit;
-
+  min-width: 0;
+  min-height: 54px;
   display: flex;
   align-items: center;
-
   gap: 12px;
-
+  padding: 8px 14px;
+  border: 2px solid #e4e8ed;
+  border-radius: 16px;
+  background: #ffffff;
+  color: var(--ink);
+  font-family: inherit;
   text-align: left;
-
-  transition:
-    transform 0.16s ease,
-    border-color 0.16s ease,
-    background 0.16s ease;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
 }
 
-.choiceButton:not(:disabled):hover {
-  transform:
-    translateY(-2px);
-
-  border-color: #e4b6c7;
-
-  background: #fffafb;
+.choiceButton:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--tint);
 }
 
+/* 누르는 순간 */
+.choiceButton:active:not(:disabled) {
+  background: var(--edge);
+}
+
+.choiceButton:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* 답을 고른 뒤 나머지 선택지는 흐리게 */
 .choiceButton:disabled {
   cursor: default;
+  opacity: .55;
 }
 
 .choiceLetter {
-  width: 34px;
-  height: 34px;
-
-  flex-shrink: 0;
-
-  border-radius: 11px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: #f4edef;
-
-  color: #88746e;
-
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--tint);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
   font-size: 13px;
-
-  font-weight: 950;
+  font-weight: 800;
 }
 
 .choiceText {
   flex: 1;
-
-  font-size:
-    clamp(
-      14px,
-      1.8vw,
-      17px
-    );
-
-  font-weight: 900;
+  min-width: 0;
+  font-size: clamp(15px, 1.7cqw, 17px);
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .choiceState {
+  flex: none;
   width: 23px;
   height: 23px;
-
-  flex-shrink: 0;
 }
 
-.correctChoice {
-  border-color: #8bc895;
-
-  background: #f0f9f1;
-
-  color: #4e8156;
+.choiceButton.correctChoice {
+  border-color: var(--ok);
+  background: var(--ok-bg);
+  color: #1f7a50;
+  opacity: 1;
 }
 
-.correctChoice
-  .choiceLetter {
-  background: #dcefdc;
-
-  color: #50895a;
+.correctChoice .choiceLetter {
+  background: var(--ok);
+  color: #fff;
 }
 
-.correctChoice
-  .choiceState {
-  color: #62a76c;
+.choiceButton.wrongChoice {
+  border-color: var(--no);
+  background: var(--no-bg);
+  color: #b03c38;
+  opacity: 1;
 }
 
-.wrongChoice {
-  border-color: #e5a0a0;
-
-  background: #fff2f2;
-
-  color: #a05c5c;
+.wrongChoice .choiceLetter {
+  background: var(--no);
+  color: #fff;
 }
 
-.wrongChoice
-  .choiceLetter {
-  background: #f7dddd;
-
-  color: #aa5f5f;
-}
-
-.wrongChoice
-  .choiceState {
-  color: #d56f6f;
-}
-
-/* Feedback */
-
+/*
+  정답 · 오답 피드백
+  문제가 길어 스크롤이 생겨도 다음 버튼이 항상 보이도록 아래에 붙임
+*/
 .feedback {
-  max-width: 690px;
-
-  margin:
-    19px
-    auto
-    0;
-
-  padding:
-    14px 16px;
-
+  position: sticky;
+  bottom: 10px;
+  z-index: 2;
+  max-width: 700px;
   box-sizing: border-box;
-
-  border-radius: 20px;
-
+  margin: 14px auto 0;
+  box-shadow: 0 6px 16px #53647c22;
   display: flex;
-
   align-items: center;
   justify-content: space-between;
-
-  gap: 15px;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  text-align: left;
 }
 
 .correctFeedback {
-  background: #edf8ef;
-
-  border:
-    1px solid #cbe8cf;
+  border: 1px solid var(--ok-edge);
+  background: var(--ok-bg);
 }
 
 .wrongFeedback {
-  background: #fff0f0;
-
-  border:
-    1px solid #efcccc;
+  border: 1px solid var(--no-edge);
+  background: var(--no-bg);
 }
 
 .feedbackContent {
   min-width: 0;
-
   display: flex;
-
   align-items: flex-start;
-
   gap: 10px;
 }
 
 .feedbackContent > svg {
-  width: 27px;
-  height: 27px;
-
-  flex-shrink: 0;
+  flex: none;
+  width: 24px;
+  height: 24px;
 }
 
-.correctFeedback
-  .feedbackContent
-  > svg {
-  color: #63a86d;
+.correctFeedback .feedbackContent > svg {
+  color: var(--ok);
 }
 
-.wrongFeedback
-  .feedbackContent
-  > svg {
-  color: #d16b6b;
+.wrongFeedback .feedbackContent > svg {
+  color: var(--no);
 }
 
 .feedbackContent strong {
-  color: #51443e;
-
-  font-size: 14px;
-
-  font-weight: 950;
+  font-size: 15px;
+  font-weight: 800;
 }
 
 .feedbackContent p {
-  margin:
-    3px 0 0;
-
-  color: #81736b;
-
-  font-size: 12px;
-
-  font-weight: 700;
-
-  line-height: 1.45;
-
-  word-break: keep-all;
+  margin: 2px 0 0;
+  color: #66625d;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .nextButton {
-  flex-shrink: 0;
-
-  min-width: 108px;
-
-  padding:
-    11px 16px;
-
-  border: none;
-
-  border-radius: 999px;
-
-  background: #bf718e;
-
-  color: #ffffff;
-
-  display: flex;
+  flex: none;
+  min-width: 124px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  gap: 7px;
-
+  gap: 6px;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
   font-family: inherit;
-
-  font-size: 13px;
-
-  font-weight: 950;
-
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
+}
+
+.nextButton:hover:not(:disabled) {
+  background: var(--accent-deep);
+}
+
+.nextButton:disabled {
+  opacity: .7;
+  cursor: default;
 }
 
 .nextButton svg {
@@ -635,402 +466,258 @@
   height: 16px;
 }
 
-/* Result */
+/* 로딩 · 오류 · 잠금 안내 카드 */
+.invalidBox {
+  box-sizing: border-box;
+  width: min(88%, 440px);
+  margin: calc(var(--header) + 8px) auto 24px;
+  padding: 28px 24px;
+  border-radius: 24px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
 
+.invalidBox h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.invalidBox p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.invalidBox button {
+  margin-top: 16px;
+  padding: 11px 20px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.invalidBox button:hover {
+  background: var(--accent-deep);
+}
+
+/* 결과 */
 .resultWrap {
-  width: 100%;
   min-height: 100%;
-
+  box-sizing: border-box;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  padding: calc(var(--header) + 4px) 5% 24px;
 }
 
 .resultCard {
-  width:
-    min(
-      100%,
-      570px
-    );
-
-  padding:
-    clamp(
-      34px,
-      6vw,
-      54px
-    );
-
   box-sizing: border-box;
-
-  border-radius: 32px;
-
+  width: min(100%, 460px);
+  padding: 24px 28px;
+  border-radius: 24px;
+  background: #fffffff5;
+  box-shadow: 0 8px 24px #53647c1c;
   text-align: center;
-
-  background:
-    rgba(255, 255, 255, 0.92);
-
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.95);
-
-  box-shadow:
-    0 18px 42px
-    rgba(80, 60, 70, 0.09);
 }
 
 .resultIcon {
-  width: 84px;
-  height: 84px;
-
-  margin:
-    0 auto 20px;
-
-  border-radius: 27px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 10px;
+  border-radius: 20px;
+  background: var(--tint);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
 }
 
 .resultIcon svg {
-  width: 47px;
-  height: 47px;
-}
-
-.passCard
-  .resultIcon {
-  background: #fae5b6;
-
-  color: #b78828;
-}
-
-.retryCard
-  .resultIcon {
-  background: #f5e4ea;
-
-  color: #b36884;
+  width: 36px;
+  height: 36px;
 }
 
 .resultEyebrow {
   margin: 0;
-
-  color: #bc8298;
-
-  font-size: 10px;
-
-  font-weight: 950;
-
-  letter-spacing:
-    0.12em;
-}
-
-.resultTitle {
-  margin:
-    8px 0 0;
-
-  color: #51423b;
-
-  font-size:
-    clamp(
-      30px,
-      5vw,
-      42px
-    );
-
-  font-weight: 950;
-}
-
-.resultTopic {
-  margin:
-    7px 0 0;
-
-  color: #897970;
-
-  font-size: 14px;
-
+  color: var(--accent);
+  font-size: 11px;
   font-weight: 800;
+  letter-spacing: .12em;
 }
 
 .stars {
-  margin-top: 24px;
-
+  margin-top: 12px;
   display: flex;
   justify-content: center;
-
-  gap: 7px;
-
-  font-size:
-    clamp(
-      33px,
-      5vw,
-      43px
-    );
+  gap: 4px;
+  font-size: 32px;
+  line-height: 1;
 }
 
 .starActive {
-  color: #efbd42;
+  color: var(--star);
 }
 
 .starEmpty {
-  color: #e7e2de;
+  color: #dcdfe4;
+}
+
+.resultMessage {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.saveError {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--no-edge);
+  border-radius: 12px;
+  background: var(--no-bg);
+  color: #b24a3d;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.resultButtons {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.resultButtons button {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.resultButtons button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.resultTitle {
+  margin: 4px 0 0;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -.5px;
+}
+
+.resultTopic {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .scoreBox {
-  margin-top: 16px;
-
+  margin-top: 8px;
   display: flex;
   align-items: baseline;
   justify-content: center;
-
   gap: 6px;
 }
 
 .scoreNumber {
-  color: #51423b;
-
-  font-size: 50px;
-
-  font-weight: 950;
-}
-
-.scoreDivider {
-  color: #c0b5af;
-
-  font-size: 30px;
-
+  color: var(--accent);
+  font-size: 44px;
   font-weight: 800;
+  line-height: 1.1;
 }
 
+.scoreDivider,
 .scoreTotal {
-  color: #8f8178;
-
-  font-size: 26px;
-
-  font-weight: 900;
-}
-
-.resultMessage {
-  margin:
-    14px
-    auto
-    0;
-
-  color: #84756d;
-
-  font-size: 13px;
-
+  color: var(--muted);
+  font-size: 22px;
   font-weight: 700;
 }
 
-.resultButtons {
-  margin-top: 27px;
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(
-      2,
-      1fr
-    );
-
-  gap: 10px;
+/* 통과: 목록으로 가는 버튼을 강조 */
+.passCard .listButton {
+  background: var(--accent);
+  color: #fff;
 }
 
-.retryButton,
-.listButton {
-  min-height: 48px;
-
-  border: none;
-
-  border-radius: 16px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  gap: 8px;
-
-  font-family: inherit;
-
-  font-size: 13px;
-
-  font-weight: 950;
-
-  cursor: pointer;
+/* 미통과: 다시 도전 버튼을 강조 */
+.retryCard .resultIcon {
+  background: #f1f3f6;
+  color: #7d858e;
 }
 
-.retryButton {
-  background: #f8e6ed;
-
-  color: #a95f7b;
+.retryCard .retryButton {
+  background: var(--accent);
+  color: #fff;
 }
 
-.listButton {
-  background: #f4efeb;
-
-  color: #75645b;
+.retryCard .scoreNumber {
+  color: #7d858e;
 }
 
-/* Invalid */
-
-.invalidBox {
-  max-width: 430px;
-
-  margin:
-    130px auto;
-
-  padding: 35px;
-
-  border-radius: 28px;
-
-  text-align: center;
-
-  background:
-    rgba(255, 255, 255, 0.9);
+/* 다음 단계로: 한 줄 전체를 쓰는 주 버튼 */
+.resultButtons .nextStageButton {
+  grid-column: 1 / -1;
+  background: var(--accent);
+  color: #fff;
 }
 
-.invalidBox h1 {
-  color: #55463e;
+.resultButtons .nextStageButton:hover {
+  background: var(--accent-deep);
 }
 
-.invalidBox p {
-  color: #8b7b72;
+/* 다음 단계 버튼이 있으면 나머지 두 버튼은 보조 버튼 */
+.resultButtons .nextStageButton ~ button {
+  background: #ffffff;
+  color: var(--accent);
 }
 
-.invalidBox button {
-  margin-top: 14px;
-
-  border: none;
-
-  border-radius: 999px;
-
-  padding:
-    12px 19px;
-
-  background: #f8e3eb;
-
-  color: #a75f7a;
-
-  font-weight: 900;
-
-  cursor: pointer;
-}
-
-/* Tablet */
-
-@media (
-  min-width: 768px
-) and (
-  max-width: 1000px
-) {
-  .questionCard {
-    padding:
-      28px
-      26px;
-  }
-}
-
-/* Phone */
-
-@media (
-  max-width: 767px
-) {
+/* 폰: 풍경 아래에서 시작, 한 열 */
+@container (max-width: 700px) {
   .hero {
-    padding:
-      18px
-      13px
-      24px;
-
-    border-radius: 24px;
+    --clear: 0px;
+    --header: 22cqw;
+    --bar: 100%;
   }
 
-  .topRow {
-    gap: 10px;
-  }
-
-  .backButton {
-    width: 39px;
-    height: 39px;
-
-    border-radius: 13px;
-  }
-
-  .quizName {
-    font-size: 8px;
-  }
-
-  .topicName {
-    font-size: 13px;
-  }
-
-  .questionNumber strong {
-    font-size: 19px;
-  }
-
-  .progressTrack {
-    height: 7px;
-
-    margin-top: 14px;
+  .inner {
+    padding: 20cqw 14px 20px;
   }
 
   .questionCard {
-    margin-top: 15px;
-
-    padding:
-      21px
-      15px;
-
-    border-radius: 24px;
-  }
-
-  .situation {
-    font-size: 12px;
-  }
-
-  .prompt {
-    font-size: 20px;
-  }
-
-  .dialogueBox {
-    margin-top: 20px;
-
-    padding: 15px;
-
-    border-radius: 20px;
-  }
-
-  .bubble {
-    max-width: 90%;
-
-    padding:
-      10px 13px;
-
-    font-size: 14px;
+    margin-top: 12px;
   }
 
   .choices {
-    margin-top: 22px;
-  }
-
-  .choiceButton {
-    min-height: 57px;
-
-    padding:
-      10px
-      12px;
-
-    border-radius: 16px;
-  }
-
-  .choiceText {
-    font-size: 14px;
+    grid-template-columns: 1fr;
   }
 
   .feedback {
-    margin-top: 15px;
-
     flex-direction: column;
-
     align-items: stretch;
   }
 
@@ -1038,12 +725,9 @@
     width: 100%;
   }
 
-  .resultCard {
-    padding:
-      30px
-      20px;
-
-    border-radius: 26px;
+  .resultWrap {
+    padding-left: 14px;
+    padding-right: 14px;
   }
 
   .resultButtons {
@@ -1051,16 +735,9 @@
   }
 }
 
-.saveError {
-  margin: 0 0 16px;
-  padding: 10px 14px;
-  border-radius: 14px;
-
-  background: rgba(255, 226, 222, 0.8);
-  color: #b24a3d;
-
-  font-size: 14px;
-  font-weight: 800;
-  line-height: 1.5;
-  text-align: center;
+@media (prefers-reduced-motion: reduce) {
+  .progressBar,
+  .choiceButton {
+    transition: none;
+  }
 }

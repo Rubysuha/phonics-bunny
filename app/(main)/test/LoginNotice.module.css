@@ -1,0 +1,42 @@
+/*
+  색은 각 Test 화면의 .page 에 정의된 변수(--accent, --tint)를 그대로 사용
+*/
+.notice {
+  width: min(100%, 960px);
+  justify-self: center;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 10px 9px 16px;
+  border: 1px solid var(--edge, #e4e8ed);
+  border-radius: 14px;
+  background: #fffffff0;
+}
+
+.notice p {
+  margin: 0;
+  color: #66625d;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.loginLink {
+  flex: none;
+  padding: 7px 14px;
+  border-radius: 10px;
+  background: var(--accent, #3977b9);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.loginLink:focus-visible {
+  outline: 3px solid var(--accent, #3977b9);
+  outline-offset: 2px;
+}

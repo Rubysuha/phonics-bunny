@@ -39,6 +39,7 @@ import {
 } from "@/lib/testProgress";
 
 import {
+  FINAL_PHONICS_STAGE,
   getPhonicsPassScore,
   getPhonicsStars,
   isPhonicsStagePassed,
@@ -754,6 +755,46 @@ export default function PhonicsStagePage() {
     };
 
   /* ─────────────────────────────
+     Next Stage
+     (통과해서 결과가 저장된 경우에만 버튼이 보임)
+  ───────────────────────────── */
+
+  const handleNextStage =
+    () => {
+      stopCurrentAudio();
+
+      setCurrentIndex(
+        0
+      );
+
+      setSelectedChoice(
+        null
+      );
+
+      setScore(
+        0
+      );
+
+      setSaveError(
+        null
+      );
+
+      setIsFinished(
+        false
+      );
+
+      setIsCheckingAccess(
+        true
+      );
+
+      router.push(
+        `/test/phonics/${categoryId}/${
+          stageNumber + 1
+        }`
+      );
+    };
+
+  /* ─────────────────────────────
      Result
   ───────────────────────────── */
 
@@ -940,6 +981,28 @@ export default function PhonicsStagePage() {
                   styles.resultButtons
                 }
               >
+                {passed &&
+                  !saveError &&
+                  stageNumber <
+                    FINAL_PHONICS_STAGE && (
+                    <button
+                      type="button"
+                      className={
+                        styles.nextStageButton
+                      }
+                      onClick={
+                        handleNextStage
+                      }
+                    >
+                      Next Stage
+
+                      <ArrowRight
+                        size={20}
+                        weight="bold"
+                      />
+                    </button>
+                  )}
+
                 <button
                   type="button"
                   className={
@@ -995,9 +1058,15 @@ export default function PhonicsStagePage() {
     selectedChoice ===
     currentQuestion.answer;
 
+  /*
+    진행 막대는 답을 고른 문제 수 기준
+    (1번 문제를 풀기 전에는 0%)
+  */
   const progress =
     ((currentIndex +
-      1) /
+      (isAnswered
+        ? 1
+        : 0)) /
       questions.length) *
     100;
 

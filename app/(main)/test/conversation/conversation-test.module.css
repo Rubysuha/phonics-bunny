@@ -1,540 +1,331 @@
+/*
+  Test 하위 화면 공통 틀 (Conversation · 핑크)
+  /test 메인과 같은 규칙: 하늘섬 배경 + 흰색 카드 + 단색 버튼
+*/
 .page {
+  --accent: #d2588a;
+  --accent-deep: #a83e6c;
+  --tint: #fcf0f5;
+  --edge: #f6d3e1;
+  --fill: #fdf0df;
+  --ink: #443f3a;
+  --muted: #777670;
+  --ok: #2f9e6b;
+  --ok-bg: #ecf8f1;
+  --ok-edge: #a9dcc0;
+  --no: #d6544f;
+  --no-bg: #fdf0ef;
+  --no-edge: #f0b8b5;
+  --star: #f2b53a;
+  --card: #fffffff0;
+  --shadow: 0 6px 18px #53647c18;
+
   height: 100%;
-
-  display: flex;
-  flex-direction: column;
-
+  min-height: 0;
   overflow: hidden;
+  container-type: size;
+  border-radius: 26px;
+  border: 1px solid #d9d5c9;
+  background: var(--fill);
+  box-shadow: 0 8px 24px #615a7514;
+  color: var(--ink);
+  font-family: inherit;
 }
 
+/*
+  배경 그림(3:2)은 박스 너비 100%, 원본 비율 그대로 위쪽에 맞춤
+  그림 아래 남는 공간은 그림 가운데의 크림색으로 채우고
+  그림이 끝나는 부분은 그라데이션으로 자연스럽게 이어줌
+  (내용과 함께 스크롤되도록 local)
+*/
 .hero {
-  position: relative;
+  --clear: 30cqw;
+  /* 토끼가 가려지지 않도록 비워 두는 위쪽 풍경 높이 */
+  --header: clamp(96px, min(17cqw, 26cqh), 190px);
 
-  flex: 1;
-
-  overflow-y: auto;
+  height: 100%;
   overflow-x: hidden;
-
-  border-radius: 30px;
-
-  padding:
-    clamp(28px, 3vw, 38px)
-    clamp(18px, 3vw, 34px)
-    clamp(34px, 4vw, 46px);
-
+  overflow-y: auto;
   box-sizing: border-box;
-
+  scrollbar-width: thin;
+  scrollbar-color: #c4cbd3 transparent;
   background:
-    rgba(
-      255,
-      255,
-      255,
-      0.58
-    );
-
-  backdrop-filter:
-    blur(12px);
-
-  border:
-    1px solid
-    rgba(
-      255,
-      255,
-      255,
-      0.55
-    );
-
-  box-shadow:
-    0 18px 42px
-    rgba(
-      120,
-      90,
-      120,
-      0.1
-    );
+    linear-gradient(to bottom, transparent, var(--fill))
+      center calc(50.7cqw + 1px) / 100% 16cqw no-repeat,
+    var(--fill) url('/test/conversation-bg.webp') center top / 100% auto no-repeat;
+  background-attachment: local;
 }
 
+/*
+  위쪽 줄: 토끼 오른쪽에 뒤로가기 버튼과 제목 판
+  아래 내용은 전체 폭 사용
+*/
 .inner {
-  position: relative;
-
-  width: 100%;
-
-  max-width: 1080px;
-
-  margin: 0 auto;
+  min-height: 100%;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: minmax(var(--header), auto);
+  align-content: start;
+  column-gap: 12px;
+  padding: 0 5% 22px;
 }
 
-/* Back */
+.inner > * {
+  grid-column: 1 / -1;
+}
 
 .backButton {
-  position: absolute;
-
-  top: 0;
-  left: 0;
-
-  width: 46px;
-  height: 46px;
-
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
+  margin-left: var(--clear);
+  width: 44px;
+  height: 44px;
   padding: 0;
-
-  border: none;
-
-  border-radius: 16px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.85
-    );
-
-  color: #75645b;
-
+  border: 0;
+  border-radius: 14px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
   cursor: pointer;
-
-  box-shadow:
-    0 7px 16px
-    rgba(
-      90,
-      70,
-      70,
-      0.08
-    );
+  transition: transform .18s;
 }
 
 .backButton:hover {
-  transform:
-    translateX(-2px);
+  transform: translateX(-2px);
 }
 
-/* Header */
+.backButton:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
 
 .header {
-  max-width: 690px;
-
-  margin:
-    0 auto
-    clamp(28px, 3vw, 38px);
-
-  padding:
-    0 60px;
-
-  text-align: center;
-}
-
-.headerIcon {
-  width: 62px;
-  height: 62px;
-
-  margin:
-    0 auto 13px;
-
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  justify-self: start;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 12px 0;
+  padding: 12px 22px;
   border-radius: 20px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: #f9dce7;
-
-  color: #c85d83;
-}
-
-.headerIcon svg {
-  width: 35px;
-  height: 35px;
+  background: #ffffffe6;
+  box-shadow: var(--shadow);
+  text-align: left;
 }
 
 .eyebrow {
-  margin:
-    0 0 6px;
-
-  color: #c58aa1;
-
+  margin: 0;
+  color: var(--accent);
   font-size: 11px;
-
-  font-weight: 900;
-
-  letter-spacing:
-    0.17em;
+  font-weight: 800;
+  letter-spacing: .12em;
 }
 
-.title {
-  margin: 0;
-
-  color: #59443a;
-
-  font-size:
-    clamp(
-      35px,
-      4.5vw,
-      48px
-    );
-
-  font-weight: 950;
-
-  letter-spacing:
-    -1px;
+.title,
+.header h1 {
+  margin: 2px 0 0;
+  font-size: clamp(22px, 2.6cqw, 30px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -.5px;
 }
 
 .subtitle {
-  margin:
-    10px 0 0;
-
-  color: #8b7b72;
-
-  font-size:
-    clamp(
-      14px,
-      1.6vw,
-      17px
-    );
-
-  font-weight: 700;
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
 }
 
-/* Grid */
-
-.grid {
+.header {
   display: grid;
-
-  grid-template-columns:
-    repeat(
-      3,
-      minmax(
-        0,
-        1fr
-      )
-    );
-
-  gap: 17px;
-
-  align-items: stretch;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 14px;
+  align-items: center;
 }
 
-/* Card */
+.headerIcon {
+  grid-row: 1 / span 3;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--tint);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+}
+
+.headerIcon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.header > :not(.headerIcon) {
+  grid-column: 2;
+}
+
+/* 토픽 카드: 기존 순서 그대로 3열 */
+.grid {
+  width: min(100%, 960px);
+  justify-self: center;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
 
 .card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-content: space-between;
+  gap: 8px 12px;
+  padding: 14px;
+  box-sizing: border-box;
   min-width: 0;
-
-  min-height: 245px;
-
-  padding:
-    21px;
-
-  box-sizing:
-    border-box;
-
-  border-radius: 28px;
-
-  border:
-    1px solid
-    rgba(
-      220,
-      205,
-      205,
-      0.75
-    );
-
+  border: 1px solid #ffffff;
+  border-radius: 20px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  color: inherit;
   font-family: inherit;
-
   text-align: left;
-
   cursor: pointer;
-
-  display: flex;
-  flex-direction: column;
-
-  box-shadow:
-    0 10px 24px
-    rgba(
-      80,
-      60,
-      70,
-      0.07
-    ),
-    inset
-    0 2px 0
-    rgba(
-      255,
-      255,
-      255,
-      0.75
-    );
-
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease;
+  transition: transform .18s, box-shadow .18s;
 }
 
-.card:hover {
-  transform:
-    translateY(-4px);
-
-  box-shadow:
-    0 16px 30px
-    rgba(
-      80,
-      60,
-      70,
-      0.11
-    );
+.card:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px #53647c25;
 }
 
-/* Colors */
-
-.greetingsCard {
-  background:
-    linear-gradient(
-      180deg,
-      #fff0f5,
-      #fff9fb
-    );
-
-  border-color: #f1cbd8;
+.card:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
 }
 
-.schoolCard {
-  background:
-    linear-gradient(
-      180deg,
-      #eef6ff,
-      #f9fcff
-    );
-
-  border-color: #cbdfee;
-}
-
-.familyCard {
-  background:
-    linear-gradient(
-      180deg,
-      #fff6e5,
-      #fffcf5
-    );
-
-  border-color: #ead7ac;
-}
-
-.foodCard {
-  background:
-    linear-gradient(
-      180deg,
-      #f0f8eb,
-      #fbfef9
-    );
-
-  border-color: #cce1c2;
-}
-
-.friendsCard {
-  background:
-    linear-gradient(
-      180deg,
-      #f3efff,
-      #fbfaff
-    );
-
-  border-color: #d7cbed;
-}
-
+/* 토픽별 클래스는 모두 같은 핑크 계열을 사용 */
+.greetingsCard,
+.schoolCard,
+.familyCard,
+.foodCard,
+.friendsCard,
 .finalCard {
-  background:
-    linear-gradient(
-      180deg,
-      #fff5d7,
-      #fffdf5
-    );
-
-  border-color: #e7ce82;
+  border-color: #ffffff;
 }
-
-/* Badge */
 
 .badge {
-  width: 66px;
-  height: 66px;
-
-  margin-bottom: 18px;
-
-  border-radius: 20px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 17px;
-
-  font-weight: 950;
-
-  letter-spacing:
-    -0.4px;
-
-  flex-shrink: 0;
-}
-
-.greetingsBadge {
-  background: #f8dce6;
-  color: #bc607f;
-}
-
-.schoolBadge {
-  background: #dcecf8;
-  color: #527f9e;
-}
-
-.familyBadge {
-  background: #f6e6bf;
-  color: #a77c37;
-
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--tint);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
   font-size: 13px;
+  font-weight: 800;
 }
 
-.foodBadge {
-  background: #deefd8;
-  color: #5c8d61;
+.badge svg {
+  width: 23px;
+  height: 23px;
 }
 
-.friendsBadge {
-  background: #e5def7;
-  color: #7460a9;
-}
-
+.greetingsBadge,
+.schoolBadge,
+.familyBadge,
+.foodBadge,
+.friendsBadge,
 .finalBadge {
-  background: #f7e4a8;
-  color: #a37b27;
-
-  font-size: 28px;
+  background: var(--tint);
 }
-
-/* Content */
 
 .cardContent {
-  flex: 1;
+  min-width: 0;
 }
 
 .topicLabel {
   margin: 0;
-
-  color: #b19c92;
-
-  font-size: 9px;
-
-  font-weight: 950;
-
-  letter-spacing:
-    0.13em;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .1em;
 }
 
 .cardContent h2 {
-  margin:
-    4px 0 0;
-
-  color: #504139;
-
-  font-size:
-    clamp(
-      19px,
-      2vw,
-      24px
-    );
-
-  font-weight: 950;
+  margin: 2px 0 0;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -.3px;
 }
 
 .cardSubtitle {
-  margin:
-    6px 0 0;
-
-  color: #927f75;
-
-  font-size: 12px;
-
-  font-weight: 900;
-
-  line-height: 1.4;
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .description {
-  margin:
-    14px 0 0;
-
-  color: #796e68;
-
-  font-size: 12.5px;
-
-  font-weight: 700;
-
-  line-height: 1.55;
-
-  word-break:
-    keep-all;
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  word-break: keep-all;
 }
 
-/* Bottom */
+.topicStars {
+  margin-top: 5px;
+  font-size: 15px;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+
+.activeStar {
+  color: var(--star);
+}
+
+.emptyStar {
+  color: #dcdfe4;
+}
 
 .bottomRow {
-  margin-top: 18px;
-
-  padding-top: 13px;
-
-  border-top:
-    1px solid
-    rgba(
-      100,
-      80,
-      75,
-      0.07
-    );
-
+  grid-column: 1 / -1;
   display: flex;
   align-items: center;
-  justify-content:
-    space-between;
-
+  justify-content: space-between;
   gap: 10px;
+  min-height: 30px;
+  padding-top: 8px;
+  border-top: 1px solid #eef0f3;
 }
 
 .questionCount {
-  color: #97887f;
-
-  font-size: 11px;
-
-  font-weight: 800;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .questionCount strong {
-  color: #594a42;
-
-  font-size: 16px;
-
-  font-weight: 950;
+  color: var(--ink);
+  font-weight: 800;
 }
 
 .arrow {
-  width: 32px;
-  height: 32px;
-
+  flex: none;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.8
-    );
-
-  color: #75645b;
+  background: var(--accent);
+  color: #fff;
+  display: grid;
+  place-items: center;
 }
 
 .arrow svg {
@@ -542,345 +333,137 @@
   height: 15px;
 }
 
-/* Guide */
-
-.guideBox {
-  margin-top: 20px;
-
-  padding:
-    18px 22px;
-
-  border-radius: 23px;
-
-  display: flex;
-  align-items: center;
-  justify-content:
-    space-between;
-
-  gap: 20px;
-
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.72
-    );
-
-  border:
-    1px solid
-    rgba(
-      255,
-      255,
-      255,
-      0.8
-    );
-
-  box-shadow:
-    0 8px 20px
-    rgba(
-      100,
-      80,
-      70,
-      0.05
-    );
+/* Final Challenge: 핑크 테두리로 구분 */
+.finalCardLayout {
+  border: 2px solid var(--accent);
 }
 
-.guideBox strong {
-  color: #59443a;
-
-  font-size: 14px;
-
-  font-weight: 950;
-}
-
-.guideBox p {
-  margin:
-    4px 0 0;
-
-  color: #8b7b72;
-
-  font-size: 12px;
-
-  font-weight: 700;
-}
-
-.guideBadge {
-  flex-shrink: 0;
-
-  padding:
-    9px 14px;
-
-  border-radius: 999px;
-
-  background: #f9e4eb;
-
-  color: #ad617d;
-
-  font-size: 11px;
-
-  font-weight: 900;
-}
-
-/* Tablet */
-
-@media (
-  min-width: 768px
-) and (
-  max-width: 1000px
-) {
-  .grid {
-    grid-template-columns:
-      repeat(
-        2,
-        minmax(
-          0,
-          1fr
-        )
-      );
-  }
-
-  .card {
-    min-height: 230px;
-  }
-}
-
-/* Phone */
-
-@media (
-  max-width: 767px
-) {
-  .hero {
-    padding:
-      20px
-      16px
-      28px;
-
-    border-radius: 24px;
-  }
-
-  .backButton {
-    position: relative;
-
-    width: 40px;
-    height: 40px;
-
-    margin-bottom: 12px;
-
-    border-radius: 14px;
-  }
-
-  .header {
-    padding: 0;
-
-    margin-bottom: 22px;
-  }
-
-  .headerIcon {
-    width: 54px;
-    height: 54px;
-
-    border-radius: 18px;
-  }
-
-  .title {
-    font-size: 32px;
-  }
-
-  .subtitle {
-    font-size: 13px;
-  }
-
-  .grid {
-    grid-template-columns:
-      1fr;
-
-    gap: 11px;
-  }
-
-  .card {
-    min-height: auto;
-
-    padding: 15px;
-
-    border-radius: 21px;
-
-    display: grid;
-
-    grid-template-columns:
-      auto
-      minmax(
-        0,
-        1fr
-      )
-      auto;
-
-    grid-template-areas:
-      "badge content bottom";
-
-    column-gap: 13px;
-
-    align-items: center;
-  }
-
-  .badge {
-    grid-area: badge;
-
-    width: 54px;
-    height: 54px;
-
-    margin-bottom: 0;
-
-    border-radius: 17px;
-
-    font-size: 14px;
-  }
-
-  .finalBadge {
-    font-size: 23px;
-  }
-
-  .cardContent {
-    grid-area:
-      content;
-  }
-
-  .topicLabel {
-    font-size: 8px;
-  }
-
-  .cardContent h2 {
-    font-size: 17px;
-  }
-
-  .cardSubtitle {
-    font-size: 11px;
-  }
-
-  .description {
-    margin-top: 6px;
-
-    font-size: 11.5px;
-
-    line-height: 1.45;
-  }
-
-  .bottomRow {
-    grid-area:
-      bottom;
-
-    margin: 0;
-    padding: 0;
-
-    border: none;
-  }
-
-  .questionCount {
-    display: none;
-  }
-
-  .arrow {
-    width: 31px;
-    height: 31px;
-  }
-
-  .guideBox {
-    margin-top: 15px;
-
-    padding:
-      15px 17px;
-
-    flex-direction: column;
-
-    align-items:
-      flex-start;
-
-    gap: 10px;
-  }
-}
-
-/* ─────────────────────────────
-   Progress States
-───────────────────────────── */
-
-.loadingBox {
-  min-height: 260px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: #9c898f;
-
-  font-size: 14px;
-
-  font-weight: 800;
-}
-
+/* 통과한 토픽: 초록 체크 */
 .passedCard {
-  box-shadow:
-    0 10px 24px
-    rgba(90, 140, 100, 0.09),
-    inset
-    0 2px 0
-    rgba(255, 255, 255, 0.8);
+  border-color: var(--ok-edge);
+  background: #f6fcf8;
 }
 
-.passedCard .badge {
-  background: #dcefdc;
-
-  color: #589061;
+.passedCard .badge,
+.passedCard .arrow {
+  background: var(--ok);
+  color: #fff;
 }
 
-.passedCard .badge svg {
-  width: 28px;
-  height: 28px;
-}
-
+/* 잠긴 Final: 회색 점선 */
 .lockedCard {
+  border: 2px dashed #cdd2d9;
+  background: #f3f4f6;
+  box-shadow: none;
+  color: #9aa1a9;
   cursor: not-allowed;
-
-  opacity: 0.56;
-
-  filter:
-    grayscale(0.18);
-
-  box-shadow: none;
-}
-
-.lockedCard:hover {
-  transform: none;
-
-  box-shadow: none;
 }
 
 .lockedCard .badge {
-  background: #e7e2df;
-
-  color: #a79d97;
+  background: #c3c9d0;
+  color: #fff;
 }
 
-.lockedCard .badge svg {
-  width: 23px;
-  height: 23px;
+.lockedCard .topicLabel,
+.lockedCard .cardSubtitle,
+.lockedCard .description,
+.lockedCard .questionCount {
+  color: #9aa1a9;
 }
 
-.topicStars {
-  margin-top: 11px;
-
+/* 아래 안내 */
+.guideBox {
+  width: min(100%, 960px);
+  justify-self: center;
+  box-sizing: border-box;
+  margin-top: 14px;
   display: flex;
-
-  gap: 2px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 18px;
+  border-radius: 16px;
+  background: #ffffffd9;
 }
 
-.activeStar {
-  color: #efbd42;
-
-  font-size: 17px;
+.guideBox strong {
+  font-size: 14px;
+  font-weight: 800;
 }
 
-.emptyStar {
-  color: #ded9d5;
+.guideBox p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  word-break: keep-all;
+}
 
-  font-size: 17px;
+.guideBadge {
+  flex: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--tint);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* 불러오는 중 */
+.loadingBox {
+  justify-self: center;
+  padding: 26px 40px;
+  border-radius: 20px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+
+@container (max-width: 780px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 폰: 풍경 아래에서 시작, 한 열 */
+@container (max-width: 700px) {
+  .hero {
+    --clear: 0px;
+    --header: 22cqw;
+  }
+
+  .inner {
+    grid-template-rows: auto;
+    padding: 20cqw 14px 20px;
+  }
+
+  .header {
+    padding: 10px 16px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .guideBox {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .backButton {
+    transition: none;
+  }
+
+  .card:hover,
+  .backButton:hover {
+    transform: none;
+  }
 }

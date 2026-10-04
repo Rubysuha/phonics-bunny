@@ -1,77 +1,100 @@
+/*
+  Test 하위 화면 공통 틀 (Reading · 초록)
+  /test 메인과 같은 규칙: 하늘섬 배경 + 흰색 카드 + 단색 버튼
+*/
 .page {
+  --accent: #3f9a6c;
+  --accent-deep: #2c7550;
+  --tint: #eff8f2;
+  --edge: #cfe9da;
+  --fill: #fef6e2;
+  --ink: #443f3a;
+  --muted: #777670;
+  --ok: #2f9e6b;
+  --ok-bg: #ecf8f1;
+  --ok-edge: #a9dcc0;
+  --no: #d6544f;
+  --no-bg: #fdf0ef;
+  --no-edge: #f0b8b5;
+  --star: #f2b53a;
+  --card: #fffffff0;
+  --shadow: 0 6px 18px #53647c18;
+
   height: 100%;
-
-  display: flex;
-  flex-direction: column;
-
+  min-height: 0;
   overflow: hidden;
+  container-type: size;
+  border-radius: 26px;
+  border: 1px solid #d9d5c9;
+  background: var(--fill);
+  box-shadow: 0 8px 24px #615a7514;
+  color: var(--ink);
+  font-family: inherit;
 }
 
+/*
+  배경 그림(3:2)은 박스 너비 100%, 원본 비율 그대로 위쪽에 맞춤
+  그림 아래 남는 공간은 그림 가운데의 크림색으로 채우고
+  그림이 끝나는 부분은 그라데이션으로 자연스럽게 이어줌
+  (내용과 함께 스크롤되도록 local)
+*/
 .hero {
-  flex: 1;
+  --clear: 24cqw;
+  /* 문제 카드가 시작되는 높이 (토끼 얼굴 아래) */
+  --header: clamp(90px, min(14cqw, 22cqh), 170px);
 
+  /* 진행 정보 줄의 너비 (가운데에 두어도 토끼를 가리지 않는 폭) */
+  --bar: max(46cqw, 290px);
+
+  height: 100%;
+  overflow-x: hidden;
   overflow-y: auto;
-
-  border-radius: 30px;
-
-  padding:
-    clamp(20px, 3vw, 34px)
-    clamp(15px, 3vw, 32px)
-    36px;
-
   box-sizing: border-box;
-
+  scrollbar-width: thin;
+  scrollbar-color: #c4cbd3 transparent;
   background:
-    rgba(255, 255, 255, 0.58);
-
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.6);
-
-  box-shadow:
-    0 18px 42px
-    rgba(90, 100, 90, 0.08);
+    linear-gradient(to bottom, transparent, var(--fill))
+      center calc(50.7cqw + 1px) / 100% 16cqw no-repeat,
+    var(--fill) url('/test/reading-bg.webp') center top / 100% auto no-repeat;
+  background-attachment: local;
 }
 
 .inner {
-  width: 100%;
-
-  max-width: 900px;
-
-  margin: 0 auto;
+  min-height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(10px, 1.4cqw, 16px) 5% 22px;
 }
 
-/* Top */
-
+/*
+  진행 정보 줄: 토끼 얼굴이 보이도록
+  작은 판으로 만들어 맨 위 가운데에 둠
+*/
 .topRow {
+  box-sizing: border-box;
+  width: min(100%, var(--bar));
+  margin: 0 auto;
   display: grid;
-
-  grid-template-columns:
-    auto
-    1fr
-    auto;
-
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-
-  gap: 14px;
+  gap: 10px;
+  padding: 6px 14px 6px 6px;
+  border-radius: 16px;
+  background: #ffffffeb;
+  box-shadow: var(--shadow);
 }
 
 .backButton {
-  width: 43px;
-  height: 43px;
-
-  border: none;
-
-  border-radius: 14px;
-
-  background: #ffffff;
-
-  color: #687568;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: var(--tint);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
   cursor: pointer;
 }
 
@@ -80,115 +103,136 @@
   height: 20px;
 }
 
+.backButton:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
 .storyInfo {
   min-width: 0;
-
   display: flex;
   flex-direction: column;
+  gap: 1px;
 }
 
 .storyInfo span {
-  color: #81917f;
-
-  font-size: 10px;
-
-  font-weight: 900;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .06em;
 }
 
 .storyInfo strong {
-  color: #51453e;
-
-  font-size: 17px;
-
-  font-weight: 950;
-
-  white-space: nowrap;
-
   overflow: hidden;
-
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .questionNumber {
   display: flex;
-
   align-items: baseline;
-
   gap: 3px;
-
-  color: #958981;
-
+  color: var(--muted);
   font-size: 13px;
+  font-weight: 700;
 }
 
 .questionNumber strong {
-  color: #526153;
-
-  font-size: 22px;
-
-  font-weight: 950;
+  color: var(--accent);
+  font-size: 21px;
+  font-weight: 800;
 }
 
-/* Progress */
-
 .progressTrack {
+  box-sizing: border-box;
+  width: min(100%, var(--bar));
+  margin: 6px auto 0;
+  flex: none;
   height: 8px;
-
-  margin-top: 16px;
-
   overflow: hidden;
-
   border-radius: 999px;
-
-  background: #e0eadf;
+  background: #ffffffe0;
+  box-shadow: inset 0 0 0 1px var(--edge);
 }
 
 .progressBar {
   height: 100%;
-
   border-radius: inherit;
-
-  background:
-    linear-gradient(
-      90deg,
-      #93bd91,
-      #6fa576
-    );
+  background: var(--accent);
+  transition: width .3s;
 }
 
-/* Read Again */
+/* 문제 카드 */
+.questionCard {
+  box-sizing: border-box;
+  width: min(100%, 860px);
+  margin: 14px auto 0;
+  padding: clamp(16px, 2.2cqw, 24px) clamp(18px, 2.6cqw, 28px);
+  border-radius: 24px;
+  background: #fffffff5;
+  box-shadow: 0 8px 24px #53647c1c;
+  text-align: center;
+}
 
+/* 진행 정보 아래 첫 요소는 토끼 얼굴 아래에서 시작 */
 .readAgainRow {
-  margin-top: 15px;
+  margin-top: max(12px, calc(var(--header) - 76px));
+}
 
+.questionHeader {
+  min-width: 0;
+}
+
+.questionLabel {
+  display: inline-block;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--tint);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+
+.prompt {
+  margin: 10px 0 0;
+  font-size: clamp(19px, 2.3cqw, 25px);
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: -.3px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* 이야기 다시 읽기 */
+.readAgainRow {
+  width: min(100%, 860px);
+  margin-left: auto;
+  margin-right: auto;
   text-align: right;
 }
 
 .readAgainRow button {
-  border: none;
-
-  border-radius: 999px;
-
-  padding:
-    9px 14px;
-
-  background: #eaf4e7;
-
-  color: #617e64;
-
   display: inline-flex;
-
   align-items: center;
-
   gap: 7px;
-
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #ffffffeb;
+  box-shadow: var(--shadow);
+  color: var(--accent);
   font-family: inherit;
-
-  font-size: 11px;
-
-  font-weight: 900;
-
+  font-size: 12px;
+  font-weight: 700;
   cursor: pointer;
+}
+
+.readAgainRow button:hover {
+  background: var(--tint);
 }
 
 .readAgainRow svg {
@@ -196,275 +240,216 @@
   height: 17px;
 }
 
-/* Question */
-
-.questionCard {
-  margin-top: 14px;
-
-  padding:
-    clamp(24px, 4vw, 38px);
-
-  border-radius: 29px;
-
-  background:
-    rgba(255, 255, 255, 0.93);
-
-  box-shadow:
-    0 13px 30px
-    rgba(80, 90, 80, 0.07);
-
-  text-align: center;
+.readAgainRow + .questionCard {
+  margin-top: 10px;
 }
 
-.questionLabel {
-  color: #83a083;
-
-  font-size: 10px;
-
-  font-weight: 950;
-
-  letter-spacing:
-    0.14em;
-}
-
-.prompt {
-  margin:
-    8px auto 0;
-
-  color: #4f433c;
-
-  font-size:
-    clamp(
-      21px,
-      3vw,
-      28px
-    );
-
-  font-weight: 950;
-}
-
+/* 빈칸 문장 */
 .mainText {
   max-width: 640px;
-
-  margin:
-    24px auto 0;
-
-  padding:
-    19px 22px;
-
-  border-radius: 20px;
-
-  background: #f2f8f0;
-
-  color: #536452;
-
-  font-size:
-    clamp(
-      18px,
-      2.6vw,
-      24px
-    );
-
-  font-weight: 900;
-
+  box-sizing: border-box;
+  margin: 16px auto 0;
+  padding: 14px 20px;
+  border-radius: 18px;
+  background: var(--tint);
+  color: var(--accent-deep);
+  font-size: clamp(18px, 2.2cqw, 24px);
+  font-weight: 800;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
-/* Choices */
-
+/* 선택지 */
 .choices {
   max-width: 700px;
-
-  margin:
-    28px auto 0;
-
+  margin: 16px auto 0;
   display: grid;
-
-  gap: 10px;
+  grid-template-columns: 1fr;
+  gap: 8px;
 }
 
+
 .choice {
-  min-height: 62px;
-
-  padding:
-    12px 15px;
-
-  border:
-    2px solid #e6ebe4;
-
-  border-radius: 18px;
-
-  background: #fff;
-
-  color: #584c45;
-
+  min-width: 0;
+  min-height: 54px;
   display: flex;
-
   align-items: center;
-
   gap: 12px;
-
-  text-align: left;
-
+  padding: 8px 14px;
+  border: 2px solid #e4e8ed;
+  border-radius: 16px;
+  background: #ffffff;
+  color: var(--ink);
   font-family: inherit;
-
+  text-align: left;
   cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+
+.choice:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--tint);
+}
+
+/* 누르는 순간 */
+.choice:active:not(:disabled) {
+  background: var(--edge);
+}
+
+.choice:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* 답을 고른 뒤 나머지 선택지는 흐리게 */
+.choice:disabled {
+  cursor: default;
+  opacity: .55;
 }
 
 .choiceLetter {
-  width: 34px;
-  height: 34px;
-
-  flex-shrink: 0;
-
-  border-radius: 11px;
-
-  background: #edf3eb;
-
-  color: #667866;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 12px;
-
-  font-weight: 950;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--tint);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .choiceText {
   flex: 1;
-
-  font-size:
-    clamp(
-      13px,
-      1.8vw,
-      16px
-    );
-
-  font-weight: 850;
-
-  line-height: 1.45;
+  min-width: 0;
+  font-size: clamp(15px, 1.7cqw, 17px);
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .choice > svg {
-  width: 22px;
-  height: 22px;
-
-  flex-shrink: 0;
+  flex: none;
+  width: 23px;
+  height: 23px;
 }
 
-.correctChoice {
-  border-color: #86c08e;
-
-  background: #eef8ef;
-
-  color: #507858;
+.choice.correctChoice {
+  border-color: var(--ok);
+  background: var(--ok-bg);
+  color: #1f7a50;
+  opacity: 1;
 }
 
-.wrongChoice {
-  border-color: #e3a0a0;
-
-  background: #fff1f1;
-
-  color: #a45f5f;
+.correctChoice .choiceLetter {
+  background: var(--ok);
+  color: #fff;
 }
 
-/* Feedback */
+.choice.wrongChoice {
+  border-color: var(--no);
+  background: var(--no-bg);
+  color: #b03c38;
+  opacity: 1;
+}
 
+.wrongChoice .choiceLetter {
+  background: var(--no);
+  color: #fff;
+}
+
+/*
+  정답 · 오답 피드백
+  문제가 길어 스크롤이 생겨도 다음 버튼이 항상 보이도록 아래에 붙임
+*/
 .feedback {
+  position: sticky;
+  bottom: 10px;
+  z-index: 2;
   max-width: 700px;
-
-  margin:
-    18px auto 0;
-
-  padding:
-    14px 15px;
-
-  border-radius: 19px;
-
+  box-sizing: border-box;
+  margin: 14px auto 0;
+  box-shadow: 0 6px 16px #53647c22;
   display: flex;
-
   align-items: center;
   justify-content: space-between;
-
-  gap: 15px;
-
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 16px;
   text-align: left;
 }
 
 .correctFeedback {
-  background: #edf8ef;
-
-  border:
-    1px solid #c8e4cc;
+  border: 1px solid var(--ok-edge);
+  background: var(--ok-bg);
 }
 
 .wrongFeedback {
-  background: #fff0f0;
-
-  border:
-    1px solid #efcccc;
+  border: 1px solid var(--no-edge);
+  background: var(--no-bg);
 }
 
 .feedbackText {
+  min-width: 0;
   display: flex;
-
-  gap: 10px;
-
   align-items: flex-start;
+  gap: 10px;
 }
 
 .feedbackText > svg {
-  width: 25px;
-  height: 25px;
+  flex: none;
+  width: 24px;
+  height: 24px;
+}
 
-  flex-shrink: 0;
+.correctFeedback .feedbackText > svg {
+  color: var(--ok);
+}
+
+.wrongFeedback .feedbackText > svg {
+  color: var(--no);
 }
 
 .feedbackText strong {
-  color: #51463f;
-
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 800;
 }
 
 .feedbackText p {
-  margin:
-    3px 0 0;
-
-  color: #81756e;
-
-  font-size: 12px;
-
-  line-height: 1.45;
+  margin: 2px 0 0;
+  color: #66625d;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .nextButton {
-  min-width: 105px;
-
-  border: none;
-
-  border-radius: 999px;
-
-  padding:
-    11px 15px;
-
-  background: #6d9d73;
-
-  color: #fff;
-
-  display: flex;
-
+  flex: none;
+  min-width: 124px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-
   gap: 6px;
-
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
   font-family: inherit;
-
-  font-weight: 950;
-
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
+}
+
+.nextButton:hover:not(:disabled) {
+  background: var(--accent-deep);
+}
+
+.nextButton:disabled {
+  opacity: .7;
+  cursor: default;
 }
 
 .nextButton svg {
@@ -472,236 +457,257 @@
   height: 16px;
 }
 
-/* Result */
+/* 로딩 · 오류 · 잠금 안내 카드 */
+.invalidBox {
+  box-sizing: border-box;
+  width: min(88%, 440px);
+  margin: calc(var(--header) + 8px) auto 24px;
+  padding: 28px 24px;
+  border-radius: 24px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
 
+.invalidBox h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.invalidBox p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.invalidBox button {
+  margin-top: 16px;
+  padding: 11px 20px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.invalidBox button:hover {
+  background: var(--accent-deep);
+}
+
+/* 결과 */
 .resultWrap {
   min-height: 100%;
-
+  box-sizing: border-box;
   display: flex;
-
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  padding: calc(var(--header) + 4px) 5% 24px;
 }
 
 .resultCard {
-  width:
-    min(
-      100%,
-      560px
-    );
-
-  padding:
-    45px 35px;
-
-  border-radius: 31px;
-
-  background:
-    rgba(255, 255, 255, 0.94);
-
+  box-sizing: border-box;
+  width: min(100%, 460px);
+  padding: 24px 28px;
+  border-radius: 24px;
+  background: #fffffff5;
+  box-shadow: 0 8px 24px #53647c1c;
   text-align: center;
-
-  box-shadow:
-    0 16px 38px
-    rgba(80, 90, 80, 0.08);
 }
 
 .resultIcon {
-  width: 80px;
-  height: 80px;
-
-  margin:
-    0 auto 18px;
-
-  border-radius: 25px;
-
-  background: #e5f2e2;
-
-  color: #67906b;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 10px;
+  border-radius: 20px;
+  background: var(--tint);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
 }
 
 .resultIcon svg {
-  width: 45px;
-  height: 45px;
+  width: 36px;
+  height: 36px;
 }
 
 .resultEyebrow {
   margin: 0;
-
-  color: #7f9a80;
-
-  font-size: 10px;
-
-  font-weight: 950;
-
-  letter-spacing:
-    0.14em;
-}
-
-.resultCard h1 {
-  margin:
-    7px 0 0;
-
-  color: #51443d;
-
-  font-size: 37px;
-
-  font-weight: 950;
-}
-
-.storyTitle {
-  margin:
-    6px 0 0;
-
-  color: #8b7d74;
-
-  font-size: 14px;
-
-  font-weight: 850;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .12em;
 }
 
 .stars {
-  margin-top: 21px;
-
+  margin-top: 12px;
   display: flex;
-
   justify-content: center;
-
-  gap: 5px;
-
-  font-size: 38px;
+  gap: 4px;
+  font-size: 32px;
+  line-height: 1;
 }
 
 .starActive {
-  color: #efbd42;
+  color: var(--star);
 }
 
 .starEmpty {
-  color: #dfdbd7;
-}
-
-.score {
-  margin-top: 12px;
-
-  display: flex;
-
-  align-items: baseline;
-  justify-content: center;
-
-  gap: 5px;
-}
-
-.score strong {
-  color: #506052;
-
-  font-size: 48px;
-
-  font-weight: 950;
-}
-
-.score span {
-  color: #94877f;
-
-  font-size: 24px;
-
-  font-weight: 900;
+  color: #dcdfe4;
 }
 
 .resultMessage {
-  color: #84786f;
-
+  margin: 8px 0 0;
+  color: var(--muted);
   font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+}
 
+.saveError {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--no-edge);
+  border-radius: 12px;
+  background: var(--no-bg);
+  color: #b24a3d;
+  font-size: 12px;
   font-weight: 700;
+  line-height: 1.5;
+  word-break: keep-all;
 }
 
 .resultButtons {
-  margin-top: 25px;
-
+  margin-top: 18px;
   display: grid;
-
-  grid-template-columns:
-    repeat(
-      2,
-      1fr
-    );
-
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
 .resultButtons button {
-  min-height: 47px;
-
-  border: none;
-
-  border-radius: 15px;
-
-  display: flex;
-
+  min-height: 46px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  gap: 7px;
-
+  gap: 8px;
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--accent);
   font-family: inherit;
-
-  font-weight: 900;
-
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
-
-  background: #edf4eb;
-
-  color: #627364;
 }
 
-.resultButtons svg {
+.resultButtons button svg {
   width: 18px;
   height: 18px;
 }
 
-.invalidBox {
-  margin:
-    140px auto;
-
-  text-align: center;
+.resultCard h1 {
+  margin: 4px 0 0;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -.5px;
 }
 
-/* Mobile */
+.storyTitle {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
 
-@media (
-  max-width: 767px
-) {
+.score {
+  margin-top: 8px;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+}
+
+.score strong {
+  color: var(--accent);
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.score span {
+  color: var(--muted);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* 통과: 목록으로 가는 버튼을 강조 */
+.passCard .resultButtons button:last-child {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* 미통과: 다시 도전 버튼을 강조 */
+.retryCard .resultIcon {
+  background: #f1f3f6;
+  color: #7d858e;
+}
+
+.retryCard .retryButton {
+  background: var(--accent);
+  color: #fff;
+}
+
+.retryCard .score strong {
+  color: #7d858e;
+}
+
+/* 다음 단계로: 한 줄 전체를 쓰는 주 버튼 */
+.resultButtons .nextStageButton {
+  grid-column: 1 / -1;
+  background: var(--accent);
+  color: #fff;
+}
+
+.resultButtons .nextStageButton:hover {
+  background: var(--accent-deep);
+}
+
+/* 다음 단계 버튼이 있으면 나머지 두 버튼은 보조 버튼 */
+.passCard .resultButtons .nextStageButton ~ button {
+  background: #ffffff;
+  color: var(--accent);
+}
+
+/* 폰: 풍경 아래에서 시작, 한 열 */
+@container (max-width: 700px) {
   .hero {
-    padding:
-      17px
-      12px
-      24px;
-
-    border-radius: 24px;
+    --clear: 0px;
+    --header: 22cqw;
+    --bar: 100%;
   }
 
-  .questionCard {
-    padding:
-      22px
-      14px;
-
-    border-radius: 23px;
+  .inner {
+    padding: 20cqw 14px 20px;
   }
 
-  .choice {
-    min-height: 57px;
+  .readAgainRow {
+    margin-top: 12px;
+  }
 
-    padding:
-      10px 11px;
+  .choices {
+    grid-template-columns: 1fr;
   }
 
   .feedback {
     flex-direction: column;
-
     align-items: stretch;
   }
 
@@ -709,30 +715,19 @@
     width: 100%;
   }
 
+  .resultWrap {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
   .resultButtons {
     grid-template-columns: 1fr;
   }
 }
 
-/* Save Error */
-
-.saveError {
-  margin: 18px 0 0;
-  padding: 10px 14px;
-
-  border-radius: 14px;
-
-  background: rgba(255, 226, 222, 0.8);
-
-  color: #b24a3d;
-
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1.5;
-  text-align: center;
-}
-
-.nextButton:disabled {
-  opacity: 0.7;
-  cursor: default;
+@media (prefers-reduced-motion: reduce) {
+  .progressBar,
+  .choice {
+    transition: none;
+  }
 }

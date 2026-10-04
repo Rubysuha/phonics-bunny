@@ -20,6 +20,8 @@ import {
 
 import styles from "./category.module.css";
 
+import LoginNotice from "../../LoginNotice";
+
 import {
   getPhonicsTestCategory,
 } from "../data";
@@ -298,6 +300,8 @@ export default function PhonicsCategoryPage() {
             </p>
           </header>
 
+          <LoginNotice />
+
           {/* Loading */}
 
           {isLoading ? (
@@ -505,7 +509,7 @@ export default function PhonicsCategoryPage() {
                             >
                               Locked
                             </span>
-                          ) : passed ? (
+                          ) : stageProgress ? (
                             <div
                               className={
                                 styles.bestScore

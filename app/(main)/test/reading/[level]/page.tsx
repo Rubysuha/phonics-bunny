@@ -33,6 +33,8 @@ import {
 
 import styles from "./level.module.css";
 
+import LoginNotice from "../../LoginNotice";
+
 export default function ReadingLevelPage() {
   const router =
     useRouter();
@@ -310,6 +312,8 @@ export default function ReadingLevelPage() {
               )}
             </div>
           </header>
+
+          <LoginNotice />
 
           {/* Stories */}
 

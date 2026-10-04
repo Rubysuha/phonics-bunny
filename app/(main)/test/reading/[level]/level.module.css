@@ -1,200 +1,254 @@
+/*
+  Test 하위 화면 공통 틀 (Reading · 초록)
+  /test 메인과 같은 규칙: 하늘섬 배경 + 흰색 카드 + 단색 버튼
+*/
 .page {
+  --accent: #3f9a6c;
+  --accent-deep: #2c7550;
+  --tint: #eff8f2;
+  --edge: #cfe9da;
+  --fill: #fef6e2;
+  --ink: #443f3a;
+  --muted: #777670;
+  --ok: #2f9e6b;
+  --ok-bg: #ecf8f1;
+  --ok-edge: #a9dcc0;
+  --no: #d6544f;
+  --no-bg: #fdf0ef;
+  --no-edge: #f0b8b5;
+  --star: #f2b53a;
+  --card: #fffffff0;
+  --shadow: 0 6px 18px #53647c18;
+
   height: 100%;
-
-  display: flex;
-  flex-direction: column;
-
+  min-height: 0;
   overflow: hidden;
+  container-type: size;
+  border-radius: 26px;
+  border: 1px solid #d9d5c9;
+  background: var(--fill);
+  box-shadow: 0 8px 24px #615a7514;
+  color: var(--ink);
+  font-family: inherit;
 }
 
+/*
+  배경 그림(3:2)은 박스 너비 100%, 원본 비율 그대로 위쪽에 맞춤
+  그림 아래 남는 공간은 그림 가운데의 크림색으로 채우고
+  그림이 끝나는 부분은 그라데이션으로 자연스럽게 이어줌
+  (내용과 함께 스크롤되도록 local)
+*/
 .hero {
-  flex: 1;
+  --clear: 24cqw;
+  /* 토끼가 가려지지 않도록 비워 두는 위쪽 풍경 높이 */
+  --header: clamp(96px, min(17cqw, 26cqh), 190px);
 
-  overflow-y: auto;
+  height: 100%;
   overflow-x: hidden;
-
-  border-radius: 30px;
-
-  padding:
-    clamp(24px, 3vw, 36px)
-    clamp(17px, 3vw, 34px)
-    40px;
-
+  overflow-y: auto;
   box-sizing: border-box;
-
+  scrollbar-width: thin;
+  scrollbar-color: #c4cbd3 transparent;
   background:
-    rgba(255, 255, 255, 0.58);
-
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.6);
-
-  box-shadow:
-    0 18px 42px
-    rgba(100, 90, 100, 0.09);
+    linear-gradient(to bottom, transparent, var(--fill))
+      center calc(50.7cqw + 1px) / 100% 16cqw no-repeat,
+    var(--fill) url('/test/reading-bg.webp') center top / 100% auto no-repeat;
+  background-attachment: local;
 }
 
+/*
+  위쪽 줄: 토끼 오른쪽에 뒤로가기 버튼과 제목 판
+  아래 내용은 전체 폭 사용
+*/
 .inner {
-  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: minmax(var(--header), auto);
+  align-content: start;
+  column-gap: 12px;
+  padding: 0 5% 22px;
+}
 
-  max-width: 1000px;
-
-  margin: 0 auto;
+.inner > * {
+  grid-column: 1 / -1;
 }
 
 .backButton {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
+  margin-left: var(--clear);
   width: 44px;
   height: 44px;
-
-  border: none;
-
-  border-radius: 15px;
-
-  background:
-    rgba(255, 255, 255, 0.85);
-
-  color: #687568;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
   cursor: pointer;
+  transition: transform .18s;
+}
+
+.backButton:hover {
+  transform: translateX(-2px);
+}
+
+.backButton:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .header {
-  text-align: center;
-
-  margin:
-    10px auto 30px;
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  justify-self: start;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 12px 0;
+  padding: 12px 22px;
+  border-radius: 20px;
+  background: #ffffffe6;
+  box-shadow: var(--shadow);
+  text-align: left;
 }
 
 .eyebrow {
   margin: 0;
-
-  color: #7e9f82;
-
-  font-size: 10px;
-
-  font-weight: 950;
-
-  letter-spacing:
-    0.15em;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .12em;
 }
 
+.title,
 .header h1 {
-  margin:
-    5px 0 0;
+  margin: 2px 0 0;
+  font-size: clamp(22px, 2.6cqw, 30px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -.5px;
+}
 
-  color: #51433c;
+.subtitle {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+}
 
-  font-size:
-    clamp(
-      35px,
-      5vw,
-      46px
-    );
-
-  font-weight: 950;
+.header {
+  min-width: min(100%, 300px);
 }
 
 .levelDescription {
-  margin:
-    5px 0 0;
-
-  color: #70806e;
-
-  font-size: 15px;
-
-  font-weight: 900;
-}
-
-.guide {
-  margin:
-    10px 0 0;
-
-  color: #96877e;
-
+  margin: 2px 0 0;
+  color: var(--accent);
   font-size: 13px;
-
   font-weight: 700;
 }
 
-/* Grid */
+.guide {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  word-break: keep-all;
+}
 
+.progressArea {
+  margin-top: 8px;
+}
+
+.progressTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.progressTrack {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5e9ed;
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width .4s;
+}
+
+.progressLoading {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* 이야기 카드: 기존 순서 그대로 3열 */
 .grid {
+  width: min(100%, 960px);
+  justify-self: center;
   display: grid;
-
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
-
-  gap: 11px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
 }
 
+/* 도전 가능한 이야기 */
 .storyCard {
-  min-width: 0;
-
-  padding: 15px 16px;
-
-  border:
-    1px solid #e0e9dd;
-
-  border-radius: 20px;
-
-  background:
-    rgba(255, 255, 255, 0.84);
-
   display: grid;
-
-  grid-template-columns:
-    auto
-    minmax(0, 1fr)
-    auto;
-
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-
-  gap: 13px;
-
-  text-align: left;
-
+  gap: 12px;
+  min-height: 68px;
+  padding: 10px 14px;
+  box-sizing: border-box;
+  min-width: 0;
+  border: 1px solid #ffffff;
+  border-radius: 20px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  color: inherit;
   font-family: inherit;
-
+  text-align: left;
   cursor: pointer;
-
-  transition:
-    transform 0.16s ease,
-    box-shadow 0.16s ease;
+  transition: transform .18s, box-shadow .18s;
+  border-radius: 18px;
 }
 
-.storyCard:hover {
-  transform:
-    translateY(-2px);
+.storyCard:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px #53647c25;
+}
 
-  box-shadow:
-    0 8px 18px
-    rgba(70, 90, 70, 0.08);
+.storyCard:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .storyNumber {
   width: 38px;
   height: 38px;
-
   border-radius: 12px;
-
-  background: #e5f2e2;
-
-  color: #628168;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 12px;
-
-  font-weight: 950;
+  background: var(--tint);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  font-weight: 800;
 }
 
 .storyContent {
@@ -203,199 +257,165 @@
 
 .storyContent h2 {
   margin: 0;
-
-  color: #554740;
-
-  font-size: 15px;
-
-  font-weight: 950;
-
-  white-space: nowrap;
-
   overflow: hidden;
-
-  text-overflow:
-    ellipsis;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.3;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .storyMeta {
-  margin-top: 5px;
-
-  color: #978a82;
-
+  margin-top: 3px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-
   gap: 5px;
-
-  font-size: 10px;
-
-  font-weight: 800;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .storyMeta svg {
   width: 14px;
   height: 14px;
-
-  color: #739177;
-}
-
-.arrow {
-  width: 30px;
-  height: 30px;
-
-  border-radius: 50%;
-
-  background: #f3f7f1;
-
-  color: #728071;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.arrow svg {
-  width: 14px;
-  height: 14px;
-}
-
-.invalidBox {
-  margin:
-    140px auto;
-
-  text-align: center;
-}
-
-.invalidBox button {
-  border: none;
-
-  border-radius: 999px;
-
-  padding:
-    12px 18px;
-
-  cursor: pointer;
-}
-
-/* Phone */
-
-@media (
-  max-width: 767px
-) {
-  .hero {
-    padding:
-      18px
-      13px
-      26px;
-
-    border-radius: 24px;
-  }
-
-  .grid {
-    grid-template-columns:
-      1fr;
-  }
-
-  .storyCard {
-    padding:
-      13px 14px;
-  }
-}
-
-/* Progress */
-
-.progressArea {
-  width: min(100%, 360px);
-
-  margin: 18px auto 0;
-}
-
-.progressTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 10px;
-
-  margin-bottom: 7px;
-
-  color: #6f8f74;
-
-  font-size: 11px;
-  font-weight: 900;
-}
-
-.progressTrack {
-  width: 100%;
-  height: 8px;
-
-  overflow: hidden;
-
-  border-radius: 999px;
-
-  background: rgba(130, 170, 135, 0.2);
-}
-
-.progressBar {
-  height: 100%;
-
-  border-radius: inherit;
-
-  background: linear-gradient(90deg, #8fc79a, #6fae7c);
-
-  transition: width 0.4s ease;
-}
-
-.progressLoading {
-  margin: 0;
-
-  color: #94a894;
-
-  font-size: 11px;
-  font-weight: 800;
-}
-
-/* Story Result */
-
-.passedCard {
-  border-color: #b9d9bd;
-
-  background: rgba(238, 248, 236, 0.92);
+  color: var(--accent);
 }
 
 .storyResult {
-  margin-top: 6px;
-
+  margin-top: 4px;
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
-
+  align-items: center;
   gap: 8px;
-
-  color: #78907c;
-
-  font-size: 10px;
-  font-weight: 800;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .storyStars {
-  color: #f0b23c;
-
+  color: var(--star);
   font-size: 13px;
-
   letter-spacing: 1px;
 }
 
 .passedBadge {
   padding: 2px 8px;
-
   border-radius: 999px;
+  background: var(--ok);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+}
 
-  background: #dcefd8;
+/* 통과한 이야기 */
+.passedCard {
+  border-color: var(--ok-edge);
+  background: #f4fbf7;
+}
 
-  color: #4f7f57;
+.passedCard .storyNumber {
+  background: var(--ok);
+  color: #fff;
+}
 
-  font-size: 9px;
-  font-weight: 950;
+.arrow {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: grid;
+  place-items: center;
+}
+
+.arrow svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* 로딩 · 오류 · 잠금 안내 카드 */
+.invalidBox {
+  box-sizing: border-box;
+  width: min(88%, 440px);
+  margin: calc(var(--header) + 8px) auto 24px;
+  padding: 28px 24px;
+  border-radius: 24px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.invalidBox h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.invalidBox p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.invalidBox button {
+  margin-top: 16px;
+  padding: 11px 20px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.invalidBox button:hover {
+  background: var(--accent-deep);
+}
+
+@container (max-width: 780px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 폰: 풍경 아래에서 시작, 한 열 */
+@container (max-width: 700px) {
+  .hero {
+    --clear: 0px;
+    --header: 22cqw;
+  }
+
+  .inner {
+    grid-template-rows: auto;
+    padding: 20cqw 14px 20px;
+  }
+
+  .header {
+    padding: 10px 16px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .storyCard,
+  .backButton,
+  .progressBar {
+    transition: none;
+  }
+
+  .storyCard:hover,
+  .backButton:hover {
+    transform: none;
+  }
 }

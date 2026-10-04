@@ -24,6 +24,7 @@ import {
 import styles from "./topic.module.css";
 
 import {
+  conversationTopics,
   getConversationTopic,
   type ConversationTopicId,
 } from "../data";
@@ -545,6 +546,55 @@ export default function ConversationTopicPage() {
     };
 
   /* ─────────────────────────────
+     Next Topic
+     (Final은 잠금 조건이 있어서 목록에서 들어가도록 제외)
+  ───────────────────────────── */
+
+  const nextTopic =
+    conversationTopics[
+      conversationTopics.findIndex(
+        (item) =>
+          item.id ===
+          topicId
+      ) + 1
+    ];
+
+  const handleNextTopic =
+    () => {
+      if (!nextTopic) {
+        return;
+      }
+
+      setCurrentIndex(
+        0
+      );
+
+      setSelectedChoice(
+        null
+      );
+
+      setScore(
+        0
+      );
+
+      setSaveError(
+        null
+      );
+
+      setIsFinished(
+        false
+      );
+
+      setIsCheckingAccess(
+        true
+      );
+
+      router.push(
+        `/test/conversation/${nextTopic.id}`
+      );
+    };
+
+  /* ─────────────────────────────
      Result
   ───────────────────────────── */
 
@@ -729,6 +779,27 @@ export default function ConversationTopicPage() {
                   styles.resultButtons
                 }
               >
+                {passed &&
+                  nextTopic &&
+                  !nextTopic.isFinal && (
+                    <button
+                      type="button"
+                      className={
+                        styles.nextStageButton
+                      }
+                      onClick={
+                        handleNextTopic
+                      }
+                    >
+                      Next Topic
+
+                      <ArrowRight
+                        size={20}
+                        weight="bold"
+                      />
+                    </button>
+                  )}
+
                 <button
                   type="button"
                   className={
@@ -784,9 +855,15 @@ export default function ConversationTopicPage() {
     selectedChoice ===
     currentQuestion.answer;
 
+  /*
+    진행 막대는 답을 고른 문제 수 기준
+    (1번 문제를 풀기 전에는 0%)
+  */
   const progress =
     ((currentIndex +
-      1) /
+      (isAnswered
+        ? 1
+        : 0)) /
       questions.length) *
     100;
 
