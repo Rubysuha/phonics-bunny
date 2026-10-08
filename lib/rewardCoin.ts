@@ -161,6 +161,8 @@ export async function rewardCoin({
         content_id: contentId,
         content_type: contentType,
         reward_count: 1,
+        /* 첫 보상에도 시각을 남겨야 같은 날 횟수가 정확히 이어짐 */
+        last_rewarded_at: new Date().toISOString(),
       });
 
     if (insertRewardError) {

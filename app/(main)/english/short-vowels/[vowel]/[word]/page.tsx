@@ -1,9 +1,10 @@
 "use client";
 
+import RecordCountdown from "@/components/RecordCountdown";
+import { createPageAudio, useStopAudioOnLeave } from "@/lib/pageAudio";
 import { rewardCoin } from "@/lib/rewardCoin";
 import { logEngagement } from "@/lib/logEngagement";
 import { useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import { notFound, useParams } from "next/navigation";
 import StudyPanel from "@/components/StudyPanel";
 import PronunciationResultModal from "@/components/PronunciationResultModal";
@@ -42,6 +43,9 @@ export default function ShortVowelDetailPage() {
   const recordingBlobRef = useRef<Blob | null>(null);
   const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  /* 이 화면을 나가면 재생 중인 소리를 모두 멈춤 */
+  useStopAudioOnLeave();
+
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [myRecordingUrl, setMyRecordingUrl] = useState("");
@@ -61,7 +65,7 @@ export default function ShortVowelDetailPage() {
 
   const handleListen = async () => {
     try {
-      const audio = new Audio(item.audio);
+      const audio = createPageAudio(item.audio);
 
       audio.onended = async () => {
         const result = await rewardCoin({
@@ -88,7 +92,7 @@ export default function ShortVowelDetailPage() {
 
   const handleListenAI = async () => {
     try {
-      const audio = new Audio(aiAudioPath);
+      const audio = createPageAudio(aiAudioPath);
 
       audio.onended = async () => {
         const result = await rewardCoin({
@@ -209,7 +213,7 @@ export default function ShortVowelDetailPage() {
     }
 
     try {
-      const audio = new Audio(myRecordingUrl);
+      const audio = createPageAudio(myRecordingUrl);
 
       audio.onended = () => {
         logEngagement({
@@ -330,18 +334,7 @@ export default function ShortVowelDetailPage() {
         />
       </div>
 
-      {countdown !== null &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <div className={styles.countdownOverlay}>
-            <div className={styles.countdownCircle}>
-              <span key={countdown} className={styles.countdownNumber}>
-                {countdown}
-              </span>
-            </div>
-          </div>,
-          document.body
-        )}
+      <RecordCountdown value={countdown} />
 
       <PronunciationResultModal
         result={pronunciationResult}

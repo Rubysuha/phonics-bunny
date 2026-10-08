@@ -167,12 +167,6 @@
   color: #ff8a3d;
 }
 
-.topicLabel {
-  font-size: 14px;
-  font-weight: 800;
-  color: #8d72b5;
-}
-
 @media (max-width: 1180px) {
   .title {
     font-size: 52px;

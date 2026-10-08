@@ -34,8 +34,9 @@
   margin-bottom: 8px;
 }
 
+/* 박스 높이에 딱 맞춰서 스크롤이 생기지 않게 함 */
 .inner {
-  min-height: 100%;
+  height: 100%;
 
   display: flex;
   flex-direction: column;
@@ -90,7 +91,7 @@
 
   position: relative;
 
-  min-height: 320px;
+  min-height: 0;
 
   display: flex;
   flex-direction: column;
@@ -217,6 +218,11 @@
 @media (max-width: 700px) {
   .inner {
     padding: 16px 14px 24px;
+  }
+
+  .inner {
+    height: auto;
+    min-height: 100%;
   }
 
   .cardWrap {

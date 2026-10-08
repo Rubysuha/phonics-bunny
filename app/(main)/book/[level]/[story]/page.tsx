@@ -1,9 +1,10 @@
 "use client";
 
+import RecordCountdown from "@/components/RecordCountdown";
+import { createPageAudio, useStopAudioOnLeave } from "@/lib/pageAudio";
 import { rewardCoin } from "@/lib/rewardCoin";
 import { logEngagement } from "@/lib/logEngagement";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import {
   ArrowLeft,
   CaretLeft,
@@ -53,6 +54,9 @@ export default function BookDetailPage() {
   const recordedChunksRef = useRef<Blob[]>([]);
   const recordingBlobRef = useRef<Blob | null>(null);
   const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  /* 이 화면을 나가면 재생 중인 소리를 모두 멈춤 */
+  useStopAudioOnLeave();
 
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
@@ -141,7 +145,7 @@ export default function BookDetailPage() {
 
   const handleListen = async () => {
     try {
-      const audio = new Audio(storyAudioPath);
+      const audio = createPageAudio(storyAudioPath);
 
       audio.onended = async () => {
         const result = await rewardCoin({
@@ -263,7 +267,7 @@ export default function BookDetailPage() {
     }
 
     try {
-      const audio = new Audio(myRecordingUrl);
+      const audio = createPageAudio(myRecordingUrl);
 
       audio.onended = () => {
         // 코인 보상은 없지만, 내 녹음 듣기 완료 횟수를 레벨 판정용으로 기록
@@ -441,18 +445,7 @@ export default function BookDetailPage() {
         </div>
       </div>
 
-      {countdown !== null &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <div className={styles.countdownOverlay}>
-            <div className={styles.countdownCircle}>
-              <span key={countdown} className={styles.countdownNumber}>
-                {countdown}
-              </span>
-            </div>
-          </div>,
-          document.body
-        )}
+      <RecordCountdown value={countdown} />
 
       <PronunciationResultModal
         result={pronunciationResult}

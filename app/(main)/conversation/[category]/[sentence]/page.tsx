@@ -1,7 +1,8 @@
 "use client";
 
+import RecordCountdown from "@/components/RecordCountdown";
+import { createPageAudio, useStopAudioOnLeave } from "@/lib/pageAudio";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import {
   SpeakerHigh,
   Headphones,
@@ -57,6 +58,9 @@ export default function ConversationDetailPage() {
   const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lineRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+  /* 이 화면을 나가면 재생 중인 소리를 모두 멈춤 */
+  useStopAudioOnLeave();
+
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [myRecordingUrl, setMyRecordingUrl] = useState("");
@@ -92,7 +96,7 @@ export default function ConversationDetailPage() {
 
   const playOne = (audioPath: string) => {
     return new Promise<void>((resolve, reject) => {
-      const audio = new Audio(audioPath);
+      const audio = createPageAudio(audioPath);
       audio.onended = () => resolve();
       audio.onerror = () => reject(new Error("play failed"));
       audio.play().catch(reject);
@@ -246,7 +250,7 @@ export default function ConversationDetailPage() {
     }
 
     try {
-      const audio = new Audio(myRecordingUrl);
+      const audio = createPageAudio(myRecordingUrl);
 
       audio.onended = () => {
         // 코인 보상은 없지만, 내 녹음 듣기 완료 횟수를 레벨 판정용으로 기록
@@ -419,18 +423,7 @@ export default function ConversationDetailPage() {
         </div>
       </div>
 
-      {countdown !== null &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <div className={styles.countdownOverlay}>
-            <div className={styles.countdownCircle}>
-              <span key={countdown} className={styles.countdownNumber}>
-                {countdown}
-              </span>
-            </div>
-          </div>,
-          document.body
-        )}
+      <RecordCountdown value={countdown} />
 
       <PronunciationResultModal
         result={pronunciationResult}

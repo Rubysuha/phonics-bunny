@@ -2,10 +2,7 @@
 
 import { useEffect, useState, } from "react";
 import { useRouter, } from "next/navigation";
-import {
-  SpeakerHigh, ChatCircleDots, BookOpenText,
-  ArrowRight, CheckCircle,
-} from "@phosphor-icons/react";
+import { ArrowRight, CheckCircle } from "@phosphor-icons/react";
 import styles from "./test.module.css";
 import { getPhonicsCategoryProgress, } from "@/lib/testProgress";
 import {
@@ -28,31 +25,22 @@ const testMenus = [
   {
     id: "phonics",
     title: "Phonics Challenge",
-    subtitle: "Sounds · Words · Spelling",
     description: "배운 파닉스의 소리와 단어, 철자를 문제를 풀며 확인해요.",
-    icon: SpeakerHigh,
     cardClassName: "phonicsCard",
-    iconClassName: "phonicsIcon",
     href: "/test/phonics",
   },
   {
     id: "conversation",
     title: "Conversation Quiz",
-    subtitle: "Choose the right expression",
     description: "상황과 대화를 보고 알맞은 영어 표현을 골라보세요.",
-    icon: ChatCircleDots,
     cardClassName: "conversationCard",
-    iconClassName: "conversationIcon",
     href: "/test/conversation",
   },
   {
     id: "reading",
     title: "Reading Quiz",
-    subtitle: "Check your story understanding",
     description: "읽었던 이야기를 떠올리며 내용을 얼마나 이해했는지 확인해요.",
-    icon: BookOpenText,
     cardClassName: "readingCard",
-    iconClassName: "readingIcon",
     href: "/test/reading",
   },
 ];
@@ -159,7 +147,6 @@ export default function TestPage() {
 
           <div className={styles.grid}>
             {testMenus.map((menu) => {
-              const Icon = menu.icon;
               const progress = menuProgress[menu.id];
 
               const progressPercent = progress && progress.total > 0
@@ -181,21 +168,8 @@ export default function TestPage() {
                   </div>
 
                   <div className={styles.cardContent}>
-                    <span className={styles.questTag}>
-                      <Icon size={14} weight="fill" />
-
-                      {menu.id === "phonics"
-                        ? "PHONICS TEST"
-                        : menu.id === "conversation"
-                          ? "CONVERSATION TEST"
-                          : "READING TEST"}
-                    </span>
 
                     <h2>{menu.title}</h2>
-
-                    <p className={styles.cardSubtitle}>
-                      {menu.subtitle}
-                    </p>
 
                     <p className={styles.description}>
                       {menu.description}
@@ -245,24 +219,6 @@ export default function TestPage() {
                 </button>
               );
             })}
-          </div>
-
-          <div className={styles.guideBox}>
-            <span className={styles.guideIcon} aria-hidden="true">
-              ✦
-            </span>
-
-            <div>
-              <strong>Your Learning Quest</strong>
-
-              <p>
-                학습한 내용을 확인하고 결과를 My Page에서 다시 볼 수 있어요.
-              </p>
-            </div>
-
-            <span className={styles.guideBadge}>
-              3 Challenges
-            </span>
           </div>
         </div>
       </div>

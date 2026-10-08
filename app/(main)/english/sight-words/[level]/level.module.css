@@ -157,22 +157,6 @@
   flex-wrap: wrap;
 }
 
-.backButton {
-  text-decoration: none;
-  background: linear-gradient(180deg, #bce5ff 0%, #91d0fa 100%);
-  color: #28506d;
-  font-size: 16px;
-  font-weight: 900;
-  padding: 12px 24px;
-  border-radius: 999px;
-  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.08);
-  transition: transform 0.15s ease;
-}
-
-.backButton:hover {
-  transform: translateY(-1px);
-}
-
 /* ── 녹음 전 3-2-1 카운트다운 오버레이 ── */
 .countdownOverlay {
   position: fixed;
@@ -374,17 +358,6 @@
   font-weight: 800;
   color: #b5502f;
   margin: 8px 0 0;
-}
-
-.retryButton {
-  border: none;
-  cursor: pointer;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #bce5ff 0%, #91d0fa 100%);
-  color: #28506d;
-  padding: 11px 22px;
-  font-size: 14px;
-  font-weight: 900;
 }
 
 @media (max-width: 1180px) {

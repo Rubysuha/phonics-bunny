@@ -1,5 +1,6 @@
 "use client";
 
+import { createPageAudio, useStopAudioOnLeave } from "@/lib/pageAudio";
 import { rewardCoin } from "@/lib/rewardCoin";
 import { logEngagement } from "@/lib/logEngagement";
 import { useMemo, useRef, useState } from "react";
@@ -43,6 +44,9 @@ export default function SightWordLevelPage() {
   const recordedChunksRef = useRef<Blob[]>([]);
   const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  /* 이 화면을 나가면 재생 중인 소리를 모두 멈춤 */
+  useStopAudioOnLeave();
+
   const [recordingWord, setRecordingWord] = useState("");
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [recordings, setRecordings] = useState<Record<string, string>>({});
@@ -65,7 +69,7 @@ export default function SightWordLevelPage() {
 
   const handleListen = async (audioPath: string, word: string, slug: string) => {
     try {
-      const audio = new Audio(audioPath);
+      const audio = createPageAudio(audioPath);
 
       audio.onended = async () => {
         const result = await rewardCoin({
@@ -202,7 +206,7 @@ export default function SightWordLevelPage() {
     }
 
     try {
-      const audio = new Audio(myRecordingUrl);
+      const audio = createPageAudio(myRecordingUrl);
 
       audio.onended = () => {
         logEngagement({

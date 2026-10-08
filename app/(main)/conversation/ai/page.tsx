@@ -1,5 +1,6 @@
 "use client";
 
+import { createPageAudio, useStopAudioOnLeave } from "@/lib/pageAudio";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -62,6 +63,9 @@ const OPENING_LINES = [
 
 export default function AiConversationPage() {
   const router = useRouter();
+
+  /* 이 화면을 나가면 재생 중인 소리를 모두 멈춤 */
+  useStopAudioOnLeave();
 
   const [hasStarted, setHasStarted] = useState(false);
 
@@ -210,7 +214,7 @@ export default function AiConversationPage() {
           );
 
         const audio =
-          new Audio(
+          createPageAudio(
             audioUrl
           );
 
@@ -258,7 +262,7 @@ export default function AiConversationPage() {
   const unlockAutoplay =
     () => {
       const unlockAudio =
-        new Audio();
+        createPageAudio();
 
       unlockAudio
         .play()

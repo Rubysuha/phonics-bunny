@@ -1,9 +1,9 @@
 "use client";
 
+import RecordCountdown from "@/components/RecordCountdown";
+import { createPageAudio, useStopAudioOnLeave } from "@/lib/pageAudio";
 import { rewardCoin } from "@/lib/rewardCoin";
 import { useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import StudyPanel from "@/components/StudyPanel";
 import styles from "./detail.module.css";
@@ -26,6 +26,9 @@ export default function AlphabetDetailPage() {
   const recordedChunksRef = useRef<Blob[]>([]);
   const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  /* 이 화면을 나가면 재생 중인 소리를 모두 멈춤 */
+  useStopAudioOnLeave();
+
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [myRecordingUrl, setMyRecordingUrl] = useState("");
@@ -43,7 +46,7 @@ export default function AlphabetDetailPage() {
 
   const handleListen = async () => {
     try {
-      const audio = new Audio(item.audio);
+      const audio = createPageAudio(item.audio);
 
       audio.onended = async () => {
         const result = await rewardCoin({
@@ -64,7 +67,7 @@ export default function AlphabetDetailPage() {
 
   const handleListenAI = async () => {
     try {
-      const audio = new Audio(aiAudioPath);
+      const audio = createPageAudio(aiAudioPath);
 
       audio.onended = async () => {
         const result = await rewardCoin({
@@ -175,7 +178,7 @@ export default function AlphabetDetailPage() {
     }
 
     try {
-      const audio = new Audio(myRecordingUrl);
+      const audio = createPageAudio(myRecordingUrl);
       await audio.play();
     } catch (error) {
       console.error(error);
@@ -219,18 +222,7 @@ export default function AlphabetDetailPage() {
         />
       </div>
 
-      {countdown !== null &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <div className={styles.countdownOverlay}>
-            <div className={styles.countdownCircle}>
-              <span key={countdown} className={styles.countdownNumber}>
-                {countdown}
-              </span>
-            </div>
-          </div>,
-          document.body
-        )}
+      <RecordCountdown value={countdown} />
     </section>
   );
 }

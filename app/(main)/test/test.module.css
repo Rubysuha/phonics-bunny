@@ -185,11 +185,6 @@
   min-width: 0;
 }
 
-.questTag,
-.cardSubtitle {
-  display: none;
-}
-
 .cardContent h2 {
   margin: 0;
   font-size: clamp(17px, 1.9cqw, 22px);
@@ -326,12 +321,6 @@
 
 .phonicsCard .cardContent h2 {
   font-size: clamp(21px, 2.4cqw, 28px);
-}
-
-.guideBox,
-.guideIcon,
-.guideBadge {
-  display: none;
 }
 
 /* 간판 글씨가 너무 작아지는 폭에서는 부제를 숨김 */

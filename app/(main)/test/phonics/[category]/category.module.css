@@ -135,14 +135,6 @@
   letter-spacing: -.5px;
 }
 
-.subtitle {
-  margin: 4px 0 0;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.45;
-}
-
 .categoryLabel {
   margin: 3px 0 0;
   color: var(--accent);
