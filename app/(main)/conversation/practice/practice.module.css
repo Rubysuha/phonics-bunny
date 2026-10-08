@@ -1,178 +1,448 @@
-/* app/(main)/conversation/practice/practice.module.css */
-
 .page {
   height: 100%;
+
   display: flex;
   flex-direction: column;
+
   overflow: hidden;
+
+  container-type: size;
 }
 
 .hero {
   position: relative;
-  flex: 1;
-  border-radius: 30px;
-  overflow-y: auto;
-  background:
-    radial-gradient(circle at 12% 18%, rgba(255, 225, 245, 0.7), transparent 30%),
-    radial-gradient(circle at 86% 14%, rgba(215, 234, 255, 0.78), transparent 30%),
-    radial-gradient(circle at 50% 100%, rgba(236, 248, 205, 0.72), transparent 34%),
-    rgba(255, 255, 255, 0.62);
 
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.58);
-  box-shadow: 0 18px 42px rgba(120, 90, 120, 0.1);
+  flex: 1;
+  min-height: 0;
+
+  overflow-y: auto;
+
+  border-radius: 30px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #edf8ff 0%,
+      #f5fbff 50%,
+      #f3fae8 100%
+    );
+
+  border: 1px solid rgba(255, 255, 255, 0.7);
+
+  box-shadow:
+    0 18px 42px rgba(80, 110, 150, 0.12);
 
   margin-bottom: 8px;
-  padding: 28px 28px 36px;
-  box-sizing: border-box;
 }
 
 .inner {
   width: 100%;
-  max-width: 1040px;
-  margin: 0 auto;
+
+  padding: 16px 22px 16px;
+
+  box-sizing: border-box;
+}
+
+/* top */
+
+.topRow {
+  display: grid;
+  grid-template-columns: 46px 1fr 46px;
+  align-items: center;
+  gap: 12px;
+
+  margin-bottom: 12px;
+}
+
+.backButton {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.9);
+
+  color: #557c96;
+
+  text-decoration: none;
+
+  border: 1px solid rgba(255, 255, 255, 0.95);
+
+  box-shadow:
+    0 6px 14px rgba(80, 110, 150, 0.1);
+
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.backButton:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 9px 19px rgba(80, 110, 150, 0.15);
+}
+
+.topSpacer {
+  width: 44px;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 2px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  color: #72a6c1;
+
+  font-size: 11px;
+  font-weight: 950;
+
+  letter-spacing: 0.13em;
+}
+
+.eyebrow svg {
+  color: #ffb648;
 }
 
 .title {
-  margin: 0 0 8px;
-  font-size: 46px;
+  margin: 0;
+
+  color: #315c7b;
+
+  font-size: clamp(24px, 3cqw, 34px);
   font-weight: 950;
-  color: #a8623f;
+
   letter-spacing: -1px;
+  line-height: 1.1;
 }
 
-.subtitle {
-  margin: 0;
-  color: #8f8574;
-  font-size: 16px;
+/* map */
+
+/*
+  지도는 박스의 남은 공간을 꽉 채움
+  (창이 아주 낮을 때는 그림 비율만큼 높이를 확보하고 스크롤)
+*/
+.worldMap {
+  position: relative;
+
+  container-type: size;
+
+  width: 100%;
+
+  /*
+    너무 길쭉해지면 그림 좌우가 많이 잘려서
+    가장자리 섬이 안 보이므로 높이에 상한을 둠
+  */
+  height: clamp(
+    calc((100cqw - 56px) * 9 / 16),
+    calc(100cqh - 118px),
+    calc((100cqw - 56px) * 0.66)
+  );
+
+  overflow: hidden;
+
+  border-radius: 32px;
+
+  border: 5px solid rgba(255, 255, 255, 0.9);
+
+  box-shadow:
+    0 16px 35px rgba(73, 105, 140, 0.17);
+
+  background: #2f9be0;
+
+  box-sizing: border-box;
+}
+
+/*
+  그림과 섬 버튼을 한 판에 올려서 함께 확대
+  판은 16:9 를 유지한 채 지도를 덮으므로
+  그림이 조금 잘려도 버튼은 섬 위에서 벗어나지 않음
+*/
+.mapCanvas {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  width: max(100cqw, calc(100cqh * 16 / 9));
+
+  aspect-ratio: 16 / 9;
+
+  transform: translate(-50%, -50%);
+}
+
+.mapImage {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+}
+
+/* 섬 하나 = 버튼 하나 */
+
+.island {
+  --accent: #ff7fa5;
+
+  position: absolute;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  border-radius: 40% 40% 36% 36%;
+
+  text-decoration: none;
+
+  transition:
+    background 0.18s ease;
+}
+
+.island:hover,
+.island:focus-visible {
+  background:
+    radial-gradient(
+      closest-side,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0)
+    );
+
+  outline: none;
+}
+
+.islandTag {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1cqw, 12px);
+
+  padding:
+    clamp(6px, 0.8cqw, 9px)
+    clamp(8px, 0.9cqw, 10px)
+    clamp(6px, 0.8cqw, 9px)
+    clamp(12px, 1.5cqw, 18px);
+
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.95);
+
+  border: 3px solid #ffffff;
+
+  box-shadow:
+    0 8px 18px rgba(30, 70, 110, 0.22);
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.island:hover .islandTag,
+.island:focus-visible .islandTag {
+  transform: translateY(-5px) scale(1.04);
+
+  box-shadow:
+    0 13px 24px rgba(30, 70, 110, 0.28);
+}
+
+.island:focus-visible .islandTag {
+  border-color: var(--accent);
+}
+
+.tagText {
+  display: flex;
+  flex-direction: column;
+
+  text-align: left;
+
+  line-height: 1.15;
+}
+
+.tagText small {
+  color: var(--accent);
+
+  font-size: clamp(8px, 0.85cqw, 10px);
+  font-weight: 950;
+
+  letter-spacing: 0.1em;
+}
+
+.tagText strong {
+  color: #315c7b;
+
+  font-size: clamp(15px, 1.9cqw, 22px);
+  font-weight: 950;
+
+  letter-spacing: -0.4px;
+
+  white-space: nowrap;
+}
+
+.tagText em {
+  color: #7e8c95;
+
+  font-size: clamp(9px, 0.95cqw, 11px);
+  font-style: normal;
   font-weight: 850;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 270px);
-  justify-content: center;
-  gap: 24px 26px;
-}
+.tagArrow {
+  width: clamp(28px, 3.4cqw, 38px);
+  height: clamp(28px, 3.4cqw, 38px);
 
-.card {
-  min-height: 340px;
-  border-radius: 28px;
-  padding: 16px 16px 20px;
-  box-sizing: border-box;
-
-  text-decoration: none;
-  color: inherit;
+  flex-shrink: 0;
 
   display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
-
-  background: #fffaf3;
-  border: 2px solid #f0e6d6;
-  box-shadow: 0 10px 22px rgba(120, 90, 60, 0.08);
-
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 16px 30px rgba(120, 90, 60, 0.12);
-}
-
-.imageArea {
-  width: 100%;
-  height: 165px;
-  border-radius: 22px;
-  overflow: hidden;
-  margin-bottom: 14px;
-  background: #f6efe2;
-}
-
-.cardImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.textArea {
-  flex: 1;
-}
-
-.textArea h2 {
-  font-weight: 900;
-  font-size: 26px;
-  color: #d9663f;
-  margin: 0 0 6px;
-}
-
-.preview {
-  margin: 0 0 8px;
-  font-size: 14px;
-  font-weight: 800;
-  color: #8f8574;
-}
-
-.description {
-  margin: 0 0 14px;
-  font-size: 14px;
-  font-weight: 700;
-  color: #6d6a78;
-  line-height: 1.45;
-  word-break: keep-all;
-}
-
-.studyButton {
-  margin-top: auto;
-  min-width: 105px;
-  padding: 10px 18px;
-  border-radius: 999px;
-
-  background: linear-gradient(180deg, #ff9d76 0%, #ff8a65 100%);
-  color: white;
-  font-size: 14px;
-  font-weight: 900;
-
-  box-shadow: 0 4px 0 rgba(200, 100, 70, 0.25);
-}
-
-/* 카드 배경 (연한 톤 유지, 보라 제거) */
-.pink { background: #fff5f9; }
-.blue { background: #f4f9ff; }
-.yellow { background: #fffaf0; }
-.mint { background: #f2fbf7; }
-.purple { background: #fdf7f3; }
-.cream { background: #fffaf3; }
-
-.bottomRow {
-  margin-top: 36px;
-  display: flex;
   justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--accent);
+
+  color: #ffffff;
 }
 
-.backButton {
-  text-decoration: none;
-  background: linear-gradient(180deg, #ffe9cf 0%, #ffd9b8 100%);
-  color: #7a4f35;
-  font-size: 16px;
-  font-weight: 900;
-  padding: 12px 22px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  box-shadow: 0 6px 0 rgba(210, 170, 130, 0.18), 0 10px 22px rgba(255, 190, 170, 0.12);
+.tagArrow svg {
+  width: 52%;
+  height: 52%;
 }
 
-@media (max-width: 1000px) {
-  .grid { grid-template-columns: repeat(2, 270px); }
+/* 월드별 포인트 색 */
+
+.theme1 {
+  --accent: #ff7fa5;
 }
 
-@media (max-width: 640px) {
-  .grid { grid-template-columns: 270px; }
-  .title { font-size: 34px; }
+.theme2 {
+  --accent: #55a9dc;
+}
+
+.theme3 {
+  --accent: #ff9d3c;
+}
+
+.theme4 {
+  --accent: #4fbf9c;
+}
+
+.theme5 {
+  --accent: #9a82dc;
+}
+
+.theme6 {
+  --accent: #e79368;
+}
+
+/* mobile list */
+
+.mobileWorlds {
+  display: none;
+}
+
+@media (max-width: 650px) {
+  .inner {
+    padding: 14px 14px 26px;
+  }
+
+  .worldMap {
+    height: 200px;
+  }
+
+  .island {
+    display: none;
+  }
+
+  .mobileWorlds {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    margin-top: 14px;
+  }
+
+  .mobileWorld {
+    min-height: 66px;
+
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+
+    padding: 10px 14px;
+
+    border-radius: 20px;
+
+    background: rgba(255, 255, 255, 0.95);
+
+    color: var(--accent);
+
+    text-decoration: none;
+
+    box-shadow:
+      0 7px 16px rgba(70, 100, 130, 0.1);
+  }
+
+  .mobileNumber {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: var(--accent);
+
+    color: #ffffff;
+
+    font-size: 17px;
+    font-weight: 950;
+  }
+
+  .mobileWorld strong {
+    display: block;
+
+    color: #365e72;
+
+    font-size: 17px;
+    font-weight: 950;
+  }
+
+  .mobileWorld div span {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #7e8c95;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .islandTag,
+  .backButton {
+    transition: none;
+  }
+
+  .island:hover .islandTag,
+  .island:focus-visible .islandTag {
+    transform: none;
+  }
 }

@@ -419,3 +419,40 @@
     transform: none;
   }
 }
+
+/* ─────────────────────────────
+   위쪽 풍경 자리를 줄여서 카드가 박스 비율에 맞게 들어오도록 함
+   (토끼 얼굴은 제목 뒤로 가려져도 됨)
+───────────────────────────── */
+
+.hero {
+  --header: 78px;
+  --clear: 0px;
+}
+
+.inner {
+  padding: 0 4% 20px;
+}
+
+.header {
+  margin: 10px 0;
+  padding: 9px 20px;
+}
+
+/* 내용 묶음을 박스 세로 가운데에 두어 위아래 여백을 맞춤 */
+
+.inner {
+  align-content: center;
+}
+
+/* 제목 판은 박스 가로 가운데에, 뒤로가기 버튼은 왼쪽에 그대로 */
+
+.header {
+  grid-column: 1 / -1;
+  justify-self: center;
+  text-align: center;
+}
+
+.backButton {
+  z-index: 1;
+}

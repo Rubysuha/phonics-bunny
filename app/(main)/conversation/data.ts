@@ -21,6 +21,27 @@ export type ConversationCategory = {
   preview: string;
   color: "pink" | "blue" | "yellow" | "mint" | "purple" | "cream";
   menuImage: string;
+
+  /*
+    월드 선택 지도(practice-menu) 위에서 이 월드의 섬이 차지하는 영역
+    (그림 기준 %)
+  */
+  menuArea: {
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+  };
+
+  /* World Adventure 지도 그림 */
+  worldImage: string;
+
+  /*
+    지도 위 Stage 위치 (그림 기준 %, Stage 순서대로)
+    그림의 빈 원과 길 위에 맞춰 둔 값
+  */
+  stagePositions: { left: number; top: number }[];
+
   dialogues: ConversationDialogue[];
 };
 
@@ -32,6 +53,20 @@ export const conversationCategories: ConversationCategory[] = [
     preview: "mom, dad, family",
     color: "pink",
     menuImage: "/conversation/menu/family.png",
+    menuArea: { left: 8, top: 8, width: 28, height: 36 },
+    worldImage: "/conversation/worlds/family-world.webp",
+    stagePositions: [
+      { left: 36, top: 85 },
+      { left: 23, top: 66 },
+      { left: 13, top: 45 },
+      { left: 29, top: 41 },
+      { left: 54, top: 29 },
+      { left: 71, top: 32 },
+      { left: 86, top: 35 },
+      { left: 84, top: 64 },
+      { left: 67, top: 73 },
+      { left: 50, top: 56 },
+    ],
     dialogues: [
       {
         id: "greeting-mom", title: "Greeting Mom", level: 1, keywords: ["mom", "hello"],
@@ -146,6 +181,20 @@ export const conversationCategories: ConversationCategory[] = [
     preview: "teacher, class, friend",
     color: "blue",
     menuImage: "/conversation/menu/school.png",
+    menuArea: { left: 36, top: 4, width: 31, height: 34 },
+    worldImage: "/conversation/worlds/school-world.webp",
+    stagePositions: [
+      { left: 12, top: 53 },
+      { left: 27.6, top: 41.5 },
+      { left: 55.6, top: 31.9 },
+      { left: 71, top: 31 },
+      { left: 85.2, top: 31.9 },
+      { left: 48.7, top: 56.3 },
+      { left: 68, top: 58 },
+      { left: 83.4, top: 73.3 },
+      { left: 53, top: 76 },
+      { left: 26.3, top: 74.4 },
+    ],
     dialogues: [
       {
         id: "good-morning-class", title: "Good Morning, Class!", level: 1, keywords: ["teacher", "morning"],
@@ -260,6 +309,20 @@ export const conversationCategories: ConversationCategory[] = [
     preview: "hungry, lunch, snack",
     color: "yellow",
     menuImage: "/conversation/menu/food.png",
+    menuArea: { left: 68, top: 10, width: 26, height: 36 },
+    worldImage: "/conversation/worlds/food-world.webp",
+    stagePositions: [
+      { left: 12, top: 40 },
+      { left: 27.2, top: 40.9 },
+      { left: 50.2, top: 29.2 },
+      { left: 65, top: 31 },
+      { left: 79.2, top: 25.5 },
+      { left: 79.5, top: 54.7 },
+      { left: 68.8, top: 79.2 },
+      { left: 54, top: 60 },
+      { left: 31.4, top: 69 },
+      { left: 14, top: 71 },
+    ],
     dialogues: [
       {
         id: "im-hungry", title: "I'm Hungry", level: 1, keywords: ["hungry", "lunch"],
@@ -374,6 +437,20 @@ export const conversationCategories: ConversationCategory[] = [
     preview: "sunny, rainy, windy",
     color: "mint",
     menuImage: "/conversation/menu/weather.png",
+    menuArea: { left: 7, top: 48, width: 27, height: 43 },
+    worldImage: "/conversation/worlds/weather-world.webp",
+    stagePositions: [
+      { left: 21.5, top: 33.5 },
+      { left: 49, top: 31.9 },
+      { left: 73.9, top: 31.9 },
+      { left: 88.8, top: 45.7 },
+      { left: 62, top: 52 },
+      { left: 44, top: 53 },
+      { left: 26, top: 53 },
+      { left: 16.1, top: 74.4 },
+      { left: 44.6, top: 73.9 },
+      { left: 74.2, top: 76 },
+    ],
     dialogues: [
       {
         id: "hows-the-weather", title: "How's The Weather?", level: 1, keywords: ["sunny"],
@@ -488,6 +565,20 @@ export const conversationCategories: ConversationCategory[] = [
     preview: "cat, dog, zoo",
     color: "purple",
     menuImage: "/conversation/menu/animals.png",
+    menuArea: { left: 35, top: 48, width: 31, height: 43 },
+    worldImage: "/conversation/worlds/animals-world.webp",
+    stagePositions: [
+      { left: 25.7, top: 34 },
+      { left: 53.8, top: 28.2 },
+      { left: 71, top: 30 },
+      { left: 86.1, top: 33 },
+      { left: 83.4, top: 62.2 },
+      { left: 70.5, top: 85 },
+      { left: 64, top: 60 },
+      { left: 48.4, top: 54.2 },
+      { left: 25.7, top: 69 },
+      { left: 10, top: 50 },
+    ],
     dialogues: [
       {
         id: "look-at-that-cat", title: "Look At That Cat!", level: 1, keywords: ["cat"],
@@ -602,6 +693,20 @@ export const conversationCategories: ConversationCategory[] = [
     preview: "wake up, eat, sleep",
     color: "cream",
     menuImage: "/conversation/menu/routine.png",
+    menuArea: { left: 67, top: 48, width: 26, height: 43 },
+    worldImage: "/conversation/worlds/daily-routine-world.webp",
+    stagePositions: [
+      { left: 18, top: 34.5 },
+      { left: 37.4, top: 39 },
+      { left: 60, top: 31.9 },
+      { left: 86.4, top: 32.4 },
+      { left: 18.8, top: 72.3 },
+      { left: 45, top: 57.8 },
+      { left: 42.5, top: 77.5 },
+      { left: 72, top: 54 },
+      { left: 72.4, top: 74.4 },
+      { left: 90, top: 74.9 },
+    ],
     dialogues: [
       {
         id: "wake-up", title: "Wake Up!", level: 1, keywords: ["wake up", "mom"],

@@ -435,3 +435,358 @@
     font-size: 64px;
   }
 }
+
+/*
+  조작 버튼 묶음: 원래 쓰던 버튼을 흰색 바 하나에 모아 담음
+*/
+.actionRow {
+  width: fit-content;
+  max-width: 100%;
+  padding: 5px;
+  gap: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 10px 30px rgba(31, 42, 68, 0.1),
+    0 1px 2px rgba(31, 42, 68, 0.06);
+  box-sizing: border-box;
+}
+
+/* 좁은 화면에서 버튼이 두 줄이 되면 바 모서리를 덜 둥글게 */
+@media (max-width: 700px) {
+  .actionRow {
+    border-radius: 28px;
+  }
+}
+
+/* 학습 틀(StudyFrame)이 박스 높이를 꽉 채우도록 */
+.hero {
+  padding: clamp(14px, 1.8vw, 22px);
+  box-sizing: border-box;
+}
+
+/* ─────────────────────────────
+   펼친 그림책
+───────────────────────────── */
+
+.reader {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 14px;
+}
+
+/* 책 표지(바깥 테두리) */
+
+.book {
+  position: relative;
+
+  flex: 1;
+  min-height: 0;
+
+  width: 100%;
+  max-width: 1120px;
+
+  margin: 0 auto;
+  padding: 10px;
+
+  box-sizing: border-box;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  border-radius: 28px;
+
+  background: #d9b98c;
+
+  box-shadow:
+    0 20px 40px rgba(86, 60, 28, 0.22),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+/* 가운데 접힌 자리 */
+
+.book::after {
+  content: "";
+
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 50%;
+
+  width: 44px;
+
+  transform: translateX(-50%);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(90, 62, 30, 0) 0%,
+      rgba(90, 62, 30, 0.16) 46%,
+      rgba(90, 62, 30, 0.22) 50%,
+      rgba(90, 62, 30, 0.16) 54%,
+      rgba(90, 62, 30, 0) 100%
+    );
+
+  pointer-events: none;
+}
+
+/* 왼쪽 페이지: 그림이 꽉 참 */
+
+.pageLeft {
+  min-height: 0;
+
+  overflow: hidden;
+
+  border-radius: 20px 4px 4px 20px;
+
+  background: #fbf1dc;
+}
+
+.bookImage {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  user-select: none;
+}
+
+/* 오른쪽 페이지: 글 */
+
+.pageRight {
+  min-width: 0;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: clamp(18px, 2.6vw, 34px) clamp(20px, 3vw, 42px)
+    clamp(12px, 1.6vw, 18px);
+
+  box-sizing: border-box;
+
+  border-radius: 4px 20px 20px 4px;
+
+  background: #fffaf0;
+}
+
+.bookEyebrow {
+  margin: 0;
+
+  color: #c9694f;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: 0.14em;
+}
+
+.bookTitle {
+  margin: 6px 0 0;
+  padding-bottom: 14px;
+
+  border-bottom: 2px dotted #e6d6b8;
+
+  color: #2b2622;
+
+  font-size: clamp(26px, 3vw, 38px);
+  font-weight: 800;
+
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.bookText {
+  flex: 1;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  /* 글씨 크기는 page.tsx 에서 페이지에 맞게 정함 (아래는 기본값) */
+  font-size: 26px;
+
+  gap: 0.5em;
+
+  overflow: hidden;
+
+  padding: 10px 0 6px;
+}
+
+.bookText p {
+  margin: 0;
+
+  color: #2b2622;
+
+  /* 굵기를 한 단계 낮추고 색을 부드럽게 해서 책 본문처럼 */
+  color: #3a332d;
+
+  font-size: 1em;
+  font-weight: 600;
+  line-height: 1.4;
+
+  overflow-wrap: anywhere;
+
+  animation: pageIn 0.25s ease;
+}
+
+/* 세로 가운데 정렬 (넘칠 때는 위에서부터 보이도록 margin 으로 처리) */
+
+.bookText p:first-child {
+  margin-top: auto;
+}
+
+.bookText p:last-child {
+  margin-bottom: auto;
+}
+
+/* 낮은 화면: 글씨와 여백을 줄여 한 페이지가 스크롤 없이 보이게 */
+
+@media (max-height: 760px) and (min-width: 801px) {
+  .pageRight {
+    padding-top: 16px;
+  }
+
+  .bookTitle {
+    padding-bottom: 8px;
+
+    font-size: 26px;
+  }
+
+  .pagerButton {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* 페이지 넘기기 */
+
+.pager {
+  flex: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding-top: 8px;
+}
+
+.pagerButton {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1.5px solid #e3d6bd;
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  color: #6f665d;
+
+  cursor: pointer;
+
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.pagerButton:hover:not(:disabled) {
+  border-color: #e2725b;
+
+  background: #fff3ee;
+
+  color: #d2604a;
+}
+
+.pagerButton:disabled {
+  opacity: 0.35;
+
+  cursor: default;
+}
+
+.pagerButton:focus-visible {
+  outline: 3px solid rgba(226, 114, 91, 0.45);
+  outline-offset: 2px;
+}
+
+.pagerDots {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+}
+
+.pagerDot,
+.pagerDotOn {
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #e6d6b8;
+}
+
+.pagerDotOn {
+  width: 22px;
+
+  border-radius: 999px;
+
+  background: #e2725b;
+}
+
+/* 좁은 화면: 그림 위, 글 아래 */
+
+@media (max-width: 800px) {
+  .reader {
+    height: auto;
+  }
+
+  .book {
+    grid-template-columns: 1fr;
+  }
+
+  .book::after {
+    display: none;
+  }
+
+  .pageLeft {
+    height: 220px;
+
+    border-radius: 20px 20px 4px 4px;
+  }
+
+  .pageRight {
+    border-radius: 4px 4px 20px 20px;
+  }
+
+  .bookText {
+    overflow: visible;
+
+    font-size: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bookText p {
+    animation: none;
+  }
+}

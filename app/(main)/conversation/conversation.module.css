@@ -2,208 +2,242 @@
 
 .page {
   height: 100%;
+
   display: flex;
   flex-direction: column;
+
   overflow: hidden;
+
+  container-type: size;
 }
 
 .hero {
   position: relative;
+
   flex: 1;
-  border-radius: 32px;
+  min-height: 0;
+
   overflow-y: auto;
 
+  border-radius: 30px;
+
+  /* 다른 메뉴 화면과 같은 반투명 유리 배경 */
   background: rgba(255, 255, 255, 0.58);
+
   backdrop-filter: blur(12px);
 
   border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow: 0 18px 42px rgba(120, 90, 120, 0.1);
+
+  box-shadow:
+    0 18px 42px rgba(120, 90, 120, 0.1);
 
   margin-bottom: 8px;
-  padding: 32px 28px 40px;
-  box-sizing: border-box;
 }
 
 .inner {
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
+  min-height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 14px 18px 18px;
+
+  box-sizing: border-box;
 }
 
 .titleArea {
+  flex: none;
+
   text-align: center;
-  margin: 4px 0 34px;
+
+  margin-bottom: 12px;
 }
 
 .title {
   margin: 0;
-  font-size: 48px;
+
+  color: #315c7b;
+
+  font-size: clamp(28px, 3.6cqw, 40px);
   font-weight: 950;
+
   letter-spacing: -1px;
-  color: #a8623f;
+  line-height: 1.1;
 }
 
 .subtitle {
-  margin: 10px 0 0;
-  color: #8f8574;
-  font-size: 15px;
-  font-weight: 750;
+  margin: 6px 0 0;
+
+  color: #7e8c95;
+
+  font-size: 14px;
+  font-weight: 800;
 }
 
+/* 카드 두 장이 박스의 남은 공간을 반씩 꽉 채움 */
 .cardWrap {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 26px;
-}
+  flex: 1;
+  min-height: 0;
 
-/* ── 카드 ── */
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: clamp(14px, 1.8cqw, 22px);
+}
 
 .card {
+  --accent: #8b6fe0;
+
   position: relative;
-  min-height: 360px;
+
+  min-height: 320px;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
   border-radius: 28px;
-  padding: 22px 20px 20px;
-  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border: 4px solid rgba(255, 255, 255, 0.95);
+
+  box-shadow:
+    0 13px 26px rgba(70, 110, 140, 0.14);
+
+  color: inherit;
 
   text-decoration: none;
-  color: #222;
 
-  background: #fffaf3;
-  border: 1px solid #f0e6d6;
-  box-shadow: 0 10px 22px rgba(120, 90, 60, 0.08);
-
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 16px 30px rgba(120, 90, 60, 0.12);
+
+  box-shadow:
+    0 20px 34px rgba(70, 110, 140, 0.2);
 }
 
-.badge {
-  position: absolute;
-  top: -16px;
-  left: 24px;
-
-  color: white;
-  font-size: 15px;
-  font-weight: 900;
-
-  padding: 7px 20px;
-  border-radius: 999px;
-
-  z-index: 2;
-  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.08);
+.card:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
 }
 
-.aiCard .badge {
-  background: #ff8a65;
+.practiceCard {
+  --accent: #22a99b;
 }
 
-.practiceCard .badge {
-  background: #6bb89e;
-}
+/*
+  그림이 카드의 남은 높이를 모두 채움
+  (위쪽 기준으로 맞춰서 그림 안의 AI / PRACTICE 배지가 잘리지 않게)
+*/
+.cardImage {
+  flex: 1;
+  min-height: 0;
 
-/* ── 이미지/아이콘 영역: 도트 패턴 + 아이콘 ── */
-
-.imageWrap {
-  position: relative;
   width: 100%;
-  height: 222px;
 
-  border-radius: 22px;
-  overflow: hidden;
+  display: block;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  object-fit: cover;
+  object-position: center top;
 
-  margin: 14px 0 18px;
-
-  background:
-    radial-gradient(rgba(255, 255, 255, 0.5) 1.5px, transparent 1.5px),
-    radial-gradient(circle at 50% 30%, #ffe9dc 0%, #ffd4bd 100%);
-  background-size: 18px 18px, 100% 100%;
+  transition: transform 0.3s ease;
 }
 
-.practiceCard .imageWrap {
-  background:
-    radial-gradient(rgba(255, 255, 255, 0.5) 1.5px, transparent 1.5px),
-    radial-gradient(circle at 50% 30%, #e2f2ea 0%, #c3e6d8 100%);
-  background-size: 18px 18px, 100% 100%;
+.card:hover .cardImage {
+  transform: scale(1.03);
 }
 
 .textRow {
+  position: relative;
+
+  flex: none;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   gap: 12px;
+
+  padding: 14px 18px;
+
+  background: #ffffff;
 }
 
 .cardTitle {
-  font-size: 24px;
+  margin: 0;
+
+  color: #2f4858;
+
+  font-size: clamp(20px, 2.2cqw, 25px);
   font-weight: 950;
-  margin: 0 0 6px;
-}
 
-.aiCard .cardTitle {
-  color: #d9663f;
-}
-
-.practiceCard .cardTitle {
-  color: #338066;
+  letter-spacing: -0.5px;
 }
 
 .cardDesc {
-  font-size: 14px;
+  margin: 4px 0 0;
+
+  color: #7e8c95;
+
+  font-size: 13px;
   font-weight: 750;
-  color: #8f8574;
-  margin: 0;
   line-height: 1.45;
+
   word-break: keep-all;
 }
 
 .arrow {
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
 
-  border-radius: 50%;
-  color: white;
-  font-size: 26px;
-  font-weight: 800;
+  flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.08);
+  border-radius: 50%;
+
+  background: var(--accent);
+
+  color: #ffffff;
 }
 
-.aiCard .arrow {
-  background: #ff8a65;
+.arrow svg {
+  width: 20px;
+  height: 20px;
 }
 
-.practiceCard .arrow {
-  background: #6bb89e;
-}
+@media (max-width: 700px) {
+  .inner {
+    padding: 16px 14px 24px;
+  }
 
-@media (max-width: 760px) {
   .cardWrap {
     grid-template-columns: 1fr;
   }
 
-  .title {
-    font-size: 38px;
+  .cardImage {
+    flex: none;
+
+    aspect-ratio: 1;
   }
 }
 
-.cardImage {
-  width: auto;
-  height: 88%;
-  max-width: 90%;
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .cardImage {
+    transition: none;
+  }
 
-  object-fit: contain;
-
-  filter: drop-shadow(0 8px 14px rgba(120, 90, 60, 0.16));
+  .card:hover,
+  .card:hover .cardImage {
+    transform: none;
+  }
 }

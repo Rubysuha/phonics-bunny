@@ -4,19 +4,9 @@ import { rewardCoin } from "@/lib/rewardCoin";
 import { logEngagement } from "@/lib/logEngagement";
 import { useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
 import { notFound, useParams } from "next/navigation";
-import {
-  SpeakerHigh,
-  Robot,
-  Microphone,
-  StopCircle,
-  Play,
-  Sparkle,
-  FileText,
-  House,
-} from "@phosphor-icons/react";
-import ActionButton from "@/components/ActionButton";
+import StudyPanel from "@/components/StudyPanel";
+import PronunciationResultModal from "@/components/PronunciationResultModal";
 import styles from "./detail.module.css";
 import { blendItems } from "../../data";
 import { convertRecordingToWav, createSupportedMediaRecorder } from "@/lib/audioToWav";
@@ -301,20 +291,6 @@ export default function BlendDetailPage() {
     }
   };
 
-  const getScoreMessage = (score: number) => {
-    if (score >= 90) return "Excellent! 🌟";
-    if (score >= 80) return "Great job! 🎉";
-    if (score >= 60) return "Good try! 💪";
-    return "Listen and try again!";
-  };
-
-  const getScoreTier = (score: number) => {
-    if (score >= 90) return "excellent";
-    if (score >= 80) return "great";
-    if (score >= 60) return "good";
-    return "retry";
-  };
-
   const closeResult = () => {
     setPronunciationResult(null);
     setAnalysisError("");
@@ -332,103 +308,25 @@ export default function BlendDetailPage() {
   return (
     <section className={styles.page}>
       <div className={styles.hero}>
-        <div className={styles.inner}>
-          <div className={styles.centerPanel}>
-            <div className={styles.imageOnlyWrap}>
-              <Image
-                src={item.image}
-                alt={item.word}
-                fill
-                className={styles.wordImage}
-                priority
-              />
-            </div>
-          </div>
-
-          <p className={styles.sentence}>{item.word}</p>
-
-          {isRecording && (
-            <div className={styles.recordingBanner}>
-              <span className={styles.recordingDot} />
-              녹음 중이에요... {Math.floor(recordingSeconds / 60)}:
-              {String(recordingSeconds % 60).padStart(2, "0")}
-            </div>
-          )}
-
-          <div className={styles.actionRow}>
-            <ActionButton
-              variant="listen"
-              icon={<SpeakerHigh size={20} weight="fill" />}
-              onClick={handleListen}
-            >
-              소리 재생
-            </ActionButton>
-
-            <ActionButton
-              variant="aiListen"
-              icon={<Robot size={20} weight="fill" />}
-              onClick={handleListenAI}
-            >
-              AI가 읽어주기
-            </ActionButton>
-
-            {!isRecording ? (
-              <ActionButton
-                variant="record"
-                icon={<Microphone size={20} weight="fill" />}
-                onClick={handleStartRecording}
-                disabled={countdown !== null}
-              >
-                {countdown !== null ? "준비 중..." : "녹음하기"}
-              </ActionButton>
-            ) : (
-              <ActionButton
-                variant="recording"
-                icon={<StopCircle size={20} weight="fill" />}
-                onClick={handleStopRecording}
-              >
-                녹음 중지
-              </ActionButton>
-            )}
-
-            <ActionButton
-              variant="playback"
-              icon={<Play size={20} weight="fill" />}
-              onClick={handlePlayMine}
-            >
-              내 녹음 듣기
-            </ActionButton>
-
-            {myRecordingUrl && (
-              <ActionButton
-                variant="analyze"
-                icon={<Sparkle size={20} weight="fill" />}
-                onClick={handleAnalyzePronunciation}
-                disabled={isAnalyzing}
-              >
-                {isAnalyzing ? "분석 중..." : "AI 발음 분석하기"}
-              </ActionButton>
-            )}
-          </div>
-
-          <div className={styles.bottomRow}>
-            <ActionButton
-              variant="download"
-              icon={<FileText size={20} weight="fill" />}
-              onClick={handleDownloadWorksheet}
-            >
-              한글 자료 받기
-            </ActionButton>
-
-            <ActionButton
-              variant="close"
-              icon={<House size={20} weight="fill" />}
-              href={`/english/blend-sounds/${currentGroup.group}`}
-            >
-              닫기
-            </ActionButton>
-          </div>
-        </div>
+        <StudyPanel
+          imageSrc={item.image}
+          imageAlt={item.word}
+          title={item.word}
+          onListen={handleListen}
+          onListenAI={handleListenAI}
+          isRecording={isRecording}
+          recordingSeconds={recordingSeconds}
+          countdown={countdown}
+          onStartRecording={handleStartRecording}
+          onStopRecording={handleStopRecording}
+          onPlayMine={handlePlayMine}
+          hasRecording={!!myRecordingUrl}
+          canAnalyze={!!myRecordingUrl}
+          isAnalyzing={isAnalyzing}
+          onAnalyze={handleAnalyzePronunciation}
+          onDownload={handleDownloadWorksheet}
+          backHref={`/english/blend-sounds/${currentGroup.group}`}
+        />
       </div>
 
       {countdown !== null &&
@@ -444,60 +342,11 @@ export default function BlendDetailPage() {
           document.body
         )}
 
-      {(pronunciationResult || analysisError) &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <div className={styles.resultOverlay} onClick={closeResult}>
-            <div
-              className={
-                pronunciationResult
-                  ? `${styles.resultCard} ${
-                      styles[getScoreTier(pronunciationResult.score)]
-                    }`
-                  : styles.resultCard
-              }
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                className={styles.resultCloseButton}
-                onClick={closeResult}
-                aria-label="닫기"
-              >
-                ✕
-              </button>
-
-              {analysisError && (
-                <p className={styles.resultError}>{analysisError}</p>
-              )}
-
-              {pronunciationResult && (
-                <>
-                  <p className={styles.resultScore}>
-                    {pronunciationResult.score}점
-                  </p>
-                  <p className={styles.resultMessage}>
-                    {getScoreMessage(pronunciationResult.score)}
-                  </p>
-
-                  <ul className={styles.feedbackList}>
-                    {pronunciationResult.feedback.map((line, idx) => (
-                      <li key={idx}>{line}</li>
-                    ))}
-                  </ul>
-
-                  <ActionButton
-                    variant="retry"
-                    icon={<SpeakerHigh size={18} weight="fill" />}
-                    onClick={closeResult}
-                  >
-                    다시 도전하기
-                  </ActionButton>
-                </>
-              )}
-            </div>
-          </div>,
-          document.body
-        )}
+      <PronunciationResultModal
+        result={pronunciationResult}
+        error={analysisError}
+        onClose={closeResult}
+      />
     </section>
   );
 }

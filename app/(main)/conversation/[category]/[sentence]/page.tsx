@@ -3,15 +3,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
-  Robot,
-  Microphone,
-  StopCircle,
-  Play,
-  Sparkle,
-  House,
   SpeakerHigh,
+  Headphones,
+  X,
 } from "@phosphor-icons/react";
-import ActionButton from "@/components/ActionButton";
+import { Nunito } from "next/font/google";
+import StudyBar from "@/components/StudyBar";
+import PronunciationResultModal from "@/components/PronunciationResultModal";
 import { rewardCoin } from "@/lib/rewardCoin";
 import { logEngagement } from "@/lib/logEngagement";
 import { convertRecordingToWav, createSupportedMediaRecorder } from "@/lib/audioToWav";
@@ -20,6 +18,12 @@ import { useToast } from "@/components/Toast";
 import { notFound, useParams } from "next/navigation";
 import styles from "./detail.module.css";
 import { conversationCategories } from "../../data";
+
+/* Book 과 같은 둥근 읽기용 글꼴 (이 화면에서만 사용) */
+const talkFont = Nunito({
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+});
 
 type PronunciationResult = {
   score: number;
@@ -80,6 +84,11 @@ export default function ConversationDetailPage() {
   if (!currentCategory || !item) {
     notFound();
   }
+
+  /* 대화에 나오는 사람들 (처음 말한 순서) */
+  const roleOrder = Array.from(
+    new Set(item.lines.map((line) => line.role))
+  );
 
   const playOne = (audioPath: string) => {
     return new Promise<void>((resolve, reject) => {
@@ -321,20 +330,6 @@ export default function ConversationDetailPage() {
     }
   };
 
-  const getScoreMessage = (score: number) => {
-    if (score >= 90) return "Excellent! 🌟";
-    if (score >= 80) return "Great job! 🎉";
-    if (score >= 60) return "Good try! 💪";
-    return "Listen and try again!";
-  };
-
-  const getScoreTier = (score: number) => {
-    if (score >= 90) return "excellent";
-    if (score >= 80) return "great";
-    if (score >= 60) return "good";
-    return "retry";
-  };
-
   const closeResult = () => {
     setPronunciationResult(null);
     setAnalysisError("");
@@ -343,114 +338,84 @@ export default function ConversationDetailPage() {
   return (
     <section className={styles.page}>
       <div className={styles.hero}>
-        <div className={styles.inner}>
-          <div className={styles.dialogueCard}>
-            <div className={styles.headerBar}>
-              <span>{currentCategory.title}</span>
-              <span>Conversation</span>
+        <div className={`${styles.talk} ${talkFont.className}`}>
+          <div className={styles.stage}>
+            {/* 왼쪽: 장면 그림 */}
+            <div className={styles.scene}>
+              <img
+                src={item.image}
+                alt={item.title}
+                className={styles.sceneImage}
+                draggable={false}
+              />
             </div>
 
-            <div className={styles.imageWrap}>
-              <img src={item.image} alt={item.title} className={styles.image} />
-            </div>
+            {/* 오른쪽: 말풍선 대화 (말풍선을 누르면 그 줄을 들려줌) */}
+            <div className={styles.chat}>
+              <p className={styles.chatEyebrow}>
+                {currentCategory.title}
+                {"  ·  "}
+                LISTEN &amp; SPEAK
+              </p>
 
-            <h2 className={styles.dialogueTitle}>{item.title}</h2>
+              <h1 className={styles.chatTitle}>{item.title}</h1>
 
-            <div className={styles.dialogueList}>
-              {item.lines.map((line, index) => (
-                <div
-                  key={index}
-                  ref={(el) => {
-                    lineRefs.current[index] = el;
-                  }}
-                  className={`${styles.lineRow} ${
-                    activeLineIndex === index ? styles.lineRowActive : ""
-                  }`}
-                >
-                  <span
-                    className={`${styles.roleBadge} ${
-                      line.gender === "male" ? styles.roleBadgeMale : styles.roleBadgeFemale
-                    }`}
-                  >
-                    {line.role}
-                  </span>
-                  <p className={styles.lineText}>{line.text}</p>
-                  <button
-                    className={styles.replayIcon}
-                    onClick={() => handlePlayLine(index)}
-                    aria-label="이 줄만 다시 듣기"
-                  >
-                    <SpeakerHigh size={18} weight="fill" />
-                  </button>
-                </div>
-              ))}
-            </div>
+              <div className={styles.bubbles}>
+                {item.lines.map((line, index) => {
+                  /* 처음 말한 사람은 왼쪽, 다음 사람은 오른쪽 … 번갈아 배치 */
+                  const isRight = roleOrder.indexOf(line.role) % 2 === 1;
 
-            {isRecording && (
-              <div className={styles.recordingBanner}>
-                <span className={styles.recordingDot} />
-                녹음 중이에요... {Math.floor(recordingSeconds / 60)}:
-                {String(recordingSeconds % 60).padStart(2, "0")}
+                  return (
+                    <div
+                      key={index}
+                      ref={(el) => {
+                        lineRefs.current[index] = el;
+                      }}
+                      className={`${styles.turn} ${
+                        isRight ? styles.turnRight : ""
+                      }`}
+                    >
+                      <span className={styles.who}>{line.role}</span>
+
+                      <button
+                        type="button"
+                        className={`${styles.bubble} ${
+                          activeLineIndex === index
+                            ? styles.bubbleActive
+                            : ""
+                        }`}
+                        onClick={() => handlePlayLine(index)}
+                        aria-label={`Listen: ${line.text}`}
+                      >
+                        <span>{line.text}</span>
+
+                        <SpeakerHigh size={18} />
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
-            )}
+            </div>
           </div>
 
-          <div className={styles.actionRow}>
-            <ActionButton
-              variant="aiListen"
-              icon={<Robot size={20} weight="fill" />}
-              onClick={handlePlayAll}
-              disabled={isPlayingAll}
-            >
-              {isPlayingAll ? "읽는 중..." : "전체듣기"}
-            </ActionButton>
-
-            {!isRecording ? (
-              <ActionButton
-                variant="record"
-                icon={<Microphone size={20} weight="fill" />}
-                onClick={handleStartRecording}
-                disabled={countdown !== null}
-              >
-                {countdown !== null ? "준비 중..." : "녹음하기"}
-              </ActionButton>
-            ) : (
-              <ActionButton
-                variant="recording"
-                icon={<StopCircle size={20} weight="fill" />}
-                onClick={handleStopRecording}
-              >
-                녹음 중지
-              </ActionButton>
-            )}
-
-            <ActionButton
-              variant="playback"
-              icon={<Play size={20} weight="fill" />}
-              onClick={handlePlayMine}
-            >
-              내 녹음 듣기
-            </ActionButton>
-
-            {myRecordingUrl && (
-              <ActionButton
-                variant="analyze"
-                icon={<Sparkle size={20} weight="fill" />}
-                onClick={handleAnalyzePronunciation}
-                disabled={isAnalyzing}
-              >
-                {isAnalyzing ? "분석 중..." : "AI 발음 분석하기"}
-              </ActionButton>
-            )}
-
-            <ActionButton
-              variant="close"
-              icon={<House size={20} weight="fill" />}
-              href={`/conversation/${currentCategory.slug}`}
-            >
-              닫기
-            </ActionButton>
-          </div>
+          <StudyBar
+            listenIcon={<Headphones size={20} />}
+            listenLabel={isPlayingAll ? "Playing..." : "Listen All"}
+            onListen={handlePlayAll}
+            listenDisabled={isPlayingAll}
+            isRecording={isRecording}
+            recordingSeconds={recordingSeconds}
+            countdown={countdown}
+            onStartRecording={handleStartRecording}
+            onStopRecording={handleStopRecording}
+            onPlayMine={handlePlayMine}
+            hasRecording={!!myRecordingUrl}
+            isAnalyzing={isAnalyzing}
+            onAnalyze={handleAnalyzePronunciation}
+            backIcon={<X size={19} />}
+            backLabel="Close"
+            backHref={`/conversation/${currentCategory.slug}`}
+          />
         </div>
       </div>
 
@@ -467,60 +432,11 @@ export default function ConversationDetailPage() {
           document.body
         )}
 
-      {(pronunciationResult || analysisError) &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <div className={styles.resultOverlay} onClick={closeResult}>
-            <div
-              className={
-                pronunciationResult
-                  ? `${styles.resultCard} ${
-                      styles[getScoreTier(pronunciationResult.score)]
-                    }`
-                  : styles.resultCard
-              }
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                className={styles.resultCloseButton}
-                onClick={closeResult}
-                aria-label="닫기"
-              >
-                ✕
-              </button>
-
-              {analysisError && (
-                <p className={styles.resultError}>{analysisError}</p>
-              )}
-
-              {pronunciationResult && (
-                <>
-                  <p className={styles.resultScore}>
-                    {pronunciationResult.score}점
-                  </p>
-                  <p className={styles.resultMessage}>
-                    {getScoreMessage(pronunciationResult.score)}
-                  </p>
-
-                  <ul className={styles.feedbackList}>
-                    {pronunciationResult.feedback.map((line, idx) => (
-                      <li key={idx}>{line}</li>
-                    ))}
-                  </ul>
-
-                  <ActionButton
-                    variant="retry"
-                    icon={<Robot size={18} weight="fill" />}
-                    onClick={closeResult}
-                  >
-                    다시 도전하기
-                  </ActionButton>
-                </>
-              )}
-            </div>
-          </div>,
-          document.body
-        )}
+      <PronunciationResultModal
+        result={pronunciationResult}
+        error={analysisError}
+        onClose={closeResult}
+      />
     </section>
   );
 }

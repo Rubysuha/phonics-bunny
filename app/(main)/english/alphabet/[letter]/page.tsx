@@ -3,19 +3,9 @@
 import { rewardCoin } from "@/lib/rewardCoin";
 import { useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
-import {
-  SpeakerHigh,
-  Robot,
-  Microphone,
-  StopCircle,
-  Play,
-  FileText,
-  House,
-} from "@phosphor-icons/react";
-import ActionButton from "@/components/ActionButton";
+import StudyPanel from "@/components/StudyPanel";
 import styles from "./detail.module.css";
 import { alphabetItems } from "../data";
 import { useToast } from "@/components/Toast";
@@ -205,96 +195,28 @@ export default function AlphabetDetailPage() {
   return (
     <section className={styles.page}>
       <div className={styles.hero}>
-        <div className={styles.inner}>
-          <div className={styles.centerPanel}>
-            <div className={styles.imageOnlyWrap}>
-              <Image
-                src={item.image}
-                alt={item.word}
-                fill
-                className={styles.wordImage}
-                priority
-              />
-            </div>
-          </div>
-
-          <p className={styles.sentence}>
-            Capital {upper}
-            <br />
-            lowercase {lower}
-          </p>
-
-          {isRecording && (
-            <div className={styles.recordingBanner}>
-              <span className={styles.recordingDot} />
-              녹음 중이에요... {Math.floor(recordingSeconds / 60)}:
-              {String(recordingSeconds % 60).padStart(2, "0")}
-            </div>
-          )}
-
-          <div className={styles.actionRow}>
-            <ActionButton
-              variant="listen"
-              icon={<SpeakerHigh size={20} weight="fill" />}
-              onClick={handleListen}
-            >
-              소리 재생
-            </ActionButton>
-
-            <ActionButton
-              variant="aiListen"
-              icon={<Robot size={20} weight="fill" />}
-              onClick={handleListenAI}
-            >
-              AI가 읽어주기
-            </ActionButton>
-
-            {!isRecording ? (
-              <ActionButton
-                variant="record"
-                icon={<Microphone size={20} weight="fill" />}
-                onClick={handleStartRecording}
-                disabled={countdown !== null}
-              >
-                {countdown !== null ? "준비 중..." : "녹음하기"}
-              </ActionButton>
-            ) : (
-              <ActionButton
-                variant="recording"
-                icon={<StopCircle size={20} weight="fill" />}
-                onClick={handleStopRecording}
-              >
-                녹음 중지
-              </ActionButton>
-            )}
-
-            <ActionButton
-              variant="playback"
-              icon={<Play size={20} weight="fill" />}
-              onClick={handlePlayMine}
-            >
-              내 녹음 듣기
-            </ActionButton>
-          </div>
-
-          <div className={styles.bottomRow}>
-            <ActionButton
-              variant="download"
-              icon={<FileText size={20} weight="fill" />}
-              onClick={handleDownloadWorksheet}
-            >
-              한글 자료 받기
-            </ActionButton>
-
-            <ActionButton
-              variant="close"
-              icon={<House size={20} weight="fill" />}
-              href="/english/alphabet"
-            >
-              닫기
-            </ActionButton>
-          </div>
-        </div>
+        <StudyPanel
+          imageSrc={item.image}
+          imageAlt={item.word}
+          title={
+            <>
+              Capital {upper}
+              <br />
+              lowercase {lower}
+            </>
+          }
+          onListen={handleListen}
+          onListenAI={handleListenAI}
+          isRecording={isRecording}
+          recordingSeconds={recordingSeconds}
+          countdown={countdown}
+          onStartRecording={handleStartRecording}
+          onStopRecording={handleStopRecording}
+          onPlayMine={handlePlayMine}
+          hasRecording={!!myRecordingUrl}
+          onDownload={handleDownloadWorksheet}
+          backHref="/english/alphabet"
+        />
       </div>
 
       {countdown !== null &&

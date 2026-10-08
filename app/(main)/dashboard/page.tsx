@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { loadHomeLook, saveHomeLook } from "@/lib/homeLook";
+import { backgroundSkins, bunnySkins } from "../shop/data";
 import styles from "./dashboard.module.css";
 
 type TodayLearning = {
@@ -28,6 +30,24 @@ export default function DashboardPage() {
     total: 0,
   });
 
+  /* Shop 에서 "Home에 적용"한 토끼와 배경 (없으면 기본 모습) */
+  const [homeBunnyImage, setHomeBunnyImage] = useState<string | null>(null);
+  const [homeBackgroundImage, setHomeBackgroundImage] = useState<
+    string | null
+  >(null);
+
+  const [userId, setUserId] = useState<string | null>(null);
+
+  /* 꾸민 Home 을 기본 모습으로 되돌림 */
+  const handleResetHome = async () => {
+    if (!userId) return;
+
+    setHomeBunnyImage(null);
+    setHomeBackgroundImage(null);
+
+    await saveHomeLook(userId, null);
+  };
+
   useEffect(() => {
     const fetchTodayLearning = async () => {
       const {
@@ -35,6 +55,21 @@ export default function DashboardPage() {
       } = await supabase.auth.getUser();
 
       if (!user) return;
+
+      setUserId(user.id);
+
+      const look = await loadHomeLook(user.id);
+
+      const bunny = bunnySkins.find((item) => item.id === look?.bunnyId);
+
+      const background = backgroundSkins.find(
+        (item) => item.id === look?.backgroundId
+      );
+
+      if (bunny && background) {
+        setHomeBunnyImage(bunny.image);
+        setHomeBackgroundImage(background.image);
+      }
 
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
@@ -95,14 +130,20 @@ export default function DashboardPage() {
     fetchTodayLearning();
   }, []);
 
-  const getBunnyImage = () => {
-    return "/bunny-new.png";
-  };
-
   return (
     <div className={styles.dashboard}>
       <div className={styles.hero}>
         <h1 className={styles.title}>Home</h1>
+
+        {homeBackgroundImage && (
+          <button
+            type="button"
+            className={styles.homeResetButton}
+            onClick={handleResetHome}
+          >
+            기본 Home으로
+          </button>
+        )}
 
         <div className={styles.rightCards}>
           <div className={styles.todayLearningCard}>
@@ -169,13 +210,21 @@ export default function DashboardPage() {
         <div className={styles.centerWrap}>
           <div className={styles.centerArea}>
             <div className={styles.circle}>
-              <Image
-                src={getBunnyImage()}
-                alt="Phonics Bunny"
-                fill
-                priority
-                className={styles.bunny}
-              />
+              {homeBunnyImage ? (
+                <img
+                  src={homeBunnyImage}
+                  alt="My Bunny"
+                  className={styles.homeBunny}
+                />
+              ) : (
+                <Image
+                  src="/bunny-new.png"
+                  alt="Phonics Bunny"
+                  fill
+                  priority
+                  className={styles.bunny}
+                />
+              )}
 
               <span className={styles.sparkleLeft}>✦</span>
               <span className={styles.sparkleRight}>✦</span>

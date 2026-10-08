@@ -8,17 +8,24 @@
 .hero {
   position: relative;
   flex: 1;
+  min-height: 0;
   border-radius: 30px;
   overflow-y: auto;
 
-  background: rgba(255, 255, 255, 0.58);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow: 0 18px 42px rgba(120, 90, 120, 0.1);
+  /* World Adventure 지도 화면과 같은 하늘색 배경 */
+  background:
+    linear-gradient(
+      180deg,
+      #edf8ff 0%,
+      #f5fbff 50%,
+      #f3fae8 100%
+    );
 
-  margin-bottom: 8px;
-  padding: 28px 28px 36px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 18px 42px rgba(80, 110, 150, 0.12);
+  padding: clamp(16px, 2.4vw, 28px);
   box-sizing: border-box;
+  margin-bottom: 8px;
 }
 
 .inner {
@@ -30,9 +37,9 @@
 .dialogueCard {
   background: #ffffff;
   border-radius: 28px;
-  border: 1px solid rgba(240, 230, 214, 0.9);
-  box-shadow: 0 10px 26px rgba(120, 90, 60, 0.08);
-  padding: 24px;
+  border: 4px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 13px 25px rgba(70, 110, 140, 0.12);
+  padding: 22px;
   box-sizing: border-box;
 }
 
@@ -40,13 +47,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fff1e0;
+  background: #eaf6ff;
   border-radius: 14px;
   padding: 10px 18px;
-  font-size: 14px;
-  font-weight: 800;
-  color: #a8623f;
-  margin-bottom: 18px;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  color: #557c96;
+  margin-bottom: 16px;
 }
 
 .imageWrap {
@@ -54,8 +62,8 @@
   height: 280px;
   border-radius: 20px;
   overflow: hidden;
-  background: #f6efe2;
-  margin-bottom: 18px;
+  background: #eaf6ff;
+  margin-bottom: 16px;
 }
 
 .image {
@@ -67,9 +75,10 @@
 .dialogueTitle {
   text-align: center;
   font-size: 26px;
-  font-weight: 900;
-  color: #a8623f;
-  margin: 0 0 20px;
+  font-weight: 950;
+  letter-spacing: -0.5px;
+  color: #315c7b;
+  margin: 0 0 18px;
 }
 
 .dialogueList {
@@ -82,16 +91,18 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  background: #faf7f0;
-  border: 1px solid #f1e7d1;
+  background: #f6fbff;
+  border: 1px solid #dcecf7;
   border-radius: 16px;
   padding: 14px 18px;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .lineRowActive {
-  background: #fff6e0;
-  border-color: #ffcf7d;
+  background: #fff4e6;
+  border-color: #ffb76f;
 }
 
 .roleBadge {
@@ -119,7 +130,7 @@
   margin: 0;
   font-size: 19px;
   font-weight: 800;
-  color: #2f2f2f;
+  color: #2f4858;
   line-height: 1.4;
 }
 
@@ -127,10 +138,10 @@
   flex-shrink: 0;
   border: none;
   cursor: pointer;
-  background: #fff1e0;
-  color: #a8623f;
-  width: 34px;
-  height: 34px;
+  background: #fff0e2;
+  color: #ff8e5d;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -138,7 +149,7 @@
 }
 
 .replayIcon:hover {
-  background: #ffe4c2;
+  background: #ffe2c9;
 }
 
 .recordingBanner {
@@ -386,5 +397,375 @@
   .roleBadge {
     min-width: 56px;
     font-size: 12px;
+  }
+}
+
+/* ─────────────────────────────
+   넓은 화면: 박스를 꽉 채워서
+   왼쪽에 그림, 오른쪽에 대화를 크게 보여줌
+───────────────────────────── */
+
+@media (min-width: 901px) {
+  .hero {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .inner {
+    flex: 1;
+    min-height: 0;
+    max-width: none;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dialogueCard {
+    flex: 1;
+    min-height: 0;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    column-gap: 24px;
+  }
+
+  .headerBar {
+    grid-column: 1 / -1;
+  }
+
+  .imageWrap {
+    grid-column: 1;
+    grid-row: 2 / -1;
+
+    height: 100%;
+    min-height: 240px;
+    margin-bottom: 0;
+  }
+
+  .dialogueTitle {
+    grid-column: 2;
+
+    margin: 6px 0 16px;
+
+    font-size: clamp(26px, 2.6vw, 34px);
+    text-align: left;
+  }
+
+  .dialogueList {
+    grid-column: 2;
+    min-height: 0;
+
+    gap: 12px;
+
+    overflow-y: auto;
+
+    padding-right: 4px;
+  }
+
+  .lineRow {
+    padding: clamp(14px, 1.6vw, 20px) 18px;
+  }
+
+  .lineText {
+    font-size: clamp(19px, 1.8vw, 24px);
+  }
+
+  .recordingBanner {
+    grid-column: 2;
+  }
+
+  .actionRow {
+    flex: none;
+    margin-top: 16px;
+  }
+}
+
+/*
+  조작 버튼 묶음: 원래 쓰던 버튼을 흰색 바 하나에 모아 담음
+*/
+.actionRow {
+  width: fit-content;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 5px;
+  gap: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 10px 30px rgba(31, 42, 68, 0.1),
+    0 1px 2px rgba(31, 42, 68, 0.06);
+  box-sizing: border-box;
+}
+
+/* 좁은 화면에서 버튼이 두 줄이 되면 바 모서리를 덜 둥글게 */
+@media (max-width: 700px) {
+  .actionRow {
+    border-radius: 28px;
+  }
+}
+
+/* 학습 틀(StudyFrame)이 박스 높이를 꽉 채우도록 */
+.hero {
+  padding: clamp(14px, 1.8vw, 22px);
+  box-sizing: border-box;
+}
+
+/* ─────────────────────────────
+   말풍선 대화 화면
+───────────────────────────── */
+
+.talk {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 14px;
+}
+
+.stage {
+  flex: 1;
+  min-height: 0;
+
+  width: 100%;
+  max-width: 1120px;
+
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+
+  gap: 16px;
+}
+
+/* 장면 그림 */
+
+.scene {
+  min-height: 0;
+
+  overflow: hidden;
+
+  border: 5px solid rgba(255, 255, 255, 0.95);
+  border-radius: 28px;
+
+  background: #fbf1dc;
+
+  box-shadow:
+    0 14px 30px rgba(86, 60, 28, 0.16);
+
+  box-sizing: border-box;
+}
+
+.sceneImage {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  user-select: none;
+}
+
+/* 대화 */
+
+.chat {
+  min-width: 0;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: clamp(16px, 2vw, 24px) clamp(16px, 2.2vw, 26px) 14px;
+
+  box-sizing: border-box;
+
+  border-radius: 28px;
+
+  background: rgba(255, 252, 244, 0.95);
+
+  box-shadow:
+    0 14px 30px rgba(86, 60, 28, 0.12);
+}
+
+.chatEyebrow {
+  margin: 0;
+
+  color: #c9694f;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: 0.14em;
+}
+
+.chatTitle {
+  margin: 4px 0 0;
+  padding-bottom: 10px;
+
+  border-bottom: 2px dotted #e6d6b8;
+
+  color: #2b2622;
+
+  font-size: clamp(24px, 2.8vw, 34px);
+  font-weight: 800;
+
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.bubbles {
+  flex: 1;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: clamp(4px, 1vh, 10px);
+
+  overflow-y: auto;
+
+  padding: 10px 2px 2px;
+
+  scrollbar-width: thin;
+  scrollbar-color: #e3d6bd transparent;
+}
+
+/* 줄이 적으면 세로 가운데, 많으면 위에서부터 */
+
+.turn:first-child {
+  margin-top: auto;
+}
+
+.turn:last-child {
+  margin-bottom: auto;
+}
+
+/* 이름표를 말풍선 옆에 두어 한 줄 높이를 줄임 (8줄 대화도 한 화면에) */
+
+.turn {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.turnRight {
+  flex-direction: row-reverse;
+}
+
+.who {
+  flex-shrink: 0;
+
+  min-width: 40px;
+
+  color: #a08a68;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  text-align: center;
+}
+
+.bubble {
+  max-width: 82%;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: clamp(7px, 1.2vh, 11px) 16px;
+
+  border: 1.5px solid #eadfca;
+  border-radius: 20px 20px 20px 6px;
+
+  background: #ffffff;
+
+  color: #3a332d;
+
+  font-family: inherit;
+  font-size: clamp(17px, 1.9vw, 23px);
+  font-weight: 700;
+  line-height: 1.3;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease,
+    transform 0.16s ease;
+}
+
+.bubble svg {
+  flex-shrink: 0;
+
+  color: #b9a888;
+}
+
+.turnRight .bubble {
+  border-color: #f3d9c4;
+  border-radius: 20px 20px 6px 20px;
+
+  background: #fff1e2;
+}
+
+.bubble:hover {
+  transform: translateY(-1px);
+
+  border-color: #e2725b;
+}
+
+.bubble:focus-visible {
+  outline: 3px solid rgba(226, 114, 91, 0.45);
+  outline-offset: 2px;
+}
+
+/* 지금 들려주는 말풍선 */
+
+.bubbleActive,
+.turnRight .bubbleActive {
+  border-color: #e2725b;
+
+  background: #e2725b;
+
+  color: #ffffff;
+}
+
+.bubbleActive svg {
+  color: #ffffff;
+}
+
+@media (max-width: 800px) {
+  .talk {
+    height: auto;
+  }
+
+  .stage {
+    grid-template-columns: 1fr;
+  }
+
+  .scene {
+    height: 220px;
+  }
+
+  .bubbles {
+    overflow: visible;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble {
+    transition: none;
+  }
+
+  .bubble:hover {
+    transform: none;
   }
 }

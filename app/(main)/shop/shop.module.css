@@ -2439,3 +2439,123 @@
     opacity: 0.55;
   }
 }
+
+/* ========================================
+   HOME 에 적용하기
+======================================== */
+
+/* 버튼이 4개가 되어 한 줄에 들어오도록 간격을 조금 줄임 */
+
+.previewControls {
+  gap: 6px;
+}
+
+.randomButton,
+.resetButton,
+.showcaseButton,
+.homeApplyButton {
+  padding: 0 14px;
+
+  gap: 6px;
+}
+
+.homeApplyButton {
+  height: 44px;
+
+  border-radius: 999px;
+
+  border: none;
+
+  display: flex;
+  align-items: center;
+
+  background: #ffe0e8;
+
+  color: #b84a6b;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 3px 10px rgba(60, 40, 20, 0.14);
+
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.homeApplyButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 5px 14px rgba(60, 40, 20, 0.18);
+}
+
+.homeApplyButton:disabled {
+  opacity: 0.7;
+
+  cursor: default;
+}
+
+/* 지금 보고 있는 조합이 Home 에 적용돼 있을 때 */
+
+.homeApplyButtonActive {
+  background: #ff7f9b;
+
+  color: #ffffff;
+}
+
+
+/* 기본 Home 으로 되돌리기 */
+
+.homeResetButton {
+  height: 44px;
+
+  padding: 0 14px;
+
+  border-radius: 999px;
+
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  background: rgba(255, 255, 255, 0.82);
+
+  color: #6b5a4c;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 3px 10px rgba(60, 40, 20, 0.14);
+
+  transition:
+    transform 0.16s ease;
+}
+
+.homeResetButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.homeResetButton:disabled {
+  opacity: 0.7;
+
+  cursor: default;
+}
+
+/* 버튼이 5개까지 늘어나므로 넘치면 두 줄로 */
+
+.previewControls {
+  flex-wrap: wrap;
+  justify-content: center;
+
+  width: max-content;
+  max-width: 100%;
+}

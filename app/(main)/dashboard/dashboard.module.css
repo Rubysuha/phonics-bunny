@@ -193,3 +193,64 @@
     width: 290px;
   }
 }
+
+/* ─────────────────────────────
+   Shop 에서 "Home에 적용"한 토끼
+   (배경은 AppShell 에서 앱 전체 배경으로 적용)
+───────────────────────────── */
+
+/* 상점 토끼 그림은 여백이 적어서 확대하지 않고 아래쪽에 맞춤 */
+
+.homeBunny {
+  position: absolute;
+  left: 50%;
+  bottom: -40px;
+
+  height: 125%;
+
+  transform: translateX(-50%);
+
+  object-fit: contain;
+
+  filter:
+    drop-shadow(
+      0 14px 13px rgba(55, 27, 18, 0.22)
+    );
+}
+
+/* 꾸민 Home 을 쓰는 동안에만 보이는 되돌리기 버튼 */
+
+.homeResetButton {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+
+  z-index: 6;
+
+  height: 38px;
+
+  padding: 0 16px;
+
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.86);
+
+  color: #6b5a4c;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 4px 12px rgba(60, 40, 20, 0.16);
+
+  transition:
+    transform 0.16s ease;
+}
+
+.homeResetButton:hover {
+  transform: translateY(-2px);
+}

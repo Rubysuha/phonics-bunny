@@ -2,23 +2,29 @@
 
 import { rewardCoin } from "@/lib/rewardCoin";
 import { logEngagement } from "@/lib/logEngagement";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
-  Robot,
-  Microphone,
-  StopCircle,
-  Play,
-  Sparkle,
   ArrowLeft,
+  CaretLeft,
+  CaretRight,
+  Headphones,
 } from "@phosphor-icons/react";
-import ActionButton from "@/components/ActionButton";
+import { Nunito } from "next/font/google";
+import StudyBar from "@/components/StudyBar";
+import PronunciationResultModal from "@/components/PronunciationResultModal";
 import styles from "./detail.module.css";
 import { getBookLevel, getBookStory } from "../../data";
 import { convertRecordingToWav, createSupportedMediaRecorder } from "@/lib/audioToWav";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/Toast";
 import { useParams, notFound } from "next/navigation";
+
+/* 그림책 글씨: 둥글고 읽기 쉬운 Nunito (이 화면에서만 사용) */
+const bookFont = Nunito({
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+});
 
 type PronunciationResult = {
   score: number;
@@ -59,11 +65,79 @@ export default function BookDetailPage() {
 
   const [countdown, setCountdown] = useState<number | null>(null);
 
+  /* 그림책의 지금 페이지 (긴 이야기는 여러 페이지로 나눠서 보여줌) */
+  const [pageIndex, setPageIndex] = useState(0);
+
   const { showToast } = useToast();
 
   if (!currentLevel || !currentStory) {
     notFound();
   }
+
+  /*
+    한 페이지에 문장 3개씩
+    (4문장 이하의 짧은 이야기는 한 페이지에 모두)
+  */
+  const SENTENCES_PER_PAGE = 3;
+
+  const pageCount =
+    currentStory.sentences.length <= 4
+      ? 1
+      : Math.ceil(currentStory.sentences.length / SENTENCES_PER_PAGE);
+
+  const pageSentences =
+    pageCount === 1
+      ? currentStory.sentences
+      : currentStory.sentences.slice(
+          pageIndex * SENTENCES_PER_PAGE,
+          (pageIndex + 1) * SENTENCES_PER_PAGE
+        );
+
+  /*
+    글씨 크기를 페이지에 맞춤
+    글 영역에 넘치지 않는 가장 큰 크기를 찾아서, 여백이 조금 남도록 살짝 줄임
+    (문장이 짧으면 크게, 길면 작게)
+  */
+  const bookTextRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = bookTextRef.current;
+
+    if (!el) return;
+
+    const fit = () => {
+      /* 좁은 화면은 그림 아래로 글이 길게 이어지므로 CSS 기본 크기 사용 */
+      if (window.innerWidth <= 800) {
+        el.style.fontSize = "";
+        return;
+      }
+
+      let low = 18;
+      let high = 76;
+
+      for (let i = 0; i < 8; i += 1) {
+        const mid = (low + high) / 2;
+
+        el.style.fontSize = `${mid}px`;
+
+        if (el.scrollHeight <= el.clientHeight) {
+          low = mid;
+        } else {
+          high = mid;
+        }
+      }
+
+      el.style.fontSize = `${Math.floor(low * 0.93)}px`;
+    };
+
+    fit();
+
+    const observer = new ResizeObserver(fit);
+
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, [pageIndex, story]);
 
   const handleListen = async () => {
     try {
@@ -273,20 +347,6 @@ export default function BookDetailPage() {
     }
   };
 
-  const getScoreMessage = (score: number) => {
-    if (score >= 90) return "Excellent! 🌟";
-    if (score >= 80) return "Great job! 🎉";
-    if (score >= 60) return "Good try! 💪";
-    return "Listen and try again!";
-  };
-
-  const getScoreTier = (score: number) => {
-    if (score >= 90) return "excellent";
-    if (score >= 80) return "great";
-    if (score >= 60) return "good";
-    return "retry";
-  };
-
   const closeResult = () => {
     setPronunciationResult(null);
     setAnalysisError("");
@@ -295,102 +355,89 @@ export default function BookDetailPage() {
   return (
     <section className={styles.page}>
       <div className={styles.hero}>
-        <div className={styles.inner}>
-          <div className={styles.bookBox}>
-            <div className={styles.topBar}>
-              <div className={styles.levelLabel}>{currentLevel.title}</div>
-              <div className={styles.pageLabel}>Reading Book</div>
+        <div className={styles.reader}>
+          {/* 펼친 그림책: 왼쪽 페이지는 그림, 오른쪽 페이지는 글 */}
+          <div className={`${styles.book} ${bookFont.className}`}>
+            <div className={styles.pageLeft}>
+              <img
+                src={currentStory.image}
+                alt={currentStory.title}
+                className={styles.bookImage}
+                draggable={false}
+              />
             </div>
 
-            <div className={styles.contentRow}>
-              <div className={styles.imageWrap}>
-                <img
-                  src={currentStory.image}
-                  alt={currentStory.title}
-                  className={styles.image}
-                  draggable={false}
-                />
+            <div className={styles.pageRight}>
+              <p className={styles.bookEyebrow}>
+                {currentLevel.title}
+                {"  ·  "}
+                READ &amp; SPEAK
+              </p>
+
+              <h1 className={styles.bookTitle}>{currentStory.title}</h1>
+
+              <div className={styles.bookText} ref={bookTextRef}>
+                {pageSentences.map((sentence, index) => (
+                  <p key={`${pageIndex}-${index}`}>{sentence}</p>
+                ))}
               </div>
 
-              <div className={styles.storyContent}>
-                <h1 className={styles.storyTitle}>{currentStory.title}</h1>
-
-                <div className={styles.sentenceList}>
-                  {currentStory.sentences.map((sentence, index) => (
-                    <p key={index} className={styles.sentence}>
-                      {sentence}
-                    </p>
-                  ))}
-                </div>
-
-                {isRecording && (
-                  <div className={styles.recordingBanner}>
-                    <span className={styles.recordingDot} />
-                    녹음 중이에요... {Math.floor(recordingSeconds / 60)}:
-                    {String(recordingSeconds % 60).padStart(2, "0")}
-                  </div>
-                )}
-
-                <div className={styles.actionRow}>
-                  <ActionButton
-                    variant="aiListen"
-                    icon={<Robot size={20} weight="fill" />}
-                    onClick={handleListen}
+              {pageCount > 1 && (
+                <div className={styles.pager}>
+                  <button
+                    type="button"
+                    className={styles.pagerButton}
+                    onClick={() => setPageIndex((prev) => prev - 1)}
+                    disabled={pageIndex === 0}
+                    aria-label="Previous page"
                   >
-                    AI가 읽어주기
-                  </ActionButton>
+                    <CaretLeft size={20} weight="bold" />
+                  </button>
 
-                  {!isRecording ? (
-                    <ActionButton
-                      variant="record"
-                      icon={<Microphone size={20} weight="fill" />}
-                      onClick={handleStartRecording}
-                      disabled={countdown !== null}
-                    >
-                      {countdown !== null ? "준비 중..." : "녹음하기"}
-                    </ActionButton>
-                  ) : (
-                    <ActionButton
-                      variant="recording"
-                      icon={<StopCircle size={20} weight="fill" />}
-                      onClick={handleStopRecording}
-                    >
-                      녹음 중지
-                    </ActionButton>
-                  )}
+                  <span className={styles.pagerDots}>
+                    {Array.from({ length: pageCount }).map((_, index) => (
+                      <span
+                        key={index}
+                        className={
+                          index === pageIndex
+                            ? styles.pagerDotOn
+                            : styles.pagerDot
+                        }
+                      />
+                    ))}
+                  </span>
 
-                  <ActionButton
-                    variant="playback"
-                    icon={<Play size={20} weight="fill" />}
-                    onClick={handlePlayMine}
+                  <button
+                    type="button"
+                    className={styles.pagerButton}
+                    onClick={() => setPageIndex((prev) => prev + 1)}
+                    disabled={pageIndex === pageCount - 1}
+                    aria-label="Next page"
                   >
-                    내 녹음 듣기
-                  </ActionButton>
-
-                  {myRecordingUrl && (
-                    <ActionButton
-                      variant="analyze"
-                      icon={<Sparkle size={20} weight="fill" />}
-                      onClick={handleAnalyzePronunciation}
-                      disabled={isAnalyzing}
-                    >
-                      {isAnalyzing ? "분석 중..." : "AI 발음 분석하기"}
-                    </ActionButton>
-                  )}
+                    <CaretRight size={20} weight="bold" />
+                  </button>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
-          <div className={styles.bottomRow}>
-            <ActionButton
-              variant="close"
-              icon={<ArrowLeft size={20} weight="fill" />}
-              href={`/book/${currentLevel.level}`}
-            >
-              책 목록으로 돌아가기
-            </ActionButton>
-          </div>
+          <StudyBar
+            listenIcon={<Headphones size={20} />}
+            listenLabel="AI Voice"
+            onListen={handleListen}
+            isRecording={isRecording}
+            recordingSeconds={recordingSeconds}
+            countdown={countdown}
+            onStartRecording={handleStartRecording}
+            onStopRecording={handleStopRecording}
+            onPlayMine={handlePlayMine}
+            hasRecording={!!myRecordingUrl}
+            isAnalyzing={isAnalyzing}
+            onAnalyze={handleAnalyzePronunciation}
+            backIcon={<ArrowLeft size={19} />}
+            backLabel="Book List"
+            backHref={`/book/${currentLevel.level}`}
+          />
         </div>
       </div>
 
@@ -407,60 +454,11 @@ export default function BookDetailPage() {
           document.body
         )}
 
-      {(pronunciationResult || analysisError) &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <div className={styles.resultOverlay} onClick={closeResult}>
-            <div
-              className={
-                pronunciationResult
-                  ? `${styles.resultCard} ${
-                      styles[getScoreTier(pronunciationResult.score)]
-                    }`
-                  : styles.resultCard
-              }
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                className={styles.resultCloseButton}
-                onClick={closeResult}
-                aria-label="닫기"
-              >
-                ✕
-              </button>
-
-              {analysisError && (
-                <p className={styles.resultError}>{analysisError}</p>
-              )}
-
-              {pronunciationResult && (
-                <>
-                  <p className={styles.resultScore}>
-                    {pronunciationResult.score}점
-                  </p>
-                  <p className={styles.resultMessage}>
-                    {getScoreMessage(pronunciationResult.score)}
-                  </p>
-
-                  <ul className={styles.feedbackList}>
-                    {pronunciationResult.feedback.map((line, idx) => (
-                      <li key={idx}>{line}</li>
-                    ))}
-                  </ul>
-
-                  <ActionButton
-                    variant="retry"
-                    icon={<Robot size={18} weight="fill" />}
-                    onClick={closeResult}
-                  >
-                    다시 도전하기
-                  </ActionButton>
-                </>
-              )}
-            </div>
-          </div>,
-          document.body
-        )}
+      <PronunciationResultModal
+        result={pronunciationResult}
+        error={analysisError}
+        onClose={closeResult}
+      />
     </section>
   );
 }

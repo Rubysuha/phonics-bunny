@@ -23,6 +23,11 @@ import {
 } from "@phosphor-icons/react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/Toast";
+import {
+  loadHomeLook,
+  saveHomeLook,
+  type HomeLook,
+} from "@/lib/homeLook";
 import styles from "./shop.module.css";
 
 import {
@@ -82,6 +87,10 @@ function ShopPageInner() {
     useState("default_bg");
 
   const [isLoading, setIsLoading] = useState(true);
+
+  /* Home(대시보드)에 적용해 둔 토끼와 배경 */
+  const [homeLook, setHomeLook] = useState<HomeLook | null>(null);
+  const [isSavingHome, setIsSavingHome] = useState(false);
 
   /* =========================
      BUNNY SHOWCASE
@@ -168,6 +177,8 @@ function ShopPageInner() {
       setSelectedBackgroundId(currentBackground);
       setPreviewBackgroundId(currentBackground);
 
+      setHomeLook(await loadHomeLook(user.id));
+
       setIsLoading(false);
     };
 
@@ -238,6 +249,62 @@ function ShopPageInner() {
     backgroundSkins.find((background) => background.id === previewBackgroundId) ??
     backgroundSkins.find((background) => background.id === selectedBackgroundId) ??
     backgroundSkins[0];
+
+  /* =========================
+     APPLY TO HOME
+     지금 보고 있는 토끼 + 배경을 Home 화면에 적용
+  ========================= */
+
+  const isAppliedToHome =
+    homeLook?.bunnyId === previewBunny.id &&
+    homeLook?.backgroundId === previewBackground.id;
+
+  const handleApplyToHome = async () => {
+    if (!userId) {
+      showToast("로그인이 필요해요!");
+      return;
+    }
+
+    if (isSavingHome || isAppliedToHome) return;
+
+    if (
+      !ownedBunnies.includes(previewBunny.id) ||
+      !ownedBackgrounds.includes(previewBackground.id)
+    ) {
+      showToast("구매한 토끼와 배경만 Home에 적용할 수 있어요!");
+      return;
+    }
+
+    const nextLook: HomeLook = {
+      bunnyId: previewBunny.id,
+      backgroundId: previewBackground.id,
+    };
+
+    setIsSavingHome(true);
+
+    await saveHomeLook(userId, nextLook);
+
+    setHomeLook(nextLook);
+    setIsSavingHome(false);
+
+    showToast(
+      `🏠 ${previewBunny.name} + ${previewBackground.name}을(를) Home에 적용했어요!`
+    );
+  };
+
+  /* Home 을 처음 모습(기본 Home)으로 되돌림 */
+  const handleResetHome = async () => {
+    if (!userId || isSavingHome) return;
+
+    setIsSavingHome(true);
+
+    await saveHomeLook(userId, null);
+
+    setHomeLook(null);
+    setIsSavingHome(false);
+
+    showToast("Home을 기본 모습으로 되돌렸어요.");
+  };
 
   /* =========================
      COLLECTION
@@ -775,6 +842,35 @@ function ShopPageInner() {
               <Eye size={17} weight="bold" />
               <span>토끼 보기</span>
             </button>
+
+            <button
+              className={`${styles.homeApplyButton} ${
+                isAppliedToHome ? styles.homeApplyButtonActive : ""
+              }`}
+              onClick={handleApplyToHome}
+              disabled={isSavingHome}
+              aria-pressed={isAppliedToHome}
+            >
+              <House
+                size={17}
+                weight={isAppliedToHome ? "fill" : "bold"}
+              />
+              <span>
+                {isAppliedToHome ? "Home 적용 중" : "Home에 적용"}
+              </span>
+            </button>
+
+            {/* 꾸민 Home 을 쓰는 동안에만 보이는 "기본 Home" 버튼 */}
+            {homeLook && (
+              <button
+                className={styles.homeResetButton}
+                onClick={handleResetHome}
+                disabled={isSavingHome}
+              >
+                <ArrowCounterClockwise size={16} weight="bold" />
+                <span>기본 Home</span>
+              </button>
+            )}
           </div>
         </div>
 
