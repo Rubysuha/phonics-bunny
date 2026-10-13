@@ -1072,16 +1072,24 @@ function generateVowelQuestion(
     };
   }
 
+  const vowel =
+    target.group
+      .toUpperCase();
+
   /*
-    2 / 5
-    AI Listening
+    빈칸(3번째) 문제는 단어에 그 모음 글자가 실제로 있을 때만 출제
+    (Moon · Few 처럼 U 소리지만 글자 u 가 없는 단어는 제외)
+
+    그 밖의 경우 — 듣기 차례이거나, 그림이 아직 없는 단어의 그림 차례 —
+    는 모두 듣기 문제로 출제
   */
-  if (
-    typeIndex ===
-      1 ||
-    typeIndex ===
-      4
-  ) {
+  const canBlank =
+    typeIndex === 2 &&
+    target.word
+      .toUpperCase()
+      .includes(vowel);
+
+  if (!canBlank) {
     return {
       id:
         `${target.id}-listen-${questionIndex}`,
@@ -1117,10 +1125,6 @@ function generateVowelQuestion(
     3
     Missing Vowel
   */
-
-  const vowel =
-    target.group
-      .toUpperCase();
 
   return {
     id:

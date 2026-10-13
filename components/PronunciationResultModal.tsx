@@ -8,6 +8,9 @@ type Props = {
   result: { score: number; feedback: string[] } | null;
   error: string;
   onClose: () => void;
+
+  /* 어떤 단어의 결과인지 (여러 단어가 한 화면에 있는 Sight Words 용) */
+  word?: string;
 };
 
 const getMessage = (score: number) => {
@@ -26,6 +29,7 @@ export default function PronunciationResultModal({
   result,
   error,
   onClose,
+  word,
 }: Props) {
   if ((!result && !error) || typeof document === "undefined") {
     return null;
@@ -50,6 +54,8 @@ export default function PronunciationResultModal({
         </button>
 
         <p className={styles.eyebrow}>내 발음 점수</p>
+
+        {word && <p className={styles.word}>{word}</p>}
 
         {error && <p className={styles.error}>{error}</p>}
 

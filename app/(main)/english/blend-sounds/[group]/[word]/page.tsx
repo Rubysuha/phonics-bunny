@@ -328,7 +328,9 @@ export default function BlendDetailPage() {
           canAnalyze={!!myRecordingUrl}
           isAnalyzing={isAnalyzing}
           onAnalyze={handleAnalyzePronunciation}
-          onDownload={handleDownloadWorksheet}
+          onDownload={
+            item.worksheet ? handleDownloadWorksheet : undefined
+          }
           backHref={`/english/blend-sounds/${currentGroup.group}`}
         />
       </div>

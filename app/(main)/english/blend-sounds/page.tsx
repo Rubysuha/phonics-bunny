@@ -1,5 +1,6 @@
 import Link from "next/link";
 import BackButton from "@/components/ui/BackButton";
+import PageTitle from "@/components/PageTitle";
 import styles from "./blend-sounds.module.css";
 
 const blendMenus = [
@@ -31,11 +32,11 @@ export default function BlendSoundsPage() {
     <section className={styles.page}>
       <div className={styles.hero}>
         <div className={styles.inner}>
-          <h1 className={styles.title}>Blending Sounds</h1>
-
-          <p className={styles.subtitle}>
-            Blending Sounds는 자음이 이어지는 소리를 자연스럽게 읽는 연습입니다.
-          </p>
+          <PageTitle
+            eyebrow="PHONICS"
+            title="Blending Sounds"
+            subtitle="Blending Sounds는 자음이 이어지는 소리를 자연스럽게 읽는 연습입니다."
+          />
 
           <div className={styles.grid}>
             {blendMenus.map((menu) => (

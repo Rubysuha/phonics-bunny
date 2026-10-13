@@ -1,6 +1,7 @@
 // app/(main)/conversation/page.tsx
 import Link from "next/link";
 import { ArrowRight } from "@phosphor-icons/react/ssr";
+import PageTitle from "@/components/PageTitle";
 import styles from "./conversation.module.css";
 
 const modes = [
@@ -26,11 +27,11 @@ export default function ConversationPage() {
       <div className={styles.hero}>
         <div className={styles.inner}>
           <div className={styles.titleArea}>
-            <h1 className={styles.title}>Conversation</h1>
-
-            <p className={styles.subtitle}>
-              AI Bunny와 대화하거나, 주제별 회화를 직접 공부해 보세요.
-            </p>
+            <PageTitle
+              eyebrow="SPEAK"
+              title="Conversation"
+              subtitle="AI Bunny와 대화하거나, 주제별 회화를 직접 공부해 보세요."
+            />
           </div>
 
           <div className={styles.cardWrap}>

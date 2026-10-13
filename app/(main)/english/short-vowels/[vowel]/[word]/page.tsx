@@ -329,7 +329,9 @@ export default function ShortVowelDetailPage() {
           canAnalyze={!!myRecordingUrl}
           isAnalyzing={isAnalyzing}
           onAnalyze={handleAnalyzePronunciation}
-          onDownload={handleDownloadWorksheet}
+          onDownload={
+            item.worksheet ? handleDownloadWorksheet : undefined
+          }
           backHref={`/english/short-vowels/${currentVowel.vowel}`}
         />
       </div>

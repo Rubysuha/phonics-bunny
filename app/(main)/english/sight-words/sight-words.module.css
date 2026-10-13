@@ -1,180 +1,288 @@
+/* Sight Words 레벨 선택: 크림 · 아이보리 바탕에 코랄 포인트 */
+
 .page {
+  --ink: #2b2622;
+  --ink-soft: #6f665d;
+  --line: #eadfca;
+  --line-strong: #dccfb6;
+  --cream: #fff8e8;
+  --ivory: #fffdf7;
+  --coral: #e2725b;
+  --coral-deep: #d2604a;
+
   height: 100%;
+
   display: flex;
   flex-direction: column;
+
   overflow: hidden;
 }
 
 .hero {
-  position: relative;
   flex: 1;
-  border-radius: 30px;
+  min-height: 0;
+
   overflow-y: auto;
 
+  border-radius: 30px;
+
   background: rgba(255, 255, 255, 0.58);
+
   backdrop-filter: blur(12px);
 
   border: 1px solid rgba(255, 255, 255, 0.55);
+
   box-shadow: 0 18px 42px rgba(120, 90, 120, 0.1);
 
   margin-bottom: 8px;
-  padding: 32px 28px 38px;
+  padding: 22px 26px 26px;
+
+  box-sizing: border-box;
 }
 
 .inner {
   width: 100%;
   max-width: 1120px;
+  min-height: 100%;
+
   margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.header {
+  margin-bottom: 20px;
+
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0;
+
+  color: var(--coral-deep);
+
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: 0.16em;
 }
 
 .title {
-  text-align: center;
-  font-size: 52px;
-  font-weight: 900;
-  color: #ff7a36;
-  margin: 8px 0 10px;
+  margin: 2px 0 0;
+
+  color: var(--ink);
+
+  font-size: clamp(30px, 3.6vw, 42px);
+  font-weight: 800;
+
+  letter-spacing: -0.5px;
+  line-height: 1.2;
 }
 
 .subtitle {
-  text-align: center;
-  font-size: 17px;
-  font-weight: 700;
-  color: #6f7680;
-  margin: 0 0 30px;
+  margin: 6px 0 0;
+
+  color: var(--ink-soft);
+
+  font-size: 14px;
+  font-weight: 600;
 }
 
+/* 레벨 카드 */
+
 .grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 30px;
-  max-width: 980px;
-  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+
+  gap: 14px;
 }
 
 .card {
-  width: 300px;
-  min-height: 380px;
-  border-radius: 32px;
-  padding: 12px;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  border: 1px solid var(--line);
+  border-radius: 24px;
+
+  background: var(--ivory);
+
+  color: inherit;
+
   text-decoration: none;
-  color: #222;
-  box-shadow: 0 8px 20px rgba(92, 127, 149, 0.08);
+
+  box-shadow: 0 6px 18px rgba(120, 92, 50, 0.08);
+
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  overflow: hidden;
 }
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(92, 127, 149, 0.12);
+
+  box-shadow: 0 14px 28px rgba(120, 92, 50, 0.14);
+}
+
+.card:focus-visible {
+  outline: 3px solid rgba(226, 114, 91, 0.45);
+  outline-offset: 3px;
 }
 
 .imageWrap {
   width: 100%;
-  height: 280px;
-  border-radius: 24px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.18);
+
+  aspect-ratio: 1 / 1.05;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+
+  overflow: hidden;
+
+  background: var(--cream);
 }
 
 .image {
   width: 100%;
   height: 100%;
+
+  display: block;
+
   object-fit: cover;
-  object-position: center 80%;
-  transform: scale(1.05);
-  object-position: center 55%;
+  object-position: center 40%;
+}
+
+/* 메뉴 그림이 아직 없는 레벨 */
+
+.noImage {
+  color: #e6d3b3;
+
+  font-size: 110px;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .textRow {
+  flex: 1;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 0 4px;
+
+  gap: 10px;
+
+  padding: 14px 14px 16px 16px;
+}
+
+.cardText {
+  min-width: 0;
 }
 
 .cardTitle {
-  font-size: 22px;
-  font-weight: 900;
-  margin: 0 0 8px;
-  line-height: 1.2;
+  margin: 0;
+
+  color: var(--ink);
+
+  font-size: 21px;
+  font-weight: 800;
 }
 
 .cardDescription {
-  font-size: 15px;
+  margin: 2px 0 0;
+
+  color: var(--ink-soft);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardCount {
+  margin: 6px 0 0;
+
+  color: var(--coral-deep);
+
+  font-size: 12px;
   font-weight: 800;
-  color: #444;
-  margin: 0;
 }
 
 .arrow {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: #ffb829;
-  color: #fff;
-  font-size: 42px;
-  font-weight: 900;
-  line-height: 39px;
-  text-align: center;
+  width: 36px;
+  height: 36px;
+
   flex-shrink: 0;
-  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.08);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--coral);
+
+  color: #ffffff;
 }
 
-.yellow {
-  background: #fff3bd;
-}
-
-.blue {
-  background: #dfeaff;
-}
-
-.pink {
-  background: #f7ddea;
-}
-
-.bottomRow {
-  margin-top: 24px;
+.footer {
   display: flex;
   justify-content: center;
+
+  margin-top: 20px;
 }
 
-@media (max-width: 1180px) {
-  .grid {
-    max-width: 630px;
-  }
+.textButton {
+  height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 0 16px;
+
+  border: 1.5px solid var(--line-strong);
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.85);
+
+  color: var(--ink-soft);
+
+  font-size: 14px;
+  font-weight: 700;
+
+  text-decoration: none;
 }
 
-@media (max-width: 760px) {
+.textButton:hover {
+  color: var(--ink);
+
+  background: #ffffff;
+}
+
+@media (max-width: 600px) {
   .hero {
-    padding: 20px 16px 28px;
-  }
-
-  .title {
-    font-size: 36px;
-  }
-
-  .subtitle {
-    font-size: 15px;
-    margin-bottom: 22px;
+    padding: 18px 14px 22px;
   }
 
   .grid {
-    max-width: 300px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
   }
 
-  .card {
-    width: 300px;
+  .card:hover {
+    transform: none;
   }
 }

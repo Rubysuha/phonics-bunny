@@ -3,7 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "assets": "node scripts/sync-word-assets.mjs",
+    "images": "node scripts/optimize-word-images.mjs && node scripts/sync-word-assets.mjs",
+    "predev": "node scripts/sync-word-assets.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/sync-word-assets.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

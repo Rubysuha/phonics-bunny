@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PageTitle from "@/components/PageTitle";
 import styles from "./english.module.css";
 
 const englishMenus = [
@@ -45,15 +46,11 @@ export default function EnglishPage() {
       <div className={styles.hero}>
         <div className={styles.inner}>
           <div className={styles.titleBox}>
-            <h1 className={styles.title}>Phonics 🐰</h1>
-
-            <p className={styles.englishSubtitle}>
-              Choose a menu and start your phonics adventure!
-            </p>
-
-            <p className={styles.subtitle}>
-              원하는 학습 메뉴를 선택해서 들어가 보세요.
-            </p>
+            <PageTitle
+              eyebrow="LEARN"
+              title="Phonics"
+              subtitle="원하는 학습 메뉴를 선택해서 들어가 보세요."
+            />
           </div>
 
           <div className={styles.grid}>

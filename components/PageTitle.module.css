@@ -1,0 +1,38 @@
+.header {
+  margin: 0 0 22px;
+
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0;
+
+  color: #d2604a;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: 0.16em;
+}
+
+.title {
+  margin: 2px 0 0;
+
+  color: #2b2622;
+
+  font-size: clamp(30px, 3.6vw, 42px);
+  font-weight: 800;
+
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.subtitle {
+  margin: 6px 0 0;
+
+  color: #6f665d;
+
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+}

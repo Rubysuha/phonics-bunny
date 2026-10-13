@@ -328,7 +328,9 @@ export default function LongVowelDetailPage() {
           canAnalyze={!!myRecordingUrl}
           isAnalyzing={isAnalyzing}
           onAnalyze={handleAnalyzePronunciation}
-          onDownload={handleDownloadWorksheet}
+          onDownload={
+            item.worksheet ? handleDownloadWorksheet : undefined
+          }
           backHref={`/english/long-vowels/${currentVowel.vowel}`}
         />
       </div>

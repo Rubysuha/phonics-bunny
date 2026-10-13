@@ -1,3 +1,5 @@
+import { wordAssets } from "../wordAssets";
+
 export type SightWordItem = {
   slug: string;
   word: string;
@@ -8,63 +10,87 @@ export type SightWordLevel = {
   level: string;
   title: string;
   preview: string;
+
+  /* 한글 자료 · 메뉴 그림이 아직 없으면 "" */
   worksheet: string;
+  menuImage: string;
+
   words: SightWordItem[];
 };
 
+const asset = (path: string) => (wordAssets.has(path) ? path : "");
+
+function makeLevel(
+  level: string,
+  title: string,
+  preview: string,
+  file: string,
+  list: string
+): SightWordLevel {
+  return {
+    level,
+    title,
+    preview,
+    worksheet: asset(`/worksheets/sight-words/${file}.hwp`),
+    menuImage: asset(`/sight-words/menu/${file}.png`),
+    words: list
+      .split(",")
+      .map((word) => word.trim())
+      .filter(Boolean)
+      .map((word) => ({
+        slug: word.toLowerCase(),
+        word,
+        audio: `/audio/sight-words/${word}.mp3`,
+      })),
+  };
+}
+
 export const sightWordLevels: SightWordLevel[] = [
-  {
-    level: "level-1",
-    title: "Level 1",
-    preview: "the, to, is, go",
-    worksheet: "/worksheets/sight-words/level1.hwp",
-    words: [
-      { slug: "the", word: "the", audio: "/audio/sight-words/the.mp3" },
-      { slug: "to", word: "to", audio: "/audio/sight-words/to.mp3" },
-      { slug: "is", word: "is", audio: "/audio/sight-words/is.mp3" },
-      { slug: "go", word: "go", audio: "/audio/sight-words/go.mp3" },
-      { slug: "i", word: "I", audio: "/audio/sight-words/I.mp3" },
-      { slug: "you", word: "you", audio: "/audio/sight-words/you.mp3" },
-      { slug: "it", word: "it", audio: "/audio/sight-words/it.mp3" },
-      { slug: "in", word: "in", audio: "/audio/sight-words/in.mp3" },
-      { slug: "on", word: "on", audio: "/audio/sight-words/on.mp3" },
-      { slug: "at", word: "at", audio: "/audio/sight-words/at.mp3" },
-    ],
-  },
-  {
-    level: "level-2",
-    title: "Level 2",
-    preview: "we, he, she, my",
-    worksheet: "/worksheets/sight-words/level2.hwp",
-    words: [
-      { slug: "we", word: "we", audio: "/audio/sight-words/we.mp3" },
-      { slug: "he", word: "he", audio: "/audio/sight-words/he.mp3" },
-      { slug: "she", word: "she", audio: "/audio/sight-words/she.mp3" },
-      { slug: "my", word: "my", audio: "/audio/sight-words/my.mp3" },
-      { slug: "me", word: "me", audio: "/audio/sight-words/me.mp3" },
-      { slug: "can", word: "can", audio: "/audio/sight-words/can.mp3" },
-      { slug: "see", word: "see", audio: "/audio/sight-words/see.mp3" },
-      { slug: "up", word: "up", audio: "/audio/sight-words/up.mp3" },
-      { slug: "no", word: "no", audio: "/audio/sight-words/no.mp3" },
-      { slug: "yes", word: "yes", audio: "/audio/sight-words/yes.mp3" },
-    ],
-  },
-  {
-    level: "level-3",
-    title: "Level 3",
-    preview: "like, look, come, here",
-    worksheet: "/worksheets/sight-words/level3.hwp",
-    words: [
-      { slug: "like", word: "like", audio: "/audio/sight-words/like.mp3" },
-      { slug: "look", word: "look", audio: "/audio/sight-words/look.mp3" },
-      { slug: "come", word: "come", audio: "/audio/sight-words/come.mp3" },
-      { slug: "here", word: "here", audio: "/audio/sight-words/here.mp3" },
-      { slug: "this", word: "this", audio: "/audio/sight-words/this.mp3" },
-      { slug: "that", word: "that", audio: "/audio/sight-words/that.mp3" },
-      { slug: "big", word: "big", audio: "/audio/sight-words/big.mp3" },
-      { slug: "little", word: "little", audio: "/audio/sight-words/little.mp3" },
-      { slug: "run", word: "run", audio: "/audio/sight-words/run.mp3" },
-      { slug: "jump", word: "jump", audio: "/audio/sight-words/jump.mp3" },
-    ],
-  },
+  makeLevel(
+    "level-1",
+    "Level 1",
+    "the, to, is, go",
+    "level1",
+    "the, to, is, go, I, you, it, in, on, at, a, an, am, " +
+    "are, be, do, of, and, for, as, by, or, so, if, us, now, " +
+    "too, yet, our, let"
+  ),
+  makeLevel(
+    "level-2",
+    "Level 2",
+    "we, he, she, my",
+    "level2",
+    "we, he, she, my, me, can, see, up, no, yes, was, were, " +
+    "has, have, had, did, not, but, all, one, two, three, " +
+    "four, five, out, down, off, with, his, her"
+  ),
+  makeLevel(
+    "level-3",
+    "Level 3",
+    "like, look, come, here",
+    "level3",
+    "like, look, come, here, this, that, big, little, run, " +
+    "jump, said, say, make, take, give, get, find, help, " +
+    "play, want, good, bad, happy, sad, new, old, fast, " +
+    "slow, away, back"
+  ),
+  makeLevel(
+    "level-4",
+    "Level 4",
+    "because, before, after",
+    "level4",
+    "because, before, after, about, again, always, never, " +
+    "every, some, many, more, most, other, another, first, " +
+    "last, next, under, over, between, around, where, when, " +
+    "what, why, who, which, how, there, very"
+  ),
+  makeLevel(
+    "level-5",
+    "Level 5",
+    "could, would, should",
+    "level5",
+    "could, would, should, might, must, their, they, them, " +
+    "these, those, people, friend, family, once, twice, any, " +
+    "anything, something, everyone, through"
+  ),
 ];

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import BackButton from "@/components/ui/BackButton";
+import PageTitle from "@/components/PageTitle";
 import styles from "./long-vowels.module.css";
 
 const longVowelMenus = [
@@ -45,11 +46,11 @@ export default function LongVowelsPage() {
     <section className={styles.page}>
       <div className={styles.hero}>
         <div className={styles.inner}>
-          <h1 className={styles.title}>Long Vowels</h1>
-
-          <p className={styles.subtitle}>
-            Long Vowel은 영어에서 A, E, I, O, U가 자기 이름처럼 길게 발음되는 경우를 말합니다.
-          </p>
+          <PageTitle
+            eyebrow="PHONICS"
+            title="Long Vowels"
+            subtitle="Long Vowel은 영어에서 A, E, I, O, U가 자기 이름처럼 길게 발음되는 경우를 말합니다."
+          />
 
           <div className={styles.grid}>
             {longVowelMenus.map((menu) => (

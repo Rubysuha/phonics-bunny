@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import BackButton from "@/components/ui/BackButton";
 import HelpTooltip from "@/components/HelpTooltip";
+import PageTitle from "@/components/PageTitle";
 import styles from "./level.module.css";
 import { getBookLevel } from "../data";
 
@@ -48,8 +49,11 @@ export default async function BookLevelPage({ params }: Props) {
         </div>
 
         <div className={styles.inner}>
-          <h1 className={styles.title}>{currentLevel.title}</h1>
-          <p className={styles.subtitle}>{currentLevel.description}</p>
+          <PageTitle
+            eyebrow="BOOK"
+            title={currentLevel.title}
+            subtitle={currentLevel.description}
+          />
 
           <div className={styles.grid}>
             {currentLevel.stories.map((story, index) => (

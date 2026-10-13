@@ -1,77 +1,67 @@
 import Link from "next/link";
+import { ArrowRight } from "@phosphor-icons/react/ssr";
 import BackButton from "@/components/ui/BackButton";
+import PageTitle from "@/components/PageTitle";
 import styles from "./sight-words.module.css";
+import { sightWordLevels } from "./data";
 
-const sightMenus = [
-  {
-    title: "Level 1",
-    description: "the, to, is, go",
-    href: "/english/sight-words/level-1",
-    image: "/sight-words/menu/level1.png",
-    bgClass: "yellow",
-  },
-  {
-    title: "Level 2",
-    description: "we, he, she, my",
-    href: "/english/sight-words/level-2",
-    image: "/sight-words/menu/level2.png",
-    bgClass: "blue",
-  },
-  {
-    title: "Level 3",
-    description: "like, look, come, here",
-    href: "/english/sight-words/level-3",
-    image: "/sight-words/menu/level3.png",
-    bgClass: "pink",
-  },
-];
+const sightMenus = sightWordLevels.map((level) => ({
+  title: level.title,
+  description: level.preview,
+  href: `/english/sight-words/${level.level}`,
+  image: level.menuImage,
+  count: level.words.length,
+}));
 
 export default function SightWordsPage() {
   return (
     <section className={styles.page}>
       <div className={styles.hero}>
         <div className={styles.inner}>
-          <h1 className={styles.title}>Sight Words</h1>
-
-          <p className={styles.subtitle}>
-            Level을 선택해서 자주 쓰는 단어를 학습해 보세요.
-          </p>
+          <PageTitle
+            eyebrow="PHONICS"
+            title="Sight Words"
+            subtitle="Level을 선택해서 자주 쓰는 단어를 학습해 보세요."
+          />
 
           <div className={styles.grid}>
-            {sightMenus.map((menu) => (
-              <Link
-                key={menu.href}
-                href={menu.href}
-                className={`${styles.card} ${styles[menu.bgClass]}`}
-              >
+            {sightMenus.map((menu, index) => (
+              <Link key={menu.href} href={menu.href} className={styles.card}>
                 <div className={styles.imageWrap}>
-                  <img
-                    src={menu.image}
-                    alt={menu.title}
-                    className={styles.image}
-                    draggable={false}
-                  />
+                  {menu.image ? (
+                    <img
+                      src={menu.image}
+                      alt=""
+                      className={styles.image}
+                      draggable={false}
+                    />
+                  ) : (
+                    /* 메뉴 그림이 아직 없는 레벨: 레벨 숫자를 크게 */
+                    <span className={styles.noImage}>{index + 1}</span>
+                  )}
                 </div>
 
                 <div className={styles.textRow}>
-                  <div>
+                  <div className={styles.cardText}>
                     <h2 className={styles.cardTitle}>{menu.title}</h2>
 
                     <p className={styles.cardDescription}>
                       {menu.description}
                     </p>
+
+                    <p className={styles.cardCount}>{menu.count} words</p>
                   </div>
 
-                  <span className={styles.arrow}>›</span>
+                  <span className={styles.arrow}>
+                    <ArrowRight size={18} weight="bold" />
+                  </span>
                 </div>
               </Link>
             ))}
           </div>
 
-          <div className={styles.bottomRow}>
-            <BackButton href="/english">
-              Phonics로 돌아가기
-            </BackButton>
+          <div className={styles.footer}>
+            <BackButton href="/english">Phonics로 돌아가기</BackButton>
           </div>
         </div>
       </div>

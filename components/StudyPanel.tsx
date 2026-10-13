@@ -41,7 +41,8 @@ type Props = {
   isAnalyzing?: boolean;
   onAnalyze?: () => void;
 
-  onDownload: () => void;
+  /* 한글 자료가 없는 단어는 넘기지 않음 (버튼 숨김) */
+  onDownload?: () => void;
   backHref: string;
 };
 
@@ -163,14 +164,16 @@ export default function StudyPanel({
       )}
 
       <div className={styles.footer}>
-        <button
-          type="button"
-          className={styles.textButton}
-          onClick={onDownload}
-        >
-          <FileText size={20} />
-          Download Korean Guide
-        </button>
+        {onDownload && (
+          <button
+            type="button"
+            className={styles.textButton}
+            onClick={onDownload}
+          >
+            <FileText size={20} />
+            Download Korean Guide
+          </button>
+        )}
 
         <Link href={backHref} className={styles.textButton}>
           <X size={20} />

@@ -4,26 +4,26 @@ import { createPageAudio, useStopAudioOnLeave } from "@/lib/pageAudio";
 import { rewardCoin } from "@/lib/rewardCoin";
 import { logEngagement } from "@/lib/logEngagement";
 import { useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import { notFound, useParams } from "next/navigation";
 import {
   SpeakerHigh,
   Microphone,
-  StopCircle,
-  Play,
+  Stop,
+  PlayCircle,
   Sparkle,
   FileText,
-  ArrowLeft,
 } from "@phosphor-icons/react";
-import ActionButton from "@/components/ActionButton";
+import RecordCountdown from "@/components/RecordCountdown";
+import PronunciationResultModal from "@/components/PronunciationResultModal";
 import HelpTooltip from "@/components/HelpTooltip";
+import BackButton from "@/components/ui/BackButton";
+import PageTitle from "@/components/PageTitle";
 import styles from "./level.module.css";
 import { sightWordLevels } from "../data";
 import { convertRecordingToWav, createSupportedMediaRecorder } from "@/lib/audioToWav";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/Toast";
 
-const cardColors = ["yellow", "pink", "blue", "mint", "purple", "cream"];
 
 type PronunciationResult = {
   score: number;
@@ -293,20 +293,6 @@ export default function SightWordLevelPage() {
     }
   };
 
-  const getScoreMessage = (score: number) => {
-    if (score >= 90) return "Excellent! 🌟";
-    if (score >= 80) return "Great job! 🎉";
-    if (score >= 60) return "Good try! 💪";
-    return "Listen and try again!";
-  };
-
-  const getScoreTier = (score: number) => {
-    if (score >= 90) return "excellent";
-    if (score >= 80) return "great";
-    if (score >= 60) return "good";
-    return "retry";
-  };
-
   const closeResult = () => {
     setPronunciationResult(null);
     setAnalysisError("");
@@ -352,181 +338,130 @@ export default function SightWordLevelPage() {
         </div>
 
         <div className={styles.inner}>
-          <h1 className={styles.title}>{currentLevel.title}</h1>
-
-          <p className={styles.subtitle}>
-            자주 쓰는 단어를 듣고, 따라 말하고, 내 목소리로 확인해 보세요.
-          </p>
+          <PageTitle
+            eyebrow="SIGHT WORDS"
+            title={currentLevel.title}
+            subtitle="자주 쓰는 단어를 듣고, 따라 말하고, 내 목소리로 확인해 보세요."
+          />
 
           <div className={styles.grid}>
-            {currentLevel.words.map((item, index) => {
+            {currentLevel.words.map((item) => {
               const isRecording = recordingWord === item.word;
               const isCountingDown = countdownWord === item.word;
-              const color = cardColors[index % cardColors.length];
+              const hasRecording = !!recordings[item.word];
 
               return (
                 <div
                   key={item.slug}
-                  className={`${styles.card} ${styles[color]}`}
+                  className={`${styles.card} ${
+                    isRecording ? styles.cardRecording : ""
+                  }`}
                 >
                   <div className={styles.word}>{item.word}</div>
 
-                  {isRecording && (
-                    <div className={styles.recordingBadge}>
-                      <span className={styles.recordingDot} />
-                      {Math.floor(recordingSeconds / 60)}:
-                      {String(recordingSeconds % 60).padStart(2, "0")}
-                    </div>
-                  )}
+                  <p className={styles.status}>
+                    {isRecording
+                      ? `Recording... ${Math.floor(recordingSeconds / 60)}:${String(
+                          recordingSeconds % 60
+                        ).padStart(2, "0")}`
+                      : isCountingDown
+                        ? "Get ready..."
+                        : hasRecording
+                          ? "Recording Complete!"
+                          : "Tap to Record"}
+                  </p>
 
-                  <div className={styles.buttonGroup}>
-                    <ActionButton
-                      variant="listen"
-                      size="sm"
-                      icon={<SpeakerHigh size={16} weight="fill" />}
-                      onClick={() => handleListen(item.audio, item.word, item.slug)}
+                  <div className={styles.controls}>
+                    <button
+                      type="button"
+                      className={styles.iconButton}
+                      onClick={() =>
+                        handleListen(item.audio, item.word, item.slug)
+                      }
+                      aria-label={`Listen: ${item.word}`}
                     >
-                      듣기
-                    </ActionButton>
+                      <SpeakerHigh size={20} />
+                    </button>
 
-                    {!isRecording ? (
-                      <ActionButton
-                        variant="record"
-                        size="sm"
-                        icon={<Microphone size={16} weight="fill" />}
-                        onClick={() => handleStartRecording(item.word)}
-                        disabled={countdownValue !== null}
-                      >
-                        {isCountingDown ? "준비 중..." : "녹음"}
-                      </ActionButton>
-                    ) : (
-                      <ActionButton
-                        variant="recording"
-                        size="sm"
-                        icon={<StopCircle size={16} weight="fill" />}
-                        onClick={handleStopRecording}
-                      >
-                        중지
-                      </ActionButton>
-                    )}
+                    <button
+                      type="button"
+                      className={`${styles.micButton} ${
+                        isRecording ? styles.micButtonActive : ""
+                      }`}
+                      onClick={
+                        isRecording
+                          ? handleStopRecording
+                          : () => handleStartRecording(item.word)
+                      }
+                      disabled={!isRecording && countdownValue !== null}
+                      aria-label={
+                        isRecording
+                          ? "Stop Recording"
+                          : `Record: ${item.word}`
+                      }
+                    >
+                      {isRecording ? (
+                        <Stop size={20} weight="fill" />
+                      ) : (
+                        <Microphone size={24} />
+                      )}
+                    </button>
 
-                    <ActionButton
-                      variant="playback"
-                      size="sm"
-                      icon={<Play size={16} weight="fill" />}
+                    <button
+                      type="button"
+                      className={styles.iconButton}
                       onClick={() => handlePlayMine(item.word, item.slug)}
+                      aria-label={`Play my recording: ${item.word}`}
                     >
-                      재생
-                    </ActionButton>
-
-                    {recordings[item.word] && (
-                      <ActionButton
-                        variant="analyze"
-                        size="sm"
-                        icon={<Sparkle size={16} weight="fill" />}
-                        onClick={() => handleAnalyzePronunciation(item)}
-                        disabled={analyzingWord === item.word}
-                      >
-                        {analyzingWord === item.word ? "분석 중..." : "AI 분석"}
-                      </ActionButton>
-                    )}
+                      <PlayCircle size={20} />
+                    </button>
                   </div>
+
+                  {hasRecording && (
+                    <button
+                      type="button"
+                      className={styles.checkButton}
+                      onClick={() => handleAnalyzePronunciation(item)}
+                      disabled={analyzingWord === item.word}
+                    >
+                      <Sparkle size={16} />
+                      {analyzingWord === item.word
+                        ? "Checking..."
+                        : "Check My Pronunciation"}
+                    </button>
+                  )}
                 </div>
               );
             })}
           </div>
 
-          <div className={styles.bottomRow}>
-            <ActionButton
-              variant="close"
-              icon={<ArrowLeft size={20} weight="fill" />}
-              href="/english/sight-words"
-            >
+          <div className={styles.footer}>
+            <BackButton href="/english/sight-words">
               Sight Words로 돌아가기
-            </ActionButton>
+            </BackButton>
 
-            <ActionButton
-              variant="download"
-              icon={<FileText size={20} weight="fill" />}
-              onClick={handleDownloadWorksheet}
-            >
-              한글 자료 받기
-            </ActionButton>
+            {currentLevel.worksheet && (
+              <button
+                type="button"
+                className={styles.textButton}
+                onClick={handleDownloadWorksheet}
+              >
+                <FileText size={19} />
+                Download Korean Guide
+              </button>
+            )}
           </div>
         </div>
       </div>
 
-      {countdownValue !== null &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <div className={styles.countdownOverlay}>
-            <div className={styles.countdownCircle}>
-              <span key={countdownValue} className={styles.countdownNumber}>
-                {countdownValue}
-              </span>
-            </div>
-          </div>,
-          document.body
-        )}
+      <RecordCountdown value={countdownValue} />
 
-      {(pronunciationResult || analysisError) &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <div className={styles.resultOverlay} onClick={closeResult}>
-            <div
-              className={
-                pronunciationResult
-                  ? `${styles.resultCard} ${
-                      styles[getScoreTier(pronunciationResult.score)]
-                    }`
-                  : styles.resultCard
-              }
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                className={styles.resultCloseButton}
-                onClick={closeResult}
-                aria-label="닫기"
-              >
-                ✕
-              </button>
-
-              {resultWord && (
-                <p className={styles.resultWordLabel}>{resultWord}</p>
-              )}
-
-              {analysisError && (
-                <p className={styles.resultError}>{analysisError}</p>
-              )}
-
-              {pronunciationResult && (
-                <>
-                  <p className={styles.resultScore}>
-                    {pronunciationResult.score}점
-                  </p>
-                  <p className={styles.resultMessage}>
-                    {getScoreMessage(pronunciationResult.score)}
-                  </p>
-
-                  <ul className={styles.feedbackList}>
-                    {pronunciationResult.feedback.map((line, idx) => (
-                      <li key={idx}>{line}</li>
-                    ))}
-                  </ul>
-
-                  <ActionButton
-                    variant="retry"
-                    icon={<SpeakerHigh size={16} weight="fill" />}
-                    onClick={closeResult}
-                  >
-                    다시 도전하기
-                  </ActionButton>
-                </>
-              )}
-            </div>
-          </div>,
-          document.body
-        )}
+      <PronunciationResultModal
+        result={pronunciationResult}
+        error={analysisError}
+        word={resultWord}
+        onClose={closeResult}
+      />
     </section>
   );
 }

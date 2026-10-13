@@ -80,6 +80,15 @@
   letter-spacing: 0.06em;
 }
 
+.word {
+  margin: 6px 0 0;
+
+  color: #2b2622;
+
+  font-size: 30px;
+  font-weight: 800;
+}
+
 .stars {
   margin-top: 14px;
 

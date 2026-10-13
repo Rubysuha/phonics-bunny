@@ -1,5 +1,6 @@
 import Link from "next/link";
 import BackButton from "@/components/ui/BackButton";
+import PageTitle from "@/components/PageTitle";
 import styles from "./short-vowels.module.css";
 
 const shortVowelMenus = [
@@ -45,10 +46,11 @@ export default function ShortVowelsPage() {
     <section className={styles.page}>
       <div className={styles.hero}>
         <div className={styles.inner}>
-          <h1 className={styles.title}>Short Vowels</h1>
-          <p className={styles.subtitle}>
-            짧게 발음되는 A, E, I, O, U 단모음을 익혀보세요.
-          </p>
+          <PageTitle
+            eyebrow="PHONICS"
+            title="Short Vowels"
+            subtitle="짧게 발음되는 A, E, I, O, U 단모음을 익혀보세요."
+          />
 
           <div className={styles.grid}>
             {shortVowelMenus.map((menu) => (

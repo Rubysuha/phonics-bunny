@@ -1,6 +1,7 @@
 import Link from "next/link";
 import BackButton from "@/components/ui/BackButton";
 import HelpTooltip from "@/components/HelpTooltip";
+import PageTitle from "@/components/PageTitle";
 import styles from "./alphabet.module.css";
 import { alphabetItems } from "./data";
 
@@ -37,10 +38,11 @@ export default function AlphabetPage() {
 
         <div className={styles.inner}>
           <div className={styles.titleBox}>
-            <h1 className={styles.title}>Alphabet Sounds</h1>
-            <p className={styles.subtitle}>
-              알파벳 카드를 눌러 학습 페이지로 들어가 보세요.
-            </p>
+            <PageTitle
+              eyebrow="PHONICS"
+              title="Alphabet Sounds"
+              subtitle="알파벳 카드를 눌러 학습 페이지로 들어가 보세요."
+            />
           </div>
 
           <div className={styles.grid}>

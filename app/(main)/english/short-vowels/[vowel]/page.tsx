@@ -1,8 +1,10 @@
 import Link from "next/link";
 import BackButton from "@/components/ui/BackButton";
 import HelpTooltip from "@/components/HelpTooltip";
+import PageTitle from "@/components/PageTitle";
 import styles from "./vowel-words.module.css";
 import { shortVowelItems } from "../data";
+import { groupBySection } from "../../wordHelpers";
 
 type Props = {
   params: Promise<{
@@ -52,35 +54,46 @@ export default async function ShortVowelWordsPage({ params }: Props) {
         </div>
 
         <div className={styles.inner}>
-          <h1 className={styles.title}>Short {item.upper}</h1>
+          <PageTitle
+            eyebrow="SHORT VOWELS"
+            title={`Short ${item.upper}`}
+            subtitle="단어 박스를 눌러 학습 페이지로 들어가 보세요."
+          />
 
-          <p className={styles.subtitle}>
-            <span>✦</span>
-            단어 박스를 눌러 학습 페이지로 들어가 보세요.
-            <span>✦</span>
-          </p>
+          {groupBySection(item.words).map((group) => (
+            <div key={group.section || "all"} className={styles.section}>
+              {group.section && (
+                <h2 className={styles.sectionTitle}>
+                  {group.section}
+                  <span>{group.words.length} words</span>
+                </h2>
+              )}
 
-          <div className={styles.grid}>
-            {item.words.map((wordItem) => (
-              <Link
-                key={wordItem.slug}
-                href={`/english/short-vowels/${item.vowel}/${wordItem.slug}`}
-                className={styles.card}
-              >
-                <div className={styles.imageBox}>
-                  <img src={wordItem.image} alt={wordItem.word} />
-                </div>
+              <div className={styles.grid}>
+                {group.words.map((wordItem) => (
+                  <Link
+                    key={wordItem.slug}
+                    href={`/english/short-vowels/${item.vowel}/${wordItem.slug}`}
+                    className={styles.card}
+                  >
+                    <div className={styles.imageBox}>
+                      {wordItem.image ? (
+                        <img src={wordItem.image} alt={wordItem.word} />
+                      ) : (
+                        <span className={styles.noImage} aria-hidden="true">
+                          {wordItem.word.charAt(0)}
+                        </span>
+                      )}
+                    </div>
 
-                <div className={styles.word}>
-                  {wordItem.word}
-                </div>
+                    <div className={styles.word}>{wordItem.word}</div>
 
-                <div className={styles.studyButton}>
-                  학습하기
-                </div>
-              </Link>
-            ))}
-          </div>
+                    <div className={styles.studyButton}>Study</div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
 
           <div className={styles.bottomRow}>
             <BackButton href="/english/short-vowels">

@@ -41,3 +41,6 @@ next-env.d.ts
 
 # AI 업로드용 코드 스냅샷 (git에 올리지 않음)
 *-code.txt
+
+# 변환 전 원본 그림 (git에 올리지 않음)
+/image-originals

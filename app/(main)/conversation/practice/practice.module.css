@@ -19,18 +19,15 @@
 
   border-radius: 30px;
 
-  background:
-    linear-gradient(
-      180deg,
-      #edf8ff 0%,
-      #f5fbff 50%,
-      #f3fae8 100%
-    );
+  /* 다른 메뉴 화면과 같은 반투명 유리 배경 */
+  background: rgba(255, 255, 255, 0.58);
 
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.55);
 
   box-shadow:
-    0 18px 42px rgba(80, 110, 150, 0.12);
+    0 18px 42px rgba(120, 90, 120, 0.1);
 
   margin-bottom: 8px;
 }
@@ -102,12 +99,12 @@
   align-items: center;
   gap: 5px;
 
-  color: #72a6c1;
+  color: #d2604a;
 
-  font-size: 11px;
-  font-weight: 950;
+  font-size: 12px;
+  font-weight: 800;
 
-  letter-spacing: 0.13em;
+  letter-spacing: 0.16em;
 }
 
 .eyebrow svg {
@@ -117,10 +114,10 @@
 .title {
   margin: 0;
 
-  color: #315c7b;
+  color: #2b2622;
 
-  font-size: clamp(24px, 3cqw, 34px);
-  font-weight: 950;
+  font-size: clamp(26px, 3.2cqw, 38px);
+  font-weight: 800;
 
   letter-spacing: -1px;
   line-height: 1.1;

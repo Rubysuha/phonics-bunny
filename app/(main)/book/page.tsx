@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PageTitle from "@/components/PageTitle";
 import styles from "./book.module.css";
 import { bookLevels } from "./data";
 
@@ -7,10 +8,11 @@ export default function BookPage() {
     <section className={styles.page}>
       <div className={styles.hero}>
         <div className={styles.inner}>
-          <h1 className={styles.title}>Book Library 🐰</h1>
-          <p className={styles.subtitle}>
-            Choose a level and start your reading adventure!
-          </p>
+          <PageTitle
+            eyebrow="READ"
+            title="Book Library"
+            subtitle="Choose a level and start your reading adventure!"
+          />
 
           <div className={styles.grid}>
             {bookLevels.map((item) => (
