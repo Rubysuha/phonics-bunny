@@ -50,7 +50,7 @@ export const LEVEL_LABEL: Record<LearningLevel, string> = {
 
 /* 단계가 오르면 AI Bunny 가 어떻게 달라지는지 (축하 화면 안내) */
 export const LEVEL_CHANGE_NOTE: Record<LearningLevel, string> = {
-  beginner: "아주 짧고 쉬운 문장으로 천천히 말해요.",
+  beginner: "짧고 쉬운 문장으로 천천히 말해요.",
   elementary: "문장이 조금 길어지고 가끔 새 단어가 나와요.",
   intermediate: "문장을 이어서 말하고 조금 더 빨리 말해요.",
   advanced: "긴 문장으로 자연스럽게 이야기해요.",
@@ -120,7 +120,7 @@ export const AI_TEMPERATURE: Record<LearningLevel, number> = {
 };
 
 /* beginner: 한 문장이 이 단어 수를 넘으면 한 번 다시 만듦 */
-export const BEGINNER_MAX_WORDS_PER_SENTENCE = 5;
+export const BEGINNER_MAX_WORDS_PER_SENTENCE = 7;
 
 /* 배운 단어 안에서만 말하게 하는 단계 · 프롬프트에 넣는 최대 단어 수 */
 export const KNOWN_WORD_LEVELS: LearningLevel[] = ["beginner", "elementary"];
@@ -190,3 +190,116 @@ export const TEST_COIN = {
   /* 한 영역의 Stage 를 모두 통과했을 때 한 번 */
   areaBonus: 20,
 } as const;
+
+/* ─────────────────────────────
+   AI Bunny 첫 인사
+
+   1순위: AI 가 만든 인사 (단계 · 배운 단어 · 약한 단어 반영)
+   2순위: 아래의 단계별 고정 목록 · 약한 단어 템플릿 (API 호출 없음)
+   3순위: 화면에 원래 있던 OPENING_LINES
+───────────────────────────── */
+
+/* AI 첫 인사를 기다리는 최대 시간 (넘으면 2순위 문장을 그대로 씀) */
+export const GREETING_TIMEOUT_MS = 2500;
+
+/* 단계별 문장 길이 (단어 수): [최소, 최대] */
+export const GREETING_WORD_RANGE: Record<LearningLevel, [number, number]> = {
+  beginner: [3, 7],
+  elementary: [5, 8],
+  intermediate: [8, 12],
+  advanced: [12, 16],
+};
+
+/*
+  단계별 고정 인사
+  "Hi!" 같은 짧은 인사 뒤의 문장이 위 단어 수 범위에 들어가게 씀.
+  무섭거나 슬픈 주제 · 개인정보 질문 · 이모지 · 특수문자 · 숫자는 쓰지 않음
+*/
+export const LEVEL_GREETINGS: Record<LearningLevel, string[]> = {
+  beginner: [
+    "Hi! Do you like cats?",
+    "Hello! How are you today?",
+    "Hi! What do you like?",
+    "Hello! Do you like apples?",
+    "Hi! Can you jump high?",
+    "Hello! Are you happy today?",
+    "Hi! Do you like dogs?",
+    "Hello! Do you like the sun?",
+  ],
+  elementary: [
+    "Hi! What is your favorite animal?",
+    "Hello! What did you eat for breakfast?",
+    "Hi! What do you like to play?",
+    "Hello! What is your favorite fruit?",
+    "Hi! Do you like to draw pictures?",
+    "Hello! What do you like to eat for lunch?",
+    "Hi! Do you like rainy days or sunny days?",
+    "Hello! What is your favorite color today?",
+  ],
+  intermediate: [
+    "Hi! What do you like to do after school with your friends?",
+    "Hello! What is your favorite food, and why do you like it?",
+    "Hi! What did you do this morning before you came here?",
+    "Hello! Which animal do you want to see at the zoo?",
+    "Hi! What game do you like to play on a rainy day?",
+    "Hello! What is the best thing about your day so far?",
+  ],
+  advanced: [
+    "Hello! What is your favorite thing to do when you have free time at home?",
+    "Hi! If you could visit any place in the world, where would you like to go?",
+    "Hello! What is something fun that you did this week, and who did you do it with?",
+    "Hi! Which season do you like the most, and what do you like to do then?",
+    "Hello! What kind of animal would you like to have as a pet, and why?",
+  ],
+};
+
+/* 약한 단어가 있을 때 쓰는 인사 ({word} 자리에 약한 단어가 들어감) */
+export const WEAK_WORD_GREETINGS: Record<LearningLevel, string[]> = {
+  beginner: [
+    "Hi! Let's say {word}!",
+    "Hello! Can you say {word}?",
+  ],
+  elementary: [
+    "Hi! Can you say the word {word} with me?",
+    "Hello! Let's practice the word {word} today!",
+  ],
+  intermediate: [
+    "Hi! Let's practice the word {word} together, can you say it?",
+    "Hello! Do you remember the word {word} from your lessons this week?",
+  ],
+  advanced: [
+    "Hello! I remember you practiced the word {word}, so can you say it for me today?",
+    "Hi! Let's warm up with the word {word} first, and then we can talk about your day.",
+  ],
+};
+
+/*
+  인사 문장이 그 단계의 규칙을 지키는지
+
+  - 영어 글자 · 띄어쓰기 · 기본 문장부호(. , ! ? ')만 있어야 함 (이모지 · 숫자 · 특수문자 없음)
+  - 어느 문장도 최대 단어 수를 넘지 않고,
+    가장 긴 문장은 최소 단어 수 이상 ("Hi!" 같은 짧은 인사는 앞에 붙어도 됨)
+*/
+export function isGreetingWithinLevel(
+  text: string,
+  level: LearningLevel
+): boolean {
+  if (!/^[A-Za-z ,.!?'’]+$/.test(text)) {
+    return false;
+  }
+
+  const counts = text
+    .split(/[.!?]+/)
+    .map((sentence) => sentence.trim())
+    .filter(Boolean)
+    .map((sentence) => sentence.split(/\s+/).length);
+
+  if (counts.length === 0) {
+    return false;
+  }
+
+  const [min, max] = GREETING_WORD_RANGE[level];
+  const longest = Math.max(...counts);
+
+  return longest >= min && longest <= max;
+}

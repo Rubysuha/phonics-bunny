@@ -23,10 +23,16 @@ import {
   type LearningSummary,
 } from "@/lib/learningProgress";
 import {
+  LEVELS,
   LEVEL_UP_COOLDOWN_DAYS,
   type LearningLevel,
 } from "@/lib/learningRules";
 import { sightWordLevels } from "@/app/(main)/english/sight-words/data";
+import {
+  buildTemplateGreeting,
+  requestAiGreeting,
+} from "@/lib/greeting";
+import { saveAiTalk } from "@/lib/aiTalkLog";
 import LevelCard from "@/components/LevelCard";
 import HelpTooltip from "@/components/HelpTooltip";
 
@@ -88,18 +94,113 @@ export default function AiConversationPage() {
   const levelRef =
     useRef<LearningLevel>("beginner");
 
+  /*
+    시작 버튼(Bunny Starts · I Start)을 눌렀는지
+    누른 뒤에는 첫 인사를 절대 바꾸지 않으려고 ref 로 바로 기록
+  */
+  const startedRef =
+    useRef(false);
+
   useEffect(() => {
     let cancelled = false;
 
-    loadMyLearningSummary().then((loaded) => {
-      if (cancelled || !loaded) return;
+    /* 화면을 떠나면 첫 인사 요청을 취소 */
+    const greetingAbort =
+      new AbortController();
 
-      levelRef.current = loaded.level;
-      setSummary(loaded);
-    });
+    /* 시작하기 전이고 화면이 아직 떠 있을 때만 첫 인사를 바꿈 */
+    const replaceGreeting = (
+      text: string
+    ) => {
+      if (
+        cancelled ||
+        startedRef.current
+      ) {
+        return;
+      }
+
+      setMessages((prev) =>
+        startedRef.current ||
+        prev.length !== 1
+          ? prev
+          : [
+              {
+                role: "bunny",
+                text,
+              },
+            ]
+      );
+    };
+
+    /*
+      첫 인사 개인화 (학습 요약이 도착했을 때 한 번만)
+      2순위: 단계별 고정 인사로 바로 교체 (네트워크 없음)
+      1순위: AI 인사가 제한 시간 안에 규칙에 맞게 오면 다시 교체
+      어느 쪽이든 실패하면 지금 문장을 그대로 둠 (오류를 화면에 보이지 않음)
+    */
+    const personalizeGreeting =
+      async (
+        loaded: LearningSummary
+      ) => {
+        try {
+          if (
+            !LEVELS.includes(
+              loaded.level
+            )
+          ) {
+            return;
+          }
+
+          replaceGreeting(
+            buildTemplateGreeting(
+              loaded.level,
+              loaded.weakWords
+            )
+          );
+
+          const aiGreeting =
+            await requestAiGreeting({
+              level: loaded.level,
+              knownWords:
+                loaded.knownWords
+                  .length > 0
+                  ? loaded.knownWords
+                  : sightWordLevels[0].words.map(
+                      (item) =>
+                        item.word
+                    ),
+              weakWords:
+                loaded.weakWords,
+              signal:
+                greetingAbort.signal,
+            });
+
+          if (aiGreeting) {
+            replaceGreeting(
+              aiGreeting
+            );
+          }
+        } catch {
+          /* 첫 인사는 바꾸지 못해도 대화에는 지장이 없음 */
+        }
+      };
+
+    loadMyLearningSummary()
+      .then((loaded) => {
+        if (cancelled || !loaded) return;
+
+        levelRef.current = loaded.level;
+        setSummary(loaded);
+
+        personalizeGreeting(loaded);
+      })
+      .catch(() => {
+        /* 요약을 못 불러오면 원래 첫 인사 그대로 */
+      });
 
     return () => {
       cancelled = true;
+      greetingAbort.abort();
     };
   }, []);
 
@@ -309,6 +410,9 @@ export default function AiConversationPage() {
     () => {
       unlockAutoplay();
 
+      /* 이 뒤로는 늦게 온 AI 인사가 첫 문장을 바꾸지 못함 */
+      startedRef.current = true;
+
       setHasStarted(
         true
       );
@@ -321,6 +425,8 @@ export default function AiConversationPage() {
   const handleStartAsUser =
     () => {
       unlockAutoplay();
+
+      startedRef.current = true;
 
       setMessages([]);
 
@@ -633,6 +739,12 @@ export default function AiConversationPage() {
           },
         ]);
 
+        /* AI Learning Coach 가 볼 수 있게 대화를 남김 (실패해도 대화는 그대로 진행) */
+        saveAiTalk(
+          userText,
+          convData.reply
+        );
+
         setStatusText("");
 
         await playBunnyVoice(
@@ -762,6 +874,7 @@ export default function AiConversationPage() {
                     "Bunny Starts를 누르면 AI Bunny가 먼저 말을 걸고, I Start를 누르면 내가 먼저 말해요.",
                     "Speak를 누르고 영어로 말한 뒤 Stop을 누르면 AI Bunny가 듣고 대답해요.",
                     "틀려도 괜찮아요. AI Bunny가 맞는 표현으로 자연스럽게 다시 말해 줘요.",
+                    "영어가 생각나지 않으면 한국어로 말해도 돼요. AI Bunny가 영어로 어떻게 말하는지 알려 주고 따라 말해 보게 해요.",
                     "이 대화에서는 발음 점수를 매기지 않고, 당근 코인도 주지 않아요.",
                   ],
                 },

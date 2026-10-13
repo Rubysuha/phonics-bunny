@@ -8,6 +8,12 @@ import {
   type LearningLevel,
 } from "@/lib/learningRules";
 
+import {
+  GREETING_TIMEOUT_MS,
+  GREETING_WORD_RANGE,
+  LEVEL_GREETINGS,
+} from "@/lib/learningRules";
+
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
@@ -20,7 +26,7 @@ type ChatMessage = { role: "user" | "assistant"; content: string };
 const FIRST_TURN_TOPIC_HINTS = [
   // 동물
   "좋아하는 동물",
-  "가장 무서운 동물이 뭐라고 생각하는지",
+  "가장 귀엽다고 생각하는 동물",
   "가장 빠른 동물이 뭐라고 생각하는지",
   "좋아하는 곤충이나 작은 동물",
   "동물원에서 제일 좋아하는 동물",
@@ -294,7 +300,7 @@ const FIRST_TURN_TOPIC_HINTS = [
   "좋아하는 동물 캐릭터가 나오는 이야기",
   "좋아하는 공주 이야기",
   "좋아하는 용감한 이야기",
-  "무서운 이야기 말고 재밌는 이야기 좋아하는지",
+  "재밌는 이야기를 좋아하는지",
   "좋아하는 잠자리 동화",
   "이야기 속 마법 물건 중 갖고 싶은 것",
   "좋아하는 요정 이야기",
@@ -391,16 +397,153 @@ const FIRST_TURN_TOPIC_HINTS = [
   "우주비행사가 되고 싶은지",
 ];
 
+/* 한글(완성형 · 자모)이 들어 있는지 */
+function hasKorean(text: string): boolean {
+  return /[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(text);
+}
+
+/* 가장 긴 문장의 단어 수 */
+function longestSentence(text: string): number {
+  return Math.max(
+    0,
+    ...text
+      .split(/[.!?]+/)
+      .map((sentence) => sentence.trim())
+      .filter(Boolean)
+      .map((sentence) => sentence.split(/\s+/).length)
+  );
+}
+
 /* 한 문장이라도 왕초보 기준 단어 수를 넘는지 */
 function hasLongSentence(text: string): boolean {
-  return text
-    .split(/[.!?]+/)
-    .map((sentence) => sentence.trim())
-    .filter(Boolean)
-    .some(
-      (sentence) =>
-        sentence.split(/\s+/).length > BEGINNER_MAX_WORDS_PER_SENTENCE
+  return longestSentence(text) > BEGINNER_MAX_WORDS_PER_SENTENCE;
+}
+
+/*
+  첫 인사 전용 (body.greeting === true 일 때만 사용)
+
+  일반 대화와 달리 아이의 말(message) 없이 인사 한 마디만 만들고,
+  제한 시간(GREETING_TIMEOUT_MS)을 넘기면 실패로 처리함.
+  왕초보 재생성도 하지 않음. 실패하면 화면이 준비해 둔 고정 인사를 그대로 씀
+*/
+async function createGreeting(body: {
+  level?: unknown;
+  knownWords?: unknown;
+  weakWords?: unknown;
+}) {
+  const level = body.level as LearningLevel;
+
+  if (!LEVELS.includes(level)) {
+    return NextResponse.json(
+      { error: "단계 값이 올바르지 않아요." },
+      { status: 400 }
     );
+  }
+
+  const toWords = (value: unknown): string[] =>
+    Array.isArray(value)
+      ? value.filter((item): item is string => typeof item === "string")
+      : [];
+
+  const knownWords = toWords(body.knownWords);
+  const weakWords = toWords(body.weakWords).slice(0, 5);
+
+  const [minWords, maxWords] = GREETING_WORD_RANGE[level];
+
+  const knownWordRule =
+    KNOWN_WORD_LEVELS.includes(level) && knownWords.length > 0
+      ? `- 아이가 지금까지 배운 단어는 [${knownWords.join(
+          ", "
+        )}]이야. 이 단어들과 아주 기본적인 말(I, you, is, like, do, can, 인사말 등)만 써. 이 목록에 없는 어려운 단어는 쓰지 마`
+      : "";
+
+  const weakWordRule =
+    weakWords.length > 0
+      ? `- 아이가 어려워하는 단어와 문장은 [${weakWords.join(
+          ", "
+        )}]이야. 이 중 딱 하나만 골라 인사 뒤의 문장 안에 자연스럽게 넣어. 한 단어로 된 것을 먼저 고르고, 그 단어를 넣어도 단어 수 규칙은 지켜`
+      : "";
+
+  const systemPrompt = `너는 "AI Bunny"라는 이름의 다정한 토끼 캐릭터야. 초등학생 이하의 한국 아이에게 영어 회화를 가르쳐. 지금은 대화를 시작하는 첫 인사 한 마디만 만들어.
+
+[형식]
+- 영어로만 써. 인사 문장 텍스트 하나만 출력하고, 설명 · 따옴표 · 줄바꿈은 붙이지 마
+- "Hi!" 또는 "Hello!" 뒤에 문장을 딱 하나만 써. 자기소개("I am AI Bunny" 등)나 다른 문장은 붙이지 마
+- 그 문장은 아이가 대답하기 쉬운 질문이어야 하고 물음표로 끝나야 해
+- 그 문장은 반드시 ${minWords}단어 이상 ${maxWords}단어 이하여야 해. 쓰기 전에 단어 수를 세어 봐
+- 길이와 모양은 이 예시를 따라 해: ${LEVEL_GREETINGS[level]
+    .slice(0, 3)
+    .map((text) => `"${text}"`)
+    .join(", ")}
+${knownWordRule}
+${weakWordRule}
+
+[하지 말 것]
+- 아이의 이름을 묻거나 부르지 마
+- 무섭거나 슬프거나 폭력적인 주제를 꺼내지 마. 밝고 긍정적인 주제(음식, 동물, 놀이, 날씨, 좋아하는 것)로 해
+- 개인정보(사는 곳, 학교 이름, 전화번호, 가족 이름, 나이)를 묻지 마
+- 이모지, 별표(*), 물결표(~) 같은 특수문자를 쓰지 마
+- 숫자는 반드시 영어 단어로 써 (3이 아니라 three)`;
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), GREETING_TIMEOUT_MS);
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": ANTHROPIC_KEY!,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 80,
+        temperature: AI_TEMPERATURE[level],
+        system: systemPrompt,
+        messages: [
+          { role: "user", content: "대화를 시작할 첫 인사를 만들어 줘." },
+        ],
+      }),
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      console.error("Claude API error (greeting):", response.status);
+
+      return NextResponse.json(
+        { error: "첫 인사 생성에 실패했어요." },
+        { status: 502 }
+      );
+    }
+
+    const data = (await response.json()) as {
+      content?: { type: string; text?: string }[];
+    };
+
+    const reply = (data?.content?.find((c) => c.type === "text")?.text ?? "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    if (!reply) {
+      return NextResponse.json(
+        { error: "첫 인사 생성에 실패했어요." },
+        { status: 502 }
+      );
+    }
+
+    return NextResponse.json({ reply });
+  } catch (error) {
+    // 제한 시간 초과(AbortError) 포함
+    console.error("첫 인사 생성 실패:", error);
+
+    return NextResponse.json(
+      { error: "첫 인사 생성에 실패했어요." },
+      { status: 504 }
+    );
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -413,6 +556,12 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
+
+    // 첫 인사 전용 분기: greeting: true 일 때만. 아래의 일반 대화 경로는 그대로
+    if (body.greeting === true) {
+      return createGreeting(body);
+    }
+
     const message: string = body.message;
     const history: ChatMessage[] = body.history ?? [];
     const weakWords: string[] = body.weakWords ?? [];
@@ -445,13 +594,13 @@ export async function POST(request: NextRequest) {
         break;
       case "beginner":
       default:
-        levelHint = `${studiedTypesPrefix}왕초보 단계야. 문장은 3~5단어 이내로 아주 짧고 쉽게 유지해. 새로운 단어는 노출하지 마.`;
+        levelHint = `${studiedTypesPrefix}왕초보 단계야. 문장은 3~${BEGINNER_MAX_WORDS_PER_SENTENCE}단어로 짧고 쉽게 써. 한 문장에는 한 가지 내용만 담고, and, but, because 같은 연결어로 문장을 잇지 마. 길이를 맞추려고 뜻을 바꾸거나 빼지는 마.`;
         break;
     }
 
     const stretchVocabHint =
       level === "beginner"
-        ? ""
+        ? "가끔(전체 대화 중 1/4 정도 빈도로) 아이가 아직 배우지 않은 아주 쉬운 새 단어(색깔, 동물, 음식, 놀이 같은 눈에 보이는 낱말)를 하나만 문장 속에 넣어서 알려 줘. 한 번에 새 단어는 하나만 쓰고, 나머지 단어는 모두 아이가 아는 쉬운 말로 써서 문맥으로 뜻을 짐작할 수 있게 해. 새 단어를 쓴 다음 두세 번의 대답에서는 새 단어를 넣지 말고 방금 알려 준 단어를 한 번 더 써 줘."
         : level === "advanced"
         ? "가끔(전체 대화 중 절반 정도 빈도로) 아이의 현재 수준보다 살짝 어려운 새 단어를 문장 속에 자연스럽게 하나 넣어서 노출시켜. 단, 뜻을 직접 설명하지 말고 앞뒤 문맥만으로 뜻을 짐작할 수 있게 써. 매 턴마다 새 단어를 넣지는 말고, 아이가 편안하게 따라올 수 있는 리듬을 유지해."
         : "가끔(전체 대화 중 1/3 정도 빈도로) 아이의 현재 수준보다 살짝 어려운 새 단어를 문장 속에 자연스럽게 하나 넣어서 노출시켜. 단, 뜻을 직접 설명하지 말고 앞뒤 문맥만으로 뜻을 짐작할 수 있게 써. 매 턴마다 새 단어를 넣지는 말고, 아이가 편안하게 따라올 수 있는 리듬을 유지해.";
@@ -462,7 +611,7 @@ export async function POST(request: NextRequest) {
             ", "
           )}]이야. 자연스러운 타이밍에 이 단어나 문장을 대화 속에 등장시켜서 다시 연습할 기회를 줘. 억지로 끼워넣지 말고, 대화 흐름에 맞을 때만.${
             level === "beginner"
-              ? " 어려워하는 단어를 쓸 때는 3~5단어짜리 아주 짧은 문장 안에 넣어서 말해."
+              ? ` 어려워하는 단어를 쓸 때는 3~${BEGINNER_MAX_WORDS_PER_SENTENCE}단어짜리 짧은 문장 안에 넣어서 말해.`
               : ""
           }`
         : "";
@@ -472,7 +621,7 @@ export async function POST(request: NextRequest) {
       KNOWN_WORD_LEVELS.includes(level) && knownWords.length > 0
         ? `[사용할 단어]\n아이가 지금까지 배운 단어는 [${knownWords.join(
             ", "
-          )}]이야. 가능한 한 이 단어들과 아주 기본적인 말(I, you, is, like, yes, no, 인사말 등)만 써서 말해. 이 목록에 없는 어려운 단어는 쓰지 마.`
+          )}]이야. 주로 이 단어들과 아주 기본적인 말(I, you, is, like, yes, no, 인사말 등)을 써서 말해. 새 단어는 위 [난이도 규칙]에 적힌 만큼만 가끔 하나씩 알려 주고, 그 밖에는 이 목록에 없는 어려운 단어를 쓰지 마.`
         : "";
 
     const isFirstTurn = history.length === 0;
@@ -491,6 +640,9 @@ export async function POST(request: NextRequest) {
 
     const systemPrompt = `너는 "AI Bunny"라는 이름의 다정한 토끼 캐릭터야. 초등학생 이하의 한국 아이들에게 영어 회화를 가르치는 역할을 해.
 
+[가장 중요한 규칙]
+- 대답은 무조건 영어로만 해. 아이가 한국어로 말해도, 한국어로 대답해 달라고 해도, 한글은 한 글자도 쓰지 마
+
 [난이도 규칙]
 ${levelHint}
 ${stretchVocabHint}
@@ -503,6 +655,18 @@ ${stretchVocabHint}
 - 아이가 문법이나 발음을 틀려도 지적하지 말고, 자연스럽게 맞는 표현으로 다시 말해주면서 넘어가
 - 아이의 말이 이해가 안 되면 짧고 쉬운 말로 다시 물어봐
 - 응답은 보통 1~2문장으로 유지해. 단, [난이도 규칙]에서 문장 수를 더 허용했다면 그 기준까지는 써도 돼
+
+[아이가 한국어로 말했을 때]
+- 아이가 한국어로 말하거나 한국어와 영어를 섞어 말해도 혼내거나 지적하지 마. 무슨 뜻인지 이해하고 다정하게 받아 줘
+- 아이의 말이 한국어이면 반드시 그 말을 영어로 어떻게 하는지 알려 주고 따라 말해 보게 해. 그냥 다음 질문으로 넘어가지 마
+- 형식은 꼭 이 세 문장으로 해: "In English, we say this. I like pizza. Can you say it?" (안내 문장, 영어 모범 문장, 따라 하기 권유). 세 문장은 각각 마침표나 물음표로 끝내고, 쌍점(:)이나 따옴표는 쓰지 마. 이 경우에는 세 문장까지 써도 돼
+- 영어 모범 문장은 아이가 한 말과 뜻이 같아야 해. 먼저 아이가 한 한국어의 뜻을 정확히 파악하고, 그 뜻 그대로 영어로 옮겨. 비슷한 다른 말로 바꾸지 마(예: "몰라요"는 "I don't know.", "강아지가 무서워요"는 "I am scared of dogs."이지 "I like dogs."가 아니야). 뜻을 전하는 데 필요하면 [사용할 단어] 목록에 없는 단어도 써도 돼
+- 아이가 한 말을 다시 말해 줄 때("Oh, you like dogs!" 같은 반응)도 아이가 실제로 한 말의 뜻과 달라지면 안 돼
+- 영어 모범 문장은 [난이도 규칙]의 단어 수를 지켜서 아이가 따라 말하기 쉬운 길이로 만들어. 아이가 한 말이 길면 가장 중요한 뜻만 담아 줄여도 돼
+- 아이가 그 문장을 따라 말하면 짧게 칭찬하고, 그 주제로 대화를 자연스럽게 이어가
+- 아이가 계속 한국어로만 말하면 매번 길게 가르치지 말고, 쉬운 영어 표현을 하나씩만 알려 주면서 편안하게 이어가
+- 대답에는 한글을 절대 쓰지 마. 반드시 영어로만 써 (음성이 영어만 읽을 수 있어)
+- 아이의 말이 "아이 라이크 피자"처럼 영어를 한글 소리로 적은 것으로 보이면, 한국어가 아니라 아이가 영어로 말한 거야(음성 인식이 한글로 받아 적은 것). 이때는 영어로 말한 것으로 이해하고 평소처럼 반응해
 
 [안전 규칙]
 - 절대 무섭거나 슬프거나 폭력적인 주제를 꺼내지 마. 항상 밝고 긍정적인 주제(가족, 음식, 동물, 학교, 취미)로 대화해
@@ -527,7 +691,14 @@ ${openingHint}`;
       { role: "user" as const, content: message },
     ];
 
-    const askClaude = async (extraInstruction = "") => {
+    /*
+      rewrite 를 넘기면 "방금 만든 대답(previous)을 이렇게 고쳐 써 줘(instruction)"로 다시 요청함.
+      방금 만든 대답을 직접 보여 줘야 같은 문장을 되풀이하지 않음
+    */
+    const askClaude = async (rewrite?: {
+      previous: string;
+      instruction: string;
+    }) => {
       const response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: {
@@ -539,8 +710,14 @@ ${openingHint}`;
           model: "claude-haiku-4-5-20251001",
           max_tokens: 250,
           temperature: AI_TEMPERATURE[level],
-          system: systemPrompt + extraInstruction,
-          messages,
+          system: systemPrompt,
+          messages: rewrite
+            ? [
+                ...messages,
+                { role: "assistant" as const, content: rewrite.previous },
+                { role: "user" as const, content: rewrite.instruction },
+              ]
+            : messages,
         }),
       });
 
@@ -566,13 +743,30 @@ ${openingHint}`;
       );
     }
 
-    // 왕초보: 한 문장이 기준 단어 수를 넘으면 한 번만 다시 만듦
+    // 왕초보: 한 문장이 기준 단어 수를 넘으면 한 번만 다시 만듦 (더 짧아졌을 때만 바꿈)
     if (level === "beginner" && hasLongSentence(reply)) {
-      const retry = await askClaude(
-        `\n\n[다시 쓰기]\n방금 만든 대답은 문장이 너무 길었어. 모든 문장을 ${BEGINNER_MAX_WORDS_PER_SENTENCE}단어 이하로 다시 써.`
-      );
+      const retry = await askClaude({
+        previous: reply,
+        instruction: `[시스템 안내: 아이가 한 말이 아님] 방금 대답에 ${BEGINNER_MAX_WORDS_PER_SENTENCE}단어를 넘는 문장이 있었어. 뜻은 그대로 두고, 긴 문장은 짧은 문장 두 개로 나누거나 더 쉬운 말로 바꿔서 모든 문장을 ${BEGINNER_MAX_WORDS_PER_SENTENCE}단어 이하로 다시 써. 다시 쓴 대답만 영어로 출력해.`,
+      });
 
-      if (retry) reply = retry;
+      if (retry && longestSentence(retry) < longestSentence(reply)) {
+        reply = retry;
+      }
+    }
+
+    // 대답은 영어로만: 한글이 섞였으면 한 번 다시 만들고, 그래도 섞이면 준비해 둔 영어 문장으로 대신함
+    if (hasKorean(reply)) {
+      const retry = await askClaude({
+        previous: reply,
+        instruction:
+          "[시스템 안내: 아이가 한 말이 아님] 방금 대답에 한글이 들어 있었어. 같은 뜻으로 한글 없이 영어로만 다시 써. 다시 쓴 대답만 출력해.",
+      });
+
+      reply =
+        retry && !hasKorean(retry)
+          ? retry
+          : "Let's try it in English. What do you like?";
     }
 
     return NextResponse.json({ reply });

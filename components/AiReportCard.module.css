@@ -1,0 +1,1216 @@
+/* AI Learning Coach 리포트 카드: My Page 의 카드와 같은 흰 카드 · 갈색 글자 */
+
+.card {
+  padding: clamp(18px, 2.6vw, 28px);
+
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  border-radius: 26px;
+
+  background: rgba(255, 255, 255, 0.92);
+
+  box-shadow: 0 8px 22px rgba(120, 90, 60, 0.07);
+
+  color: #2b2622;
+
+  scroll-margin-top: 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.headerIcon {
+  flex-shrink: 0;
+
+  width: 50px;
+  height: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 16px;
+
+  background: #efe7fb;
+
+  color: #8a63c7;
+}
+
+.headerText {
+  flex: 1;
+  min-width: 0;
+}
+
+.headerText h2 {
+  margin: 0;
+
+  font-size: 26px;
+  font-weight: 800;
+
+  letter-spacing: -0.4px;
+}
+
+.headerText p {
+  margin: 2px 0 0;
+
+  color: #8a63c7;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+}
+
+.retryButton {
+  flex-shrink: 0;
+
+  height: 40px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 0 16px;
+
+  border: 1.5px solid #dccfb6;
+  border-radius: 999px;
+
+  background: #ffffff;
+
+  color: #6f665d;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.retryButton:hover:not(:disabled) {
+  background: #f8f3e8;
+}
+
+.retryButton:disabled {
+  opacity: 0.55;
+
+  cursor: default;
+}
+
+/* 처음 · 기록 부족 · 로그인 안내 */
+
+.start {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+
+  margin-top: 20px;
+  padding: 28px 18px;
+
+  border-radius: 20px;
+
+  background: #fff8ee;
+}
+
+.startText {
+  margin: 0;
+
+  color: #4f463d;
+
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.6;
+  text-align: center;
+
+  word-break: keep-all;
+}
+
+.createButton {
+  height: 52px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 0 28px;
+
+  border: none;
+  border-radius: 999px;
+
+  background: #e2725b;
+
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 800;
+
+  text-decoration: none;
+
+  cursor: pointer;
+}
+
+.createButton:hover {
+  background: #d2604a;
+}
+
+/* 분석 중 */
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  margin: 20px 0 0;
+  padding: 40px 18px;
+
+  border-radius: 20px;
+
+  background: #fff8ee;
+
+  color: #6f665d;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #e2725b;
+
+  animation: bounce 0.9s ease-in-out infinite;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.dot:nth-child(3) {
+  margin-right: 6px;
+
+  animation-delay: 0.3s;
+}
+
+/* 결과 */
+
+.body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  margin-top: 18px;
+}
+
+/* 코드가 집계한 숫자 */
+
+.stats {
+  grid-column: 1 / -1;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.stats li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 2px 8px;
+
+  padding: 14px 16px;
+
+  border-radius: 18px;
+
+  background: #faf6ee;
+}
+
+.stats li svg {
+  color: #c9682f;
+}
+
+.stats li span {
+  color: #6f665d;
+
+  font-size: 13.5px;
+  font-weight: 800;
+}
+
+.stats li strong {
+  grid-column: 1 / -1;
+
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.stats li small {
+  margin-left: 4px;
+
+  color: #8a7f73;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.stats li em {
+  grid-column: 1 / -1;
+
+  color: #8a7f73;
+
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.testList {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  margin-top: 4px;
+}
+
+.testList b {
+  color: #2b2622;
+
+  font-size: 15px;
+  font-weight: 800;
+}
+
+/* 글 상자 */
+
+.block {
+  padding: 18px 20px;
+
+  border: 1.5px solid #efe6d6;
+  border-radius: 20px;
+
+  background: #ffffff;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.column .block {
+  flex: 1;
+}
+
+.block h3 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin: 0 0 10px;
+
+  color: #c9682f;
+
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.summary,
+.note {
+  margin: 0;
+
+  color: #3a332d;
+
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.75;
+
+  word-break: keep-all;
+}
+
+.focus {
+  margin: 0 0 10px;
+
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin: 0 0 14px;
+  padding: 0;
+
+  list-style: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 8px 18px;
+
+  border-radius: 999px;
+
+  background: #fdeae4;
+
+  color: #c9523c;
+
+  font-size: 17px;
+  font-weight: 800;
+
+  text-decoration: none;
+}
+
+a.chip:hover {
+  background: #fbd9cf;
+}
+
+/* 왜 이 단어인지: 평균 점수 · 연습 횟수 */
+
+.evidence {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  margin: 0;
+  padding: 12px 0 0;
+
+  border-top: 1.5px dashed #efe6d6;
+
+  list-style: none;
+}
+
+.evidence li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+
+  font-size: 14px;
+}
+
+.evidence b {
+  font-weight: 800;
+}
+
+.evidence span {
+  color: #8a7f73;
+
+  font-weight: 700;
+}
+
+/* 저장 상태 */
+
+.saveState {
+  grid-column: 1 / -1;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  margin: 2px 0 0;
+
+  color: #3f9255;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.saveStateOff {
+  color: #b9772a;
+}
+
+.error {
+  margin: 14px 0 0;
+
+  color: #c1463c;
+
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* 분석 과정 */
+
+.pipeline {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 4px;
+
+  margin: 18px 0 0;
+  padding: 14px 0 0;
+
+  border-top: 1.5px solid #f1e9da;
+
+  list-style: none;
+
+  color: #a2968a;
+
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.pipeline li:not(:last-child)::after {
+  content: "→";
+
+  margin: 0 6px;
+
+  color: #d6cab8;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@media (max-width: 760px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+
+  .header {
+    flex-wrap: wrap;
+  }
+
+  .headerText h2 {
+    font-size: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot {
+    animation: none;
+  }
+}
+
+/* ─────────────────────────────
+   학습 데이터 분석 (막대 · 미터)
+───────────────────────────── */
+
+.charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 22px 28px;
+}
+
+.chart h4 {
+  margin: 0 0 12px;
+
+  color: #6f665d;
+
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.subHeading {
+  margin-top: 18px !important;
+}
+
+/* 7일 학습 활동: 세로 막대 */
+
+.days {
+  height: 132px;
+
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.days li {
+  display: grid;
+  grid-template-rows: 18px 1fr 18px;
+  justify-items: center;
+  gap: 4px;
+}
+
+.days b {
+  color: #2b2622;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.days i {
+  align-self: end;
+
+  width: 100%;
+  max-width: 30px;
+  min-height: 4px;
+
+  border-radius: 8px 8px 4px 4px;
+
+  background: #e2725b;
+}
+
+.days span {
+  color: #a2968a;
+
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+/* 가로 미터 */
+
+.meters {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.meters li {
+  display: grid;
+  grid-template-columns: 96px 1fr 30px;
+  align-items: center;
+  gap: 2px 10px;
+}
+
+.meters span {
+  color: #3a332d;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.meters i {
+  height: 10px;
+
+  border-radius: 999px;
+
+  background: #f1e9da;
+
+  overflow: hidden;
+}
+
+.meters u {
+  display: block;
+
+  height: 100%;
+
+  border-radius: 999px;
+
+  background: linear-gradient(90deg, #ffb777, #e2725b);
+}
+
+.meters b {
+  font-size: 15px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.meters em {
+  grid-column: 2 / -1;
+
+  color: #a2968a;
+
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* 단어 수준 분포 */
+
+.bandBar {
+  height: 12px;
+
+  display: flex;
+  gap: 3px;
+
+  border-radius: 999px;
+
+  overflow: hidden;
+}
+
+.bandBar i {
+  flex-basis: 0;
+}
+
+.bandStable {
+  background: #56b985;
+}
+
+.bandPracticing {
+  background: #f3c15a;
+}
+
+.bandFocus {
+  background: #e2725b;
+}
+
+.bandLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+
+  margin: 10px 0 0;
+  padding: 0;
+
+  list-style: none;
+
+  color: #6f665d;
+
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.bandLegend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bandLegend i {
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+}
+
+/* 강점 */
+
+.block h3.good {
+  color: #3f9255;
+}
+
+.up {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  color: #3f9255 !important;
+}
+
+.note + .evidence {
+  margin-top: 14px;
+}
+
+/* ─────────────────────────────
+   주간 · 월간 선택, 지난 리포트 선택
+───────────────────────────── */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  margin-top: 18px;
+}
+
+.tabs {
+  display: inline-flex;
+
+  padding: 4px;
+
+  border-radius: 999px;
+
+  background: #f4eee2;
+}
+
+.tab {
+  height: 40px;
+
+  padding: 0 22px;
+
+  border: none;
+  border-radius: 999px;
+
+  background: transparent;
+
+  color: #8a7f73;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.tabActive {
+  background: #ffffff;
+
+  color: #2b2622;
+
+  box-shadow: 0 2px 8px rgba(120, 90, 60, 0.12);
+}
+
+.tab:disabled {
+  cursor: default;
+}
+
+.history {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #8a7f73;
+
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.history select {
+  height: 40px;
+
+  padding: 0 12px;
+
+  border: 1.5px solid #dccfb6;
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  color: #2b2622;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* 월간(30일): 막대를 가늘게, 숫자와 날짜는 5일마다 */
+
+.days {
+  grid-template-columns: repeat(var(--day-count, 7), minmax(0, 1fr));
+}
+
+.days li {
+  min-width: 0;
+}
+
+.daysDense {
+  gap: 3px;
+}
+
+.daysDense b {
+  visibility: hidden;
+}
+
+/* 날짜 글자가 칸보다 넓어도 칸 너비를 밀어내지 않게 함 */
+.daysDense span {
+  justify-self: start;
+
+  width: 0;
+
+  visibility: hidden;
+
+  white-space: nowrap;
+}
+
+.daysDense li:nth-child(5n + 1) span {
+  visibility: visible;
+}
+
+/* ─────────────────────────────
+   오늘의 코칭: 내일 할 일
+───────────────────────────── */
+
+.tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 16px 18px;
+
+  border-radius: 18px;
+
+  background: #faf6ee;
+}
+
+.taskNumber {
+  flex-shrink: 0;
+
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #e2725b;
+
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.taskBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.taskTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+
+  margin-bottom: 4px;
+}
+
+.taskTop strong {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.taskTop em {
+  color: #8a7f73;
+
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.taskType {
+  padding: 3px 10px;
+
+  border-radius: 999px;
+
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.type-retry {
+  background: #fdeae4;
+  color: #c9523c;
+}
+
+.type-review {
+  background: #fdf0d6;
+  color: #b9772a;
+}
+
+.type-new {
+  background: #e1f0fb;
+  color: #3b78a8;
+}
+
+.type-keep {
+  background: #e3f5ea;
+  color: #3f9255;
+}
+
+.taskLink {
+  flex-shrink: 0;
+
+  height: 40px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 0 16px;
+
+  border: 1.5px solid #dccfb6;
+  border-radius: 999px;
+
+  background: #ffffff;
+
+  color: #3a332d;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  text-decoration: none;
+}
+
+.taskLink:hover {
+  background: #f8f3e8;
+}
+
+@media (max-width: 760px) {
+  .task {
+    flex-wrap: wrap;
+  }
+
+  .taskLink {
+    margin-left: 50px;
+  }
+
+  .tabs {
+    width: 100%;
+  }
+
+  .tab {
+    flex: 1;
+
+    padding: 0 8px;
+  }
+}
+
+/* ─────────────────────────────
+   오늘의 코칭: AI Bunny 대화
+───────────────────────────── */
+
+.talk {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 28px;
+
+  margin-top: 14px;
+}
+
+.talk h4 {
+  margin: 0 0 10px;
+
+  color: #6f665d;
+
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+/* 아이가 한 말: 말풍선 */
+
+.said {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.said li {
+  max-width: 100%;
+
+  padding: 9px 15px;
+
+  border-radius: 16px 16px 16px 4px;
+
+  background: #f1ecfb;
+
+  color: #4a3f6b;
+
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.talkEmpty {
+  margin: 0;
+
+  color: #a2968a;
+
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+/* 다음에 써 볼 문장 */
+
+.nextSentences {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  margin: 0 0 14px;
+  padding: 0;
+
+  list-style: none;
+}
+
+.nextSentences li {
+  padding: 12px 15px;
+
+  border-left: 4px solid #e2725b;
+  border-radius: 6px 14px 14px 6px;
+
+  background: #fff8ee;
+}
+
+.nextSentences strong {
+  display: block;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.nextSentences span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #6f665d;
+
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.55;
+
+  word-break: keep-all;
+}
+
+@media (max-width: 760px) {
+  .talk {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─────────────────────────────
+   Book · Conversation 분석
+───────────────────────────── */
+
+.contentAreas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px 32px;
+}
+
+.contentHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+
+  padding-bottom: 10px;
+
+  border-bottom: 1.5px solid #efe6d6;
+}
+
+.contentHead strong {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.contentHead span {
+  color: #6f665d;
+
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.contentArea h4 {
+  margin: 14px 0 0;
+
+  color: #c9682f;
+
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.contentArea h4.goodText {
+  color: #3f9255;
+}
+
+.contentArea .evidence {
+  padding-top: 8px;
+
+  border-top: none;
+}
+
+.evidence + .evidence {
+  margin-top: 10px;
+}
+
+.itemLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  color: #2b2622;
+
+  font-weight: 700;
+
+  text-decoration: underline;
+  text-decoration-color: #dccfb6;
+  text-underline-offset: 3px;
+}
+
+.itemLink:hover {
+  text-decoration-color: #e2725b;
+}
+
+.contentNote {
+  margin: 12px 0 0;
+
+  color: #3a332d;
+
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.7;
+
+  word-break: keep-all;
+}
+
+/* 문장별 녹음 결과 */
+
+.sentences {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  margin: 8px 0 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.sentences li {
+  padding: 9px 13px;
+
+  border-radius: 12px;
+
+  background: #faf6ee;
+}
+
+.sentences b {
+  display: block;
+
+  font-size: 15.5px;
+  font-weight: 700;
+}
+
+.sentences span {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #8a7f73;
+
+  font-size: 13px;
+  font-weight: 600;
+}

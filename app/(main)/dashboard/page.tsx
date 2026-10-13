@@ -6,6 +6,7 @@ import { Books, Trophy } from "@phosphor-icons/react";
 import { supabase } from "@/lib/supabase";
 import { loadHomeLook, saveHomeLook } from "@/lib/homeLook";
 import { backgroundSkins, bunnySkins } from "../shop/data";
+import FloatingReportButton from "@/components/FloatingReportButton";
 import styles from "./dashboard.module.css";
 
 type TodayLearning = {
@@ -133,6 +134,8 @@ export default function DashboardPage() {
 
   return (
     <div className={styles.dashboard}>
+      <FloatingReportButton />
+
       <div className={styles.hero}>
         <h1 className={styles.title}>Home</h1>
 

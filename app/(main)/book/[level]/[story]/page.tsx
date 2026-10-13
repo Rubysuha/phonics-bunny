@@ -5,6 +5,7 @@ import { createPageAudio, useStopAudioOnLeave } from "@/lib/pageAudio";
 import { rewardCoin } from "@/lib/rewardCoin";
 import { logEngagement } from "@/lib/logEngagement";
 import { notifyLearningUpdated } from "@/lib/learningEvents";
+import SentenceRecorder from "@/components/SentenceRecorder";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -385,7 +386,20 @@ export default function BookDetailPage() {
 
               <div className={styles.bookText} ref={bookTextRef}>
                 {pageSentences.map((sentence, index) => (
-                  <p key={`${pageIndex}-${index}`}>{sentence}</p>
+                  <p key={`${pageIndex}-${index}`}>
+                    {sentence}{" "}
+                    {/* 이 문장만 따로 녹음해서 발음 확인 */}
+                    <SentenceRecorder
+                      contentType="book"
+                      contentId={`book-${currentLevel.level}-${currentStory.slug}`}
+                      index={
+                        pageCount === 1
+                          ? index
+                          : pageIndex * SENTENCES_PER_PAGE + index
+                      }
+                      text={sentence}
+                    />
+                  </p>
                 ))}
               </div>
 

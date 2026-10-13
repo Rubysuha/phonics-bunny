@@ -14,6 +14,7 @@ import PronunciationResultModal from "@/components/PronunciationResultModal";
 import { rewardCoin } from "@/lib/rewardCoin";
 import { logEngagement } from "@/lib/logEngagement";
 import { notifyLearningUpdated } from "@/lib/learningEvents";
+import SentenceRecorder from "@/components/SentenceRecorder";
 import { convertRecordingToWav, createSupportedMediaRecorder } from "@/lib/audioToWav";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/Toast";
@@ -398,6 +399,14 @@ export default function ConversationDetailPage() {
 
                         <SpeakerHigh size={18} />
                       </button>
+
+                      {/* 이 문장만 따로 녹음해서 발음 확인 */}
+                      <SentenceRecorder
+                        contentType="conversation"
+                        contentId={`conversation-${item.id}`}
+                        index={index}
+                        text={line.text}
+                      />
                     </div>
                   );
                 })}

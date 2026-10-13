@@ -1,0 +1,112 @@
+/* 문장 옆에 놓는 작은 녹음 버튼과 점수 */
+
+.wrap {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  vertical-align: middle;
+}
+
+.button {
+  width: 32px;
+  height: 32px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1.5px solid #f0c9bf;
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  color: #e2725b;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.button:hover:not(:disabled) {
+  background: #fdeae4;
+}
+
+.button:disabled {
+  opacity: 0.5;
+
+  cursor: default;
+}
+
+/* 녹음 중: 채워진 코랄색 + 천천히 깜빡임 */
+.recording {
+  border-color: #e2725b;
+
+  background: #e2725b;
+
+  color: #ffffff;
+
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.recording:hover:not(:disabled) {
+  background: #d2604a;
+}
+
+.score,
+.checking {
+  min-width: 34px;
+
+  padding: 3px 8px;
+
+  border-radius: 999px;
+
+  /* 책 글씨 크기에 따라 커지지 않게 고정 */
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.checking {
+  background: #f4eee2;
+
+  color: #8a7f73;
+}
+
+.high {
+  background: #e3f5ea;
+  color: #2f8f5b;
+}
+
+.mid {
+  background: #fdf0d6;
+  color: #b9772a;
+}
+
+.low {
+  background: #fdeae4;
+  color: #c9523c;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(226, 114, 91, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(226, 114, 91, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recording {
+    animation: none;
+  }
+}

@@ -1,0 +1,90 @@
+/*
+  화면 오른쪽 아래에 고정
+  앱 틀(최대 1360px, 가운데 정렬) 안쪽에 오도록 오른쪽 위치를 계산
+  z-index 는 알림 · 안내 창(1800~2000)보다 낮게
+*/
+.button {
+  position: fixed;
+  right: max(34px, calc((100vw - 1360px) / 2 + 34px));
+  bottom: 38px;
+  z-index: 40;
+
+  width: 56px;
+  height: 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+
+  background: #e2725b;
+
+  color: #ffffff;
+
+  box-shadow: 0 10px 22px rgba(226, 114, 91, 0.34);
+
+  animation: float 3.2s ease-in-out infinite;
+}
+
+.button:hover {
+  background: #d2604a;
+}
+
+.tooltip {
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+
+  padding: 7px 12px;
+
+  transform: translateY(-50%);
+
+  border-radius: 999px;
+
+  background: #3a332d;
+
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition: opacity 0.15s ease;
+}
+
+.button:hover .tooltip,
+.button:focus-visible .tooltip {
+  opacity: 1;
+}
+
+/* 위아래로 천천히 떠 있는 움직임 */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+/* 좁은 화면: 아래 탭 메뉴 위로 올림 */
+@media (max-width: 1024px) {
+  .button {
+    right: 26px;
+    bottom: 104px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    animation: none;
+  }
+}

@@ -1,0 +1,116 @@
+/* 앱의 다른 화면과 같은 바깥 틀 · Home 배경 위에 반투명 패널 */
+
+.page {
+  height: 100vh;
+  height: 100dvh;
+
+  padding: clamp(8px, 2.2vw, 16px);
+
+  background: #efefef;
+
+  overflow: hidden;
+}
+
+.frame {
+  width: 100%;
+  max-width: 1360px;
+  height: 100%;
+
+  margin: 0 auto;
+
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 34px;
+
+  background-image: url("/dashboard/home-bg.webp");
+  background-size: cover;
+  background-position: center;
+
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.06);
+
+  overflow: hidden;
+}
+
+.scroll {
+  height: 100%;
+
+  overflow-y: auto;
+
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(12px);
+
+  scrollbar-width: thin;
+  scrollbar-color: #dccfb6 transparent;
+}
+
+.inner {
+  width: 100%;
+  max-width: 1040px;
+
+  margin: 0 auto;
+  padding: 30px clamp(16px, 3vw, 32px) 44px;
+}
+
+.topRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+
+  margin-bottom: 20px;
+}
+
+.backButton {
+  flex-shrink: 0;
+
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1.5px solid #dccfb6;
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.9);
+
+  color: #6f665d;
+}
+
+.backButton:hover {
+  background: #ffffff;
+}
+
+.eyebrow {
+  margin: 0;
+
+  color: #d2604a;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: 0.16em;
+}
+
+.title {
+  margin: 1px 0 0;
+
+  color: #2b2622;
+
+  font-size: clamp(28px, 3.6vw, 38px);
+  font-weight: 800;
+
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.subtitle {
+  margin: 6px 0 0;
+
+  color: #6f665d;
+
+  font-size: clamp(15px, 1.6vw, 17px);
+  font-weight: 600;
+  line-height: 1.6;
+
+  word-break: keep-all;
+}
