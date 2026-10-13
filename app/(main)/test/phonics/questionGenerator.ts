@@ -15,9 +15,9 @@ import {
 } from "@/lib/seededRandom";
 
 import {
-  FINAL_PHONICS_STAGE,
-  PHONICS_STAGE_COUNT,
   getPhonicsQuestionCount,
+  getPhonicsStageCount,
+  isFinalPhonicsStage,
 } from "@/lib/phonicsTestRules";
 
 /* ─────────────────────────────
@@ -80,55 +80,76 @@ function normalizeWord(
     .toLowerCase();
 }
 
+/*
+  문제로 낼 단어를 고름
+
+  세부 묶음(모음 · 레벨 · bl/cl/fl 같은 블렌드)마다 고르게 뽑음:
+  묶음별로 섞어 둔 뒤, 묶음을 돌아가며 하나씩 꺼냄.
+  묶음이 하나뿐인 Stage 에서는 그냥 섞어서 앞에서부터 뽑는 것과 같음.
+*/
 function selectTargets(
-  pool:
-    PhonicsBankItem[],
+  pool: PhonicsBankItem[],
   count: number,
-  random:
-    () => number
+  random: () => number
 ): PhonicsBankItem[] {
-  if (
-    pool.length === 0
-  ) {
+  if (pool.length === 0) {
     return [];
   }
 
-  /*
-    한 번 섞은 뒤
-    가능한 한 모든 단어를
-    먼저 사용함
-  */
-  const shuffled =
-    shuffle(
-      pool,
-      random
-    );
+  const byGroup = new Map<string, PhonicsBankItem[]>();
 
-  const result:
-    PhonicsBankItem[] =
-    [];
+  for (const item of pool) {
+    const key = item.section ?? item.group;
 
-  for (
-    let i = 0;
-    i < count;
-    i += 1
-  ) {
-    /*
-      단어 Bank가 문제 수보다
-      적을 경우 반복 사용.
-
-      앞으로 단어를 늘리면
-      자연스럽게 반복이 줄어듦.
-    */
-    result.push(
-      shuffled[
-        i %
-          shuffled.length
-      ]
-    );
+    byGroup.set(key, [...(byGroup.get(key) ?? []), item]);
   }
 
-  return result;
+  /* 묶음 순서와 묶음 안의 단어 순서를 모두 섞음 */
+  const groups = shuffle(
+    Array.from(byGroup.values()).map((items) => shuffle(items, random)),
+    random
+  );
+
+  const ordered: PhonicsBankItem[] = [];
+
+  for (let round = 0; ordered.length < pool.length; round += 1) {
+    for (const items of groups) {
+      if (round < items.length) {
+        ordered.push(items[round]);
+      }
+    }
+  }
+
+  /* 단어가 문제 수보다 적으면 처음부터 다시 사용 */
+  const selected = Array.from(
+    { length: count },
+    (_, index) => ordered[index % ordered.length]
+  );
+
+  /* 같은 묶음이 연달아 나오지 않게 한 번 더 섞음 */
+  return shuffle(selected, random);
+}
+
+/*
+  그림 문제 자리(5문제마다 1 · 4번째)에 그림이 있는 단어가 오도록 순서를 바꿈
+
+  그림이 적은 묶음(예: S 블렌드)에서도 그림 문제가 한쪽으로 몰리거나
+  빠지지 않고, 있는 그림은 그림 문제에 쓰이게 됨
+*/
+function arrangeForImageSlots(
+  targets: PhonicsBankItem[]
+): PhonicsBankItem[] {
+  const withImage = targets.filter((item) => item.image);
+  const withoutImage = targets.filter((item) => !item.image);
+
+  return targets.map((_, index) => {
+    const isImageSlot = index % 5 === 0 || index % 5 === 3;
+
+    const first = isImageSlot ? withImage : withoutImage;
+    const second = isImageSlot ? withoutImage : withImage;
+
+    return (first.shift() ?? second.shift())!;
+  });
 }
 
 /*
@@ -517,293 +538,63 @@ function buildBlendChoices(
 ───────────────────────────── */
 
 function getStagePool(
-  category:
-    PhonicsBankCategory,
+  category: PhonicsBankCategory,
   stage: number
 ): PhonicsBankItem[] {
-  /* Alphabet */
+  const banks: Record<PhonicsBankCategory, PhonicsBankItem[]> = {
+    alphabet: alphabetBank,
+    "short-vowels": shortVowelBank,
+    "long-vowels": longVowelBank,
+    "blend-sounds": blendBank,
+    "sight-words": sightWordBank,
+  };
 
-  if (
-    category ===
-    "alphabet"
-  ) {
-    const ranges:
-      Record<
-        number,
-        [string, string]
-      > = {
-      1: [
-        "a",
-        "f",
-      ],
+  const bank = banks[category];
 
-      2: [
-        "g",
-        "l",
-      ],
-
-      3: [
-        "m",
-        "r",
-      ],
-
-      4: [
-        "s",
-        "z",
-      ],
-    };
-
-    if (
-      stage === FINAL_PHONICS_STAGE
-    ) {
-      return alphabetBank;
-    }
-
-    const range =
-      ranges[
-        stage
-      ];
-
-    if (!range) {
-      return alphabetBank;
-    }
-
-    return alphabetBank.filter(
-      (item) => {
-        const letter =
-          item.letter?.toLowerCase();
-
-        if (!letter) {
-          return false;
-        }
-
-        return (
-          letter >=
-            range[0] &&
-          letter <=
-            range[1]
-        );
-      }
-    );
+  /* 마지막 Stage(Review)는 영역 전체 */
+  if (isFinalPhonicsStage(category, stage)) {
+    return bank;
   }
 
-  /* Short Vowels */
+  /* Alphabet: A–F / G–L / M–R / S–Z */
+  if (category === "alphabet") {
+    const ranges: [string, string][] = [
+      ["a", "f"],
+      ["g", "l"],
+      ["m", "r"],
+      ["s", "z"],
+    ];
 
-  if (
-    category ===
-    "short-vowels"
-  ) {
-    if (
-      stage === 1
-    ) {
-      return shortVowelBank.filter(
-        (item) =>
-          item.group.toLowerCase() ===
-          "a"
-      );
-    }
+    const [from, to] = ranges[stage - 1];
 
-    if (
-      stage === 2
-    ) {
-      return shortVowelBank.filter(
-        (item) =>
-          item.group.toLowerCase() ===
-          "e"
-      );
-    }
+    return bank.filter((item) => {
+      const letter = item.letter?.toLowerCase();
 
-    if (
-      stage === 3
-    ) {
-      return shortVowelBank.filter(
-        (item) =>
-          item.group.toLowerCase() ===
-          "i"
-      );
-    }
-
-    if (
-      stage === 4
-    ) {
-      return shortVowelBank.filter(
-        (item) => {
-          const group =
-            item.group.toLowerCase();
-
-          return (
-            group ===
-              "o" ||
-            group ===
-              "u"
-          );
-        }
-      );
-    }
-
-    /*
-      Stage 5
-      전체 Short Vowels
-    */
-    return shortVowelBank;
+      return !!letter && letter >= from && letter <= to;
+    });
   }
 
-  /* Long Vowels */
+  /* Blend Sounds: L / R / S 블렌드, Stage 4 는 전체 혼합 */
+  if (category === "blend-sounds") {
+    const groups = ["l", "r", "s"];
 
-  if (
-    category ===
-    "long-vowels"
-  ) {
-    if (
-      stage === 1
-    ) {
-      return longVowelBank.filter(
-        (item) =>
-          item.group.toLowerCase() ===
-          "a"
-      );
-    }
-
-    if (
-      stage === 2
-    ) {
-      return longVowelBank.filter(
-        (item) =>
-          item.group.toLowerCase() ===
-          "e"
-      );
-    }
-
-    if (
-      stage === 3
-    ) {
-      return longVowelBank.filter(
-        (item) =>
-          item.group.toLowerCase() ===
-          "i"
-      );
-    }
-
-    if (
-      stage === 4
-    ) {
-      return longVowelBank.filter(
-        (item) => {
-          const group =
-            item.group.toLowerCase();
-
-          return (
-            group ===
-              "o" ||
-            group ===
-              "u"
-          );
-        }
-      );
-    }
-
-    /*
-      Stage 5
-      전체 Long Vowels
-    */
-    return longVowelBank;
-  }
-
-  /* Blend Sounds */
-
-  if (
-    category ===
-    "blend-sounds"
-  ) {
-    if (
-      stage === 1
-    ) {
-      return blendBank.filter(
-        (item) =>
-          item.group
-            .toLowerCase()
-            .startsWith(
-              "l"
-            )
-      );
-    }
-
-    if (
-      stage === 2
-    ) {
-      return blendBank.filter(
-        (item) =>
-          item.group
-            .toLowerCase()
-            .startsWith(
-              "r"
-            )
-      );
-    }
-
-    if (
-      stage === 3
-    ) {
-      return blendBank.filter(
-        (item) =>
-          item.group
-            .toLowerCase()
-            .startsWith(
-              "s"
-            )
-      );
-    }
-
-    /*
-      Stage 4 Mixed
-      Stage 5 Final
-    */
-    return blendBank;
-  }
-
-  /* Sight Words */
-
-  if (
-    category ===
-    "sight-words"
-  ) {
-    /*
-      데이터 안에 실제로 존재하는
-      level 값을 순서대로 가져옴.
-      level 이름을 하드코딩하지 않음.
-    */
-    const groups =
-      uniqueStrings(
-        sightWordBank.map(
-          (item) =>
-            item.group
+    return stage <= groups.length
+      ? bank.filter((item) =>
+          item.group.toLowerCase().startsWith(groups[stage - 1])
         )
-      );
-
-    if (
-      stage >= 1 &&
-      stage <= 3 &&
-      groups[
-        stage - 1
-      ]
-    ) {
-      return sightWordBank.filter(
-        (item) =>
-          item.group ===
-          groups[
-            stage - 1
-          ]
-      );
-    }
-
-    /*
-      Stage 4 Mixed
-      Stage 5 Final
-    */
-    return sightWordBank;
+      : bank;
   }
 
-  return [];
+  /*
+    Short / Long Vowels: A · E · I · O · U
+    Sight Words: Level 1~5
+
+    데이터에 있는 그룹 순서대로 Stage 하나씩
+  */
+  const groups = uniqueStrings(bank.map((item) => item.group));
+  const group = groups[stage - 1];
+
+  return group ? bank.filter((item) => item.group === group) : bank;
 }
 
 /* ─────────────────────────────
@@ -1217,13 +1008,18 @@ function generateBlendQuestion(
     };
   }
 
-  /* AI Listening */
+  /*
+    AI Listening
+
+    그림이 없는 단어가 그림 자리에 오면
+    첫 번째 자리는 Missing Blend, 두 번째 자리는 Listening 으로 나눠서
+    한 가지 문제만 이어지지 않게 함
+  */
 
   if (
-    typeIndex ===
-      1 ||
-    typeIndex ===
-      4
+    typeIndex === 1 ||
+    typeIndex === 4 ||
+    (typeIndex === 3 && !target.image)
   ) {
     return {
       id:
@@ -1407,75 +1203,39 @@ function generateSightWordQuestion(
    Main Generator
 ───────────────────────────── */
 
+/*
+  seed 가 같으면 같은 문제가 나옴.
+  화면에서 들어올 때마다(다시 풀 때도) 새 seed 를 넘겨서 매번 다른 단어를 냄
+*/
 export function generatePhonicsStageQuestions(
-  category:
-    PhonicsBankCategory,
+  category: PhonicsBankCategory,
   stage: number,
-  attempt = 0
+  seed = 0
 ): PhonicsQuestion[] {
-  const safeStage =
-    Math.min(
-      PHONICS_STAGE_COUNT,
-      Math.max(
-        1,
-        stage
-      )
-    );
+  const safeStage = Math.min(
+    getPhonicsStageCount(category),
+    Math.max(1, stage)
+  );
 
-  /*
-    Stage 1~4 = 10
-    Stage 5 = 15
-  */
-  const questionCount =
-    getPhonicsQuestionCount(
-      safeStage
-    );
+  const questionCount = getPhonicsQuestionCount(category, safeStage);
 
-  /*
-    같은 Stage에 다시 들어오면
-    같은 문제 순서를 유지 (서버/클라이언트 렌더 결과 일치)
+  const random = createRandom(
+    hashString(`${category}-stage-${safeStage}-${seed}`)
+  );
 
-    Try Again(attempt > 0)일 때만
-    문제와 보기 순서를 바꿔 정답 암기를 막음
-  */
-  const seed =
-    attempt === 0
-      ? `${category}-stage-${safeStage}`
-      : `${category}-stage-${safeStage}-retry-${attempt}`;
+  const stagePool = getStagePool(category, safeStage);
 
-  const random =
-    createRandom(
-      hashString(
-        seed
-      )
-    );
-
-  const stagePool =
-    getStagePool(
-      category,
-      safeStage
-    );
-
-  if (
-    stagePool.length ===
-    0
-  ) {
+  if (stagePool.length === 0) {
     return [];
   }
 
-  const selectedTargets =
-    selectTargets(
-      stagePool,
-      questionCount,
-      random
-    );
+  const selectedTargets = arrangeForImageSlots(
+    selectTargets(stagePool, questionCount, random)
+  );
 
   const targets =
-    category === "short-vowels" ||
-    category === "long-vowels"
-      ? spreadFillBlankTargets(
-          selectedTargets
-        )
+    category === "short-vowels" || category === "long-vowels"
+      ? spreadFillBlankTargets(selectedTargets)
       : selectedTargets;
 
   return targets.map(

@@ -5,7 +5,9 @@ import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import styles from "./phonics-test.module.css";
 import LoginNotice from "../LoginNotice";
 import { phonicsTestCategories } from "./data";
-import { PHONICS_STAGE_COUNT } from "@/lib/phonicsTestRules";
+import { getPhonicsStageCount } from "@/lib/phonicsTestRules";
+import HelpTooltip from "@/components/HelpTooltip";
+import { PHONICS_TEST_HELP } from "../testHelp";
 
 export default function PhonicsTestPage() {
   const router = useRouter();
@@ -23,6 +25,13 @@ export default function PhonicsTestPage() {
           >
             <ArrowLeft size={22} weight="bold" />
           </button>
+
+          <div className={styles.helpButton}>
+            <HelpTooltip
+              title="Phonics Challenge 이렇게 해요"
+              sections={PHONICS_TEST_HELP}
+            />
+          </div>
 
           {/* Header */}
           <div className={styles.header}>
@@ -75,7 +84,7 @@ export default function PhonicsTestPage() {
                 <div className={styles.bottomRow}>
                   <div className={styles.stageInfo}>
                     <span className={styles.stageNumber}>
-                      {PHONICS_STAGE_COUNT}
+                      {getPhonicsStageCount(test.id)}
                     </span>
 
                     <span>
@@ -107,7 +116,7 @@ export default function PhonicsTestPage() {
             </div>
 
             <span className={styles.noticeBadge}>
-              ⭐ Keep going!
+              Keep going!
             </span>
           </div>
         </div>

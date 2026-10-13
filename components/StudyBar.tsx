@@ -7,6 +7,7 @@ import {
   Sparkle,
   Stop,
 } from "@phosphor-icons/react";
+import MasteryMeter from "./MasteryMeter";
 import styles from "./StudyBar.module.css";
 
 type Props = {
@@ -30,6 +31,9 @@ type Props = {
   backIcon: React.ReactNode;
   backLabel: string;
   backHref: string;
+
+  /* 숙달 진행을 보여 줄 학습 기록 id */
+  masteryId?: string;
 };
 
 /*
@@ -53,6 +57,7 @@ export default function StudyBar({
   backIcon,
   backLabel,
   backHref,
+  masteryId,
 }: Props) {
   const isPreparing = countdown !== null;
 
@@ -129,6 +134,8 @@ export default function StudyBar({
           {isAnalyzing ? "Checking..." : "Check My Pronunciation"}
         </button>
       )}
+
+      {masteryId && <MasteryMeter contentId={masteryId} />}
 
       <Link href={backHref} className={styles.back}>
         {backIcon}

@@ -5,8 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import styles from "./login.module.css";
+import { useToast } from "@/components/Toast";
 
 export default function LoginPage() {
+  const { showToast } = useToast();
+
   const router = useRouter();
 
   const [email, setEmail] = useState("");
@@ -19,7 +22,7 @@ export default function LoginPage() {
     event.preventDefault();
 
     if (!email || !password) {
-      alert("이메일과 비밀번호를 입력해 주세요.");
+      showToast("이메일과 비밀번호를 입력해 주세요.");
       return;
     }
 
@@ -33,7 +36,7 @@ export default function LoginPage() {
     setIsLoading(false);
 
     if (error) {
-      alert("로그인에 실패했어요. 이메일 또는 비밀번호를 확인해주세요.");
+      showToast("로그인에 실패했어요. 이메일 또는 비밀번호를 확인해 주세요.");
       console.error(error.message);
       return;
     }
@@ -50,14 +53,14 @@ export default function LoginPage() {
     });
 
     if (error) {
-      alert("구글 로그인 연결 중 오류가 발생했어.");
+      showToast("구글 로그인 연결 중 오류가 발생했어요.");
       console.error(error.message);
     }
   };
 
   const handleFindPassword = async () => {
     if (!email) {
-      alert("비밀번호를 재설정할 이메일을 먼저 입력해 주세요.");
+      showToast("비밀번호를 재설정할 이메일을 먼저 입력해 주세요.");
       return;
     }
 
@@ -66,16 +69,16 @@ export default function LoginPage() {
     });
 
     if (error) {
-      alert("비밀번호 재설정 메일 발송에 실패했어요.");
+      showToast("비밀번호 재설정 메일 발송에 실패했어요.");
       console.error(error.message);
       return;
     }
 
-    alert("비밀번호 재설정 메일을 보냈어요. 이메일을 확인해주세요.");
+    showToast("비밀번호 재설정 메일을 보냈어요. 이메일을 확인해 주세요.");
   };
 
   const handleFindEmail = () => {
-    alert("Phonics Bunny는 이메일을 아이디로 사용해요. 가입할 때 사용한 이메일로 로그인해주세요.");
+    showToast("Phonics Bunny는 이메일을 아이디로 사용해요. 가입할 때 사용한 이메일로 로그인해 주세요.");
   };
 
   return (

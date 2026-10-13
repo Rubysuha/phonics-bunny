@@ -121,7 +121,7 @@
 .eyebrow {
   margin: 0;
   color: var(--accent);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: .12em;
 }
@@ -209,11 +209,12 @@
 }
 
 /* 토픽별 클래스는 모두 같은 핑크 계열을 사용 */
-.greetingsCard,
-.schoolCard,
 .familyCard,
+.schoolCard,
 .foodCard,
-.friendsCard,
+.weatherCard,
+.animalsCard,
+.routineCard,
 .finalCard {
   border-color: #ffffff;
 }
@@ -235,11 +236,12 @@
   height: 23px;
 }
 
-.greetingsBadge,
-.schoolBadge,
 .familyBadge,
+.schoolBadge,
 .foodBadge,
-.friendsBadge,
+.weatherBadge,
+.animalsBadge,
+.routineBadge,
 .finalBadge {
   background: var(--tint);
 }
@@ -251,7 +253,7 @@
 .topicLabel {
   margin: 0;
   color: var(--accent);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: .1em;
 }
@@ -267,7 +269,7 @@
 .cardSubtitle {
   margin: 2px 0 0;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -507,4 +509,13 @@
 
 .header {
   text-align: left;
+}
+
+/* 오른쪽 위의 ? (이용 안내) */
+.helpButton {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  align-self: center;
+  z-index: 3;
 }

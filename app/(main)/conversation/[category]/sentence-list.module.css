@@ -14,13 +14,9 @@
 
   overflow-y: auto;
 
-  background:
-    linear-gradient(
-      180deg,
-      #edf8ff 0%,
-      #f5fbff 50%,
-      #f3fae8 100%
-    );
+  /* Phonics · Book 과 같은 반투명 유리 배경 (뒤의 Home 배경이 비쳐 보임) */
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(12px);
 
   border: 1px solid rgba(255, 255, 255, 0.7);
 
@@ -584,9 +580,17 @@
 
   width: 100%;
 
-  height: max(
-    calc(100cqh - 116px),
-    calc((100cqw - 56px) * 9 / 16)
+  /*
+    세로로 긴 화면(태블릿 세로)에서 남은 높이를 다 채우면
+    그림이 옆으로 많이 잘려 가장자리 Stage 가 안 보이므로
+    그림 비율보다 6% 까지만 더 높아지게 제한
+  */
+  height: min(
+    max(
+      calc(100cqh - 116px),
+      calc((100cqw - 56px) * 9 / 16)
+    ),
+    calc((100cqw - 56px) * 9 / 16 * 1.06)
   );
 
   aspect-ratio: auto;
@@ -701,5 +705,84 @@
 @media (max-width: 650px) {
   .stageMap {
     height: 300px;
+  }
+}
+
+/* ─────────────────────────────
+   대화 길이에 따른 3단계
+   Starter (2줄) · Basic (3–4줄) · Challenge (5–8줄)
+───────────────────────────── */
+
+.tier-starter {
+  --tier: #3f9d6a;
+  --tier-bg: #e3f5ea;
+}
+
+.tier-basic {
+  --tier: #3b82b8;
+  --tier-bg: #e1f0fb;
+}
+
+.tier-challenge {
+  --tier: #c2569a;
+  --tier-bg: #fbe6f3;
+}
+
+/* Stage 이름표 위의 단계 표시 */
+.stageLabel em {
+  margin-bottom: 2px;
+  padding: 1px 7px;
+
+  border-radius: 999px;
+
+  background: var(--tier-bg);
+
+  color: var(--tier);
+
+  font-size: clamp(8.5px, 1cqw, 11px);
+  font-style: normal;
+  font-weight: 900;
+
+  letter-spacing: 0.02em;
+}
+
+/* 지도 아래 안내: 시작 안내 + 단계 설명을 한 줄로 */
+.mapLegend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  font-size: 12px;
+}
+
+.tierLegend {
+  color: var(--tier);
+}
+
+.tierLegend i {
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+
+  background: var(--tier);
+}
+
+.tierLegend small {
+  color: #8a9aa2;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+@container (max-width: 900px) {
+  .mapLegend {
+    display: none;
+  }
+}
+
+@media (max-width: 650px) {
+  .mapLegend {
+    display: none;
   }
 }

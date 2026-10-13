@@ -9,14 +9,14 @@ const modes = [
     href: "/conversation/ai",
     image: "/conversation/ai-bunny2.webp",
     title: "AI Bunny",
-    description: "음성으로 자유롭게 영어 대화를 나눠요.",
+    description: "Talk freely in English with your voice.",
     className: "aiCard",
   },
   {
     href: "/conversation/practice",
     image: "/conversation/practice2.webp",
     title: "Practice",
-    description: "주어진 문장을 듣고 따라 말해요.",
+    description: "Listen to each conversation and repeat.",
     className: "practiceCard",
   },
 ];
@@ -30,7 +30,7 @@ export default function ConversationPage() {
             <PageTitle
               eyebrow="SPEAK"
               title="Conversation"
-              subtitle="AI Bunny와 대화하거나, 주제별 회화를 직접 공부해 보세요."
+              subtitle="Talk freely with AI Bunny, or practice conversations by topic."
             />
           </div>
 

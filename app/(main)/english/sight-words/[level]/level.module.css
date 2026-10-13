@@ -157,6 +157,14 @@
   font-weight: 700;
 }
 
+/* 숙달 진행 표시 */
+.mastery {
+  display: flex;
+  justify-content: center;
+
+  margin: -4px 0 10px;
+}
+
 .cardRecording .status {
   color: #c1463c;
 }

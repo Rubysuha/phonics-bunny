@@ -28,6 +28,8 @@ import {
 import styles from "./reading-test.module.css";
 
 import LoginNotice from "../LoginNotice";
+import HelpTooltip from "@/components/HelpTooltip";
+import { READING_TEST_HELP } from "../testHelp";
 
 export default function ReadingTestPage() {
   const router =
@@ -105,6 +107,13 @@ export default function ReadingTestPage() {
               weight="bold"
             />
           </button>
+
+          <div className={styles.helpButton}>
+            <HelpTooltip
+              title="Reading Quiz 이렇게 해요"
+              sections={READING_TEST_HELP}
+            />
+          </div>
 
           {/* Header */}
 

@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { Check } from "@phosphor-icons/react";
 import { supabase } from "@/lib/supabase";
+import { STAGE_DONE_SCORE } from "@/lib/learningRules";
 
 /*
-  AI 발음 분석까지 마친 Stage 목록
+  완료한 Stage 목록: AI 발음 분석 점수가 STAGE_DONE_SCORE 이상인 Stage
   (pronunciation_logs 의 content_id 가 "conversation-대화id" 형태)
 
   한 화면에 배지가 여러 개 있어도 조회는 한 번만 하도록 공유
@@ -33,7 +34,8 @@ function loadDoneStages(): Promise<Set<string>> {
         .from("pronunciation_logs")
         .select("content_id")
         .eq("user_id", user.id)
-        .eq("content_type", "conversation");
+        .eq("content_type", "conversation")
+        .gte("score", STAGE_DONE_SCORE);
 
       if (error) {
         console.error("Stage 완료 기록 조회 실패:", error);
@@ -54,7 +56,7 @@ type Props = {
   doneClassName: string;
 };
 
-/* Stage 번호 동그라미. 발음 분석을 마친 Stage는 체크로 표시 */
+/* Stage 번호 동그라미. 발음 분석 점수가 기준 이상인 Stage는 체크로 표시 */
 export default function StageBadge({
   dialogueId,
   number,

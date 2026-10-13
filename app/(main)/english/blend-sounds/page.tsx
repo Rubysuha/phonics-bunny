@@ -35,7 +35,7 @@ export default function BlendSoundsPage() {
           <PageTitle
             eyebrow="PHONICS"
             title="Blending Sounds"
-            subtitle="Blending Sounds는 자음이 이어지는 소리를 자연스럽게 읽는 연습입니다."
+            subtitle="Practice reading two consonant sounds together."
           />
 
           <div className={styles.grid}>

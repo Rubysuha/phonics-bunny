@@ -1,0 +1,529 @@
+/* ─────────────────────────────
+   카드
+───────────────────────────── */
+
+.card {
+  flex-shrink: 0;
+
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin: 0 0 12px;
+  padding: 9px 14px 9px 10px;
+
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+
+  background: rgba(255, 253, 247, 0.9);
+
+  box-shadow: 0 6px 16px rgba(120, 90, 60, 0.08);
+
+  color: #3a332d;
+
+  font-family: inherit;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease;
+}
+
+/* 다른 버튼들과 한 줄에 놓을 때 */
+.inline {
+  min-width: 0;
+
+  margin: 0;
+}
+
+.card:hover {
+  transform: translateY(-1px);
+
+  background: #ffffff;
+}
+
+.levelIcon {
+  flex-shrink: 0;
+
+  width: 42px;
+  height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+}
+
+/* 단계별 색 */
+
+.beginner {
+  background: #e3f4e1;
+  color: #3f9255;
+}
+
+.elementary {
+  background: #fde6ee;
+  color: #d95c8a;
+}
+
+.intermediate {
+  background: #dceefb;
+  color: #3b78a8;
+}
+
+.advanced {
+  background: #fdf0c8;
+  color: #d39212;
+}
+
+.cardBody {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cardTop {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+}
+
+.eyebrow {
+  color: #d2604a;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+}
+
+.levelName {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.hint {
+  color: #6f665d;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.bar {
+  display: block;
+
+  width: 100%;
+  height: 8px;
+
+  border-radius: 999px;
+
+  background: #f1e9da;
+
+  overflow: hidden;
+}
+
+.barFill {
+  display: block;
+
+  height: 100%;
+  min-width: 8px;
+
+  border-radius: 999px;
+
+  background: linear-gradient(90deg, #ffb777, #ff8f6b);
+
+  transition: width 0.4s ease;
+}
+
+.caret {
+  flex-shrink: 0;
+
+  color: #b9ab98;
+}
+
+/* ─────────────────────────────
+   상세 · 축하 화면
+───────────────────────────── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1800;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 16px;
+
+  background: rgba(60, 45, 35, 0.38);
+
+  animation: fadeIn 0.16s ease;
+}
+
+.dialog {
+  position: relative;
+
+  width: min(100%, 460px);
+  max-height: 100%;
+
+  overflow-y: auto;
+
+  padding: 24px 22px 20px;
+
+  border: 2px solid #f3c9a0;
+  border-radius: 28px;
+
+  background: #fffdf7;
+
+  box-shadow: 0 18px 44px rgba(120, 80, 40, 0.26);
+
+  color: #3a332d;
+
+  animation: popIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.closeButton {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1.5px solid #dccfb6;
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  color: #6f665d;
+
+  cursor: pointer;
+}
+
+.dialogEyebrow {
+  margin: 0;
+
+  color: #d2604a;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: 0.16em;
+}
+
+.dialogTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin: 8px 0 0;
+
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.dialogNote {
+  margin: 8px 0 0;
+
+  color: #6f665d;
+
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* 단계 순서 */
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+
+  margin: 16px 0 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+
+  padding: 9px 4px;
+
+  border-radius: 14px;
+
+  background: #f6f1e7;
+
+  color: #b0a596;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.stepIcon {
+  display: inline-flex;
+}
+
+.stepReached {
+  background: #ffeeda;
+
+  color: #c9682f;
+}
+
+/* 영역 */
+
+.areas {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  margin: 14px 0 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.area {
+  display: flex;
+  gap: 12px;
+
+  padding: 12px;
+
+  border: 1.5px solid #efe6d6;
+  border-radius: 18px;
+
+  background: #ffffff;
+}
+
+/* 다음 단계까지 가장 많이 남은 영역 */
+.areaFocus {
+  border-color: #ffb48a;
+
+  background: #fff6ee;
+}
+
+.areaIcon {
+  flex-shrink: 0;
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+
+  background: rgba(255, 244, 225, 0.9);
+
+  color: #9b6b52;
+}
+
+.areaBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.areaTop {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+
+  margin-bottom: 7px;
+
+  font-size: 15px;
+}
+
+.areaLevel {
+  padding: 2px 9px;
+
+  border-radius: 999px;
+
+  background: #f6f1e7;
+
+  color: #7a6a58;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.areaCount {
+  margin-left: auto;
+
+  color: #6f665d;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.areaHint {
+  margin: 7px 0 0;
+
+  color: #8a7f73;
+
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.footnote {
+  margin: 14px 0 0;
+
+  color: #9a8f83;
+
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+/* 축하 */
+
+.celebrate {
+  width: min(100%, 360px);
+
+  padding: 30px 24px 22px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}
+
+.confetti {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+
+  color: #ffb24d;
+
+  transform: rotate(12deg);
+}
+
+.celebrateIcon {
+  width: 96px;
+  height: 96px;
+
+  margin-bottom: 14px;
+
+  border-radius: 32px;
+
+  animation: bounce 0.9s ease-in-out 2;
+}
+
+.celebrateTitle {
+  margin: 6px 0 0;
+
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.celebrateNote {
+  margin: 12px 0 0;
+
+  color: #8a7f73;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.celebrateNote strong {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #3a332d;
+
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.okButton {
+  width: 100%;
+  height: 48px;
+
+  margin-top: 20px;
+
+  border: none;
+  border-radius: 999px;
+
+  background: #e2725b;
+
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.okButton:hover {
+  background: #d2604a;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (max-width: 600px) {
+  .hint {
+    flex-basis: 100%;
+
+    font-size: 12.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .dialog,
+  .celebrateIcon {
+    animation: none;
+  }
+
+  .barFill {
+    transition: none;
+  }
+}

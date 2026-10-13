@@ -1,5 +1,12 @@
 // app/api/conversation/route.ts
 import { NextRequest, NextResponse } from "next/server";
+import {
+  AI_TEMPERATURE,
+  BEGINNER_MAX_WORDS_PER_SENTENCE,
+  KNOWN_WORD_LEVELS,
+  LEVELS,
+  type LearningLevel,
+} from "@/lib/learningRules";
 
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
 
@@ -384,6 +391,18 @@ const FIRST_TURN_TOPIC_HINTS = [
   "우주비행사가 되고 싶은지",
 ];
 
+/* 한 문장이라도 왕초보 기준 단어 수를 넘는지 */
+function hasLongSentence(text: string): boolean {
+  return text
+    .split(/[.!?]+/)
+    .map((sentence) => sentence.trim())
+    .filter(Boolean)
+    .some(
+      (sentence) =>
+        sentence.split(/\s+/).length > BEGINNER_MAX_WORDS_PER_SENTENCE
+    );
+}
+
 export async function POST(request: NextRequest) {
   if (!ANTHROPIC_KEY) {
     return NextResponse.json(
@@ -398,14 +417,16 @@ export async function POST(request: NextRequest) {
     const history: ChatMessage[] = body.history ?? [];
     const weakWords: string[] = body.weakWords ?? [];
     const studiedTypes: string[] = body.studiedTypes ?? [];
-    const level: "beginner" | "elementary" | "intermediate" | "advanced" =
-      body.level ?? "beginner";
+    const knownWords: string[] = body.knownWords ?? [];
+    const level: LearningLevel = LEVELS.includes(body.level)
+      ? body.level
+      : "beginner";
 
     if (!message || !message.trim()) {
       return NextResponse.json({ error: "메시지가 비어있어요." }, { status: 400 });
     }
 
-    // 학습 상태로 계산된 4단계(getWeakWords의 LearningLevel)에 맞춰 난이도를 조절
+    // 학습 상태로 계산된 4단계(lib/learningProgress 의 AI Bunny 단계)에 맞춰 난이도를 조절
     const studiedTypesPrefix =
       studiedTypes.length > 0
         ? `이 아이는 지금까지 ${studiedTypes.join(", ")} 영역을 공부했어. `
@@ -437,9 +458,21 @@ export async function POST(request: NextRequest) {
 
     const weakWordHint =
       weakWords.length > 0
-        ? `이 아이가 특히 어려워하는 단어는 [${weakWords.join(
+        ? `이 아이가 특히 어려워하는 단어와 문장은 [${weakWords.join(
             ", "
-          )}]이야. 자연스러운 타이밍에 이 단어들을 대화 속에 등장시켜서 다시 연습할 기회를 줘. 억지로 끼워넣지 말고, 대화 흐름에 맞을 때만.`
+          )}]이야. 자연스러운 타이밍에 이 단어나 문장을 대화 속에 등장시켜서 다시 연습할 기회를 줘. 억지로 끼워넣지 말고, 대화 흐름에 맞을 때만.${
+            level === "beginner"
+              ? " 어려워하는 단어를 쓸 때는 3~5단어짜리 아주 짧은 문장 안에 넣어서 말해."
+              : ""
+          }`
+        : "";
+
+    // 왕초보 · 초급: 아이가 실제로 학습한 단어 안에서만 말하게 함
+    const knownWordHint =
+      KNOWN_WORD_LEVELS.includes(level) && knownWords.length > 0
+        ? `[사용할 단어]\n아이가 지금까지 배운 단어는 [${knownWords.join(
+            ", "
+          )}]이야. 가능한 한 이 단어들과 아주 기본적인 말(I, you, is, like, yes, no, 인사말 등)만 써서 말해. 이 목록에 없는 어려운 단어는 쓰지 마.`
         : "";
 
     const isFirstTurn = history.length === 0;
@@ -484,6 +517,8 @@ ${stretchVocabHint}
 - 너는 실존하지 않는 만화/게임 캐릭터(포켓몬, 디즈니 캐릭터 등)의 이름을 직접 언급하거나 대화의 중심 소재로 삼지 마. 아이가 그런 캐릭터를 언급하면 캐릭터 이름을 되풀이하지 말고 "Oh, you like games! What else do you like?"처럼 아이의 관심사에는 반응하되 일반적인 표현으로 넘어가
 - 너는 AI Bunny라는 다정한 토끼 캐릭터라는 정체성을 자연스럽게 유지해
 
+${knownWordHint}
+
 ${weakWordHint}
 ${openingHint}`;
 
@@ -492,35 +527,53 @@ ${openingHint}`;
       { role: "user" as const, content: message },
     ];
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_KEY,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 250,
-        temperature: 1,
-        system: systemPrompt,
-        messages,
-      }),
-    });
+    const askClaude = async (extraInstruction = "") => {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": ANTHROPIC_KEY,
+          "anthropic-version": "2023-06-01",
+        },
+        body: JSON.stringify({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 250,
+          temperature: AI_TEMPERATURE[level],
+          system: systemPrompt + extraInstruction,
+          messages,
+        }),
+      });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error("Claude API error:", response.status, errText);
+      if (!response.ok) {
+        const errText = await response.text();
+        console.error("Claude API error:", response.status, errText);
+        return null;
+      }
+
+      const data = (await response.json()) as {
+        content?: { type: string; text?: string }[];
+      };
+
+      return data?.content?.find((c) => c.type === "text")?.text ?? "";
+    };
+
+    let reply = await askClaude();
+
+    if (reply === null) {
       return NextResponse.json(
         { error: "AI 응답 생성에 실패했어요." },
         { status: 502 }
       );
     }
 
-    const data = (await response.json()) as {
-      content?: { type: string; text?: string }[];
-    };
-    const reply = data?.content?.find((c) => c.type === "text")?.text ?? "";
+    // 왕초보: 한 문장이 기준 단어 수를 넘으면 한 번만 다시 만듦
+    if (level === "beginner" && hasLongSentence(reply)) {
+      const retry = await askClaude(
+        `\n\n[다시 쓰기]\n방금 만든 대답은 문장이 너무 길었어. 모든 문장을 ${BEGINNER_MAX_WORDS_PER_SENTENCE}단어 이하로 다시 써.`
+      );
+
+      if (retry) reply = retry;
+    }
 
     return NextResponse.json({ reply });
   } catch (error) {

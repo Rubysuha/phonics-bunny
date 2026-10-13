@@ -49,7 +49,7 @@ export default function EnglishPage() {
             <PageTitle
               eyebrow="LEARN"
               title="Phonics"
-              subtitle="원하는 학습 메뉴를 선택해서 들어가 보세요."
+              subtitle="Choose a menu and start learning!"
             />
           </div>
 

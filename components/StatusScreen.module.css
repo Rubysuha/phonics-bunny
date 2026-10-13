@@ -1,0 +1,124 @@
+.screen {
+  height: 100%;
+  min-height: 320px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 32px 20px;
+
+  border-radius: 30px;
+
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.55);
+
+  text-align: center;
+}
+
+/* 앱 틀 밖(주소가 아예 없는 경우)에서는 화면 전체를 채움 */
+.fullPage {
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  border: none;
+  border-radius: 0;
+
+  background: #fff4d9;
+}
+
+.icon {
+  display: inline-flex;
+
+  color: #ff9d6b;
+}
+
+.bounce {
+  animation: bounce 0.9s ease-in-out infinite;
+}
+
+.title {
+  margin: 6px 0 0;
+
+  color: #2b2622;
+
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 800;
+}
+
+.message {
+  margin: 0;
+
+  color: #6f665d;
+
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+
+  margin-top: 14px;
+}
+
+.button {
+  height: 46px;
+  padding: 0 22px;
+
+  display: inline-flex;
+  align-items: center;
+
+  border: 1.5px solid #dccfb6;
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.9);
+
+  color: #5c4338;
+
+  font-size: 15px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: background 0.16s ease;
+}
+
+.button:hover {
+  background: #ffffff;
+}
+
+.primary {
+  border-color: #e2725b;
+
+  background: #e2725b;
+
+  color: #ffffff;
+}
+
+.primary:hover {
+  background: #d2604a;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bounce {
+    animation: none;
+  }
+}

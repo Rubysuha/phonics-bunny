@@ -38,8 +38,12 @@ import {
   getPhonicsCategoryProgress,
 } from "@/lib/testProgress";
 
+import type { TestCoinResult } from "@/lib/testReward";
+
+import TestCoinNote from "@/components/TestCoinNote";
+
 import {
-  FINAL_PHONICS_STAGE,
+  isFinalPhonicsStage,
   getPhonicsPassScore,
   getPhonicsStars,
   isPhonicsStagePassed,
@@ -93,7 +97,9 @@ export default function PhonicsStagePage() {
     );
 
   const validStage =
+    validCategory &&
     isValidPhonicsStage(
+      categoryId,
       stageNumber
     );
 
@@ -119,6 +125,7 @@ export default function PhonicsStagePage() {
   const passScore =
     validStage
       ? getPhonicsPassScore(
+          categoryId,
           stageNumber
         )
       : 0;
@@ -127,22 +134,44 @@ export default function PhonicsStagePage() {
      Questions
   ───────────────────────────── */
 
+  /*
+    문제를 고르는 seed
+    들어올 때마다(다시 풀 때도) 새 값을 써서 매번 다른 단어가 나옴.
+    서버와 브라우저의 첫 화면이 같도록 화면이 뜬 뒤에 정함
+  */
   const [
     attempt,
     setAttempt,
-  ] =
-    useState(0);
+  ] = useState<
+    number | null
+  >(null);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setAttempt(Date.now());
+  }, [
+    categoryId,
+    stageNumber,
+  ]);
+
+  const [
+    coins,
+    setCoins,
+  ] = useState<TestCoinResult | null>(
+    null
+  );
 
   const questions =
     useMemo(() => {
       if (
-        !validCategory ||
-        !validStage
-      ) {
-        return [];
-      }
+      !validCategory ||
+      !validStage ||
+      attempt === null
+    ) {
+      return [];
+    }
 
-      return generatePhonicsStageQuestions(
+    return generatePhonicsStageQuestions(
         categoryId,
         stageNumber,
         attempt
@@ -473,7 +502,8 @@ export default function PhonicsStagePage() {
   ───────────────────────────── */
 
   if (
-    isCheckingAccess
+    isCheckingAccess ||
+    attempt === null
   ) {
     return (
       <section
@@ -581,7 +611,7 @@ export default function PhonicsStagePage() {
             }
           >
             <h1>
-              🔒 Stage Locked
+              Stage Locked
             </h1>
 
             <p>
@@ -692,12 +722,16 @@ export default function PhonicsStagePage() {
           });
 
         if (
-          !result.success
-        ) {
-          setSaveError(
-            result.message
-          );
-        }
+        !result.success
+      ) {
+        setSaveError(
+          result.message
+        );
+      } else {
+        setCoins(
+          result.coins
+        );
+      }
       } catch (
         error
       ) {
@@ -707,7 +741,7 @@ export default function PhonicsStagePage() {
         );
 
         setSaveError(
-          "테스트 결과를 저장하지 못했습니다."
+          "테스트 결과를 저장하지 못했어요."
         );
       } finally {
         setIsSaving(
@@ -745,9 +779,10 @@ export default function PhonicsStagePage() {
       );
 
       setAttempt(
-        (prev) =>
-          prev + 1
-      );
+      Date.now()
+    );
+
+    setCoins(null);
 
       setIsFinished(
         false
@@ -783,11 +818,13 @@ export default function PhonicsStagePage() {
         false
       );
 
-      setIsCheckingAccess(
-        true
-      );
+      setCoins(null);
 
-      router.push(
+    setIsCheckingAccess(
+      true
+    );
+
+    router.push(
         `/test/phonics/${categoryId}/${
           stageNumber + 1
         }`
@@ -804,12 +841,14 @@ export default function PhonicsStagePage() {
     const passed =
       isPhonicsStagePassed(
         score,
+        categoryId,
         stageNumber
       );
 
     const stars =
       getPhonicsStars(
         score,
+        categoryId,
         stageNumber
       );
 
@@ -872,9 +911,13 @@ export default function PhonicsStagePage() {
                   styles.resultTitle
                 }
               >
-                {passed
-                  ? "Challenge Complete!"
-                  : "Try Again!"}
+                {stars === 3
+                  ? "Perfect!"
+                  : stars === 2
+                    ? "Great Job!"
+                    : passed
+                      ? "Challenge Complete!"
+                      : "Try Again!"}
               </h1>
 
               <p
@@ -961,6 +1004,10 @@ export default function PhonicsStagePage() {
                   : `You need ${passScore} out of ${questions.length} to pass. Try again!`}
               </p>
 
+              <TestCoinNote
+                coins={coins}
+              />
+
               {saveError && (
                 <p
                   className={
@@ -983,8 +1030,10 @@ export default function PhonicsStagePage() {
               >
                 {passed &&
                   !saveError &&
-                  stageNumber <
-                    FINAL_PHONICS_STAGE && (
+                  !isFinalPhonicsStage(
+                    categoryId,
+                    stageNumber
+                  ) && (
                     <button
                       type="button"
                       className={

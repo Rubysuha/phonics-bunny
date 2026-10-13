@@ -1,0 +1,118 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1900;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(60, 45, 35, 0.38);
+
+  animation: fadeIn 0.16s ease;
+}
+
+.dialog {
+  width: min(100%, 380px);
+
+  padding: 26px 24px 20px;
+
+  border: 2px solid #f3c9a0;
+  border-radius: 26px;
+
+  background: #fffdf7;
+
+  box-shadow: 0 18px 44px rgba(120, 80, 40, 0.26);
+
+  text-align: center;
+
+  animation: popIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.message {
+  margin: 0;
+
+  color: #3a332d;
+
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.5;
+
+  /* 메시지 안의 줄바꿈(\n)을 그대로 보여 줌 */
+  white-space: pre-line;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+
+  margin-top: 22px;
+}
+
+.cancel,
+.confirm {
+  flex: 1;
+  height: 46px;
+
+  border-radius: 999px;
+
+  font-size: 15px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: background 0.16s ease;
+}
+
+.cancel {
+  border: 1.5px solid #dccfb6;
+
+  background: #ffffff;
+
+  color: #6f665d;
+}
+
+.cancel:hover {
+  background: #f8f3e8;
+}
+
+.confirm {
+  border: 1.5px solid #e2725b;
+
+  background: #e2725b;
+
+  color: #ffffff;
+}
+
+.confirm:hover {
+  background: #d2604a;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .dialog {
+    animation: none;
+  }
+}

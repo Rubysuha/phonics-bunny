@@ -34,6 +34,8 @@ import {
 import {
   getConversationPassScore,
 } from "@/lib/conversationTestRules";
+import HelpTooltip from "@/components/HelpTooltip";
+import { CONVERSATION_TEST_HELP } from "../testHelp";
 
 /*
   안내 문구에 쓰는 값
@@ -169,6 +171,13 @@ export default function ConversationTestPage() {
               weight="bold"
             />
           </button>
+
+          <div className={styles.helpButton}>
+            <HelpTooltip
+              title="Conversation Quiz 이렇게 해요"
+              sections={CONVERSATION_TEST_HELP}
+            />
+          </div>
 
           {/* Header */}
 

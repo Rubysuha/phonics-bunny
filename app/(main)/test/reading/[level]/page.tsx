@@ -34,6 +34,8 @@ import {
 import styles from "./level.module.css";
 
 import LoginNotice from "../../LoginNotice";
+import HelpTooltip from "@/components/HelpTooltip";
+import { READING_TEST_HELP } from "../../testHelp";
 
 export default function ReadingLevelPage() {
   const router =
@@ -212,6 +214,13 @@ export default function ReadingLevelPage() {
               weight="bold"
             />
           </button>
+
+          <div className={styles.helpButton}>
+            <HelpTooltip
+              title="Reading Quiz 이렇게 해요"
+              sections={READING_TEST_HELP}
+            />
+          </div>
 
           {/* Header */}
 

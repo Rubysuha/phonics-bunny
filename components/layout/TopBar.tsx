@@ -1,74 +1,104 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { CaretRight, Carrot } from "@phosphor-icons/react";
 import { supabase } from "@/lib/supabase";
 import styles from "./TopBar.module.css";
 
-export default function TopBar() {
-  const router = useRouter();
+type UserInfo = {
+  bunnyName: string;
+  coins: number;
+};
 
-  const [bunnyName, setBunnyName] = useState("로그인");
-  const [coins, setCoins] = useState(0);
+export default function TopBar() {
+  /* 불러오는 동안에는 "로그인"이 잠깐 보이지 않도록 비워 둠 */
+  const [isLoading, setIsLoading] = useState(true);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
   useEffect(() => {
-  const getUserInfo = async () => {
-    const { data, error } = await supabase.auth.getUser();
+    const getUserInfo = async () => {
+      const { data, error } = await supabase.auth.getUser();
 
-    if (error) {
-      console.error(error.message);
-      return;
-    }
+      const user = data.user;
 
-    const user = data.user;
+      if (error || !user) {
+        setUserInfo(null);
+        setIsLoading(false);
+        return;
+      }
 
-    if (!user) return;
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("bunny_name, coins")
+        .eq("id", user.id)
+        .single();
 
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("bunny_name, coins")
-      .eq("id", user.id)
-      .single();
+      if (profileError) {
+        console.error("프로필 불러오기 실패:", profileError);
+      }
 
-    if (profileError) {
-      console.error("프로필 불러오기 실패:", profileError);
-      return;
-    }
+      setUserInfo({
+        bunnyName: profile?.bunny_name ?? "My Bunny",
+        coins: profile?.coins ?? 0,
+      });
+      setIsLoading(false);
+    };
 
-    setBunnyName(profile?.bunny_name ?? "로그인");
-    setCoins(profile?.coins ?? 0);
-  };
+    getUserInfo();
 
-  getUserInfo();
+    window.addEventListener("coin-updated", getUserInfo);
 
-  window.addEventListener("coin-updated", getUserInfo);
-
-  return () => {
-    window.removeEventListener("coin-updated", getUserInfo);
-  };
-}, []);
+    return () => {
+      window.removeEventListener("coin-updated", getUserInfo);
+    };
+  }, []);
 
   return (
     <header className={styles.topbar}>
-      <div className={styles.brand}>
-        <span className={styles.brandIcon}>🥕</span>
+      <Link href="/dashboard" className={styles.brand} aria-label="Home으로 가기">
+        <span className={styles.brandIcon}>
+          <Carrot size={32} weight="fill" />
+        </span>
         <span className={styles.brandText}>Phonics Bunny</span>
-      </div>
+      </Link>
 
       <div className={styles.right}>
-        <div
-          className={styles.userBox}
-          onClick={() => router.push("/mypage")}
-        >
-          <span className={styles.coin}>🥕</span>
-          <span className={styles.coinText}>{coins}</span>
+        {isLoading ? (
+          <div
+            className={`${styles.userBox} ${styles.userBoxLoading}`}
+            aria-hidden="true"
+          />
+        ) : userInfo ? (
+          <Link
+            href="/mypage"
+            className={styles.userBox}
+            aria-label={`당근 ${userInfo.coins}개, ${userInfo.bunnyName} 마이페이지`}
+          >
+            <span className={styles.coinChip}>
+              <Carrot size={20} weight="fill" />
+              <span className={styles.coinText}>{userInfo.coins}</span>
+            </span>
 
-          <span className={styles.divider}>|</span>
+            <span className={styles.role}>{userInfo.bunnyName}</span>
 
-          <span className={styles.role}>
-          {bunnyName} ›
-          </span>
-        </div>
+            <CaretRight
+              className={styles.caret}
+              size={16}
+              weight="bold"
+            />
+          </Link>
+        ) : (
+          <Link href="/login" className={styles.userBox}>
+            <span className={styles.role}>로그인</span>
+
+            <CaretRight
+              className={styles.caret}
+              size={16}
+              weight="bold"
+            />
+          </Link>
+        )}
       </div>
     </header>
   );

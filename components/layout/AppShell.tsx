@@ -15,7 +15,9 @@ export default function AppShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isShopPage = pathname.startsWith("/shop");
+  /* 상단 바 · 메뉴 없이 화면 전체를 쓰는 화면 (Shop · My Page) */
+  const isShopPage =
+    pathname.startsWith("/shop") || pathname.startsWith("/mypage");
   const isHomePage = pathname.startsWith("/dashboard");
 
   /*

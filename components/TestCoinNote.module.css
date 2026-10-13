@@ -1,0 +1,33 @@
+.note {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+
+  margin: 10px 0 0;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  padding: 5px 12px;
+
+  border-radius: 999px;
+
+  background: #fff3e0;
+
+  color: #a2602a;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.item svg {
+  color: #ff8a3d;
+}
+
+.item strong {
+  font-weight: 900;
+}

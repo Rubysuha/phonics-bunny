@@ -288,7 +288,7 @@ function ShopPageInner() {
     setIsSavingHome(false);
 
     showToast(
-      `🏠 ${previewBunny.name} + ${previewBackground.name}을(를) Home에 적용했어요!`
+      `${previewBunny.name} + ${previewBackground.name}을(를) Home에 적용했어요!`
     );
   };
 
@@ -380,7 +380,7 @@ function ShopPageInner() {
     }
 
     if (coin < bunny.price) {
-      showToast("🥕 당근 코인이 부족해요!");
+      showToast("당근 코인이 부족해요!");
       return;
     }
 
@@ -418,7 +418,7 @@ function ShopPageInner() {
 
     emitCoinUpdated();
 
-    showToast(`🐰 ${bunny.name} 구매 완료!`);
+    showToast(`${bunny.name} 구매 완료!`);
   };
 
   /* =========================
@@ -452,7 +452,7 @@ function ShopPageInner() {
     setSelectedBunnyId(bunny.id);
     setPreviewBunnyId(bunny.id);
 
-    showToast(`🐰 ${bunny.name} 선택 완료!`);
+    showToast(`${bunny.name} 선택 완료!`);
   };
 
   /* =========================
@@ -470,7 +470,7 @@ function ShopPageInner() {
     }
 
     if (coin < background.price) {
-      showToast("🥕 당근 코인이 부족해요!");
+      showToast("당근 코인이 부족해요!");
       return;
     }
 
@@ -508,7 +508,7 @@ function ShopPageInner() {
 
     emitCoinUpdated();
 
-    showToast(`🖼️ ${background.name} 구매 완료!`);
+    showToast(`${background.name} 구매 완료!`);
   };
 
   /* =========================
@@ -542,7 +542,7 @@ function ShopPageInner() {
     setSelectedBackgroundId(background.id);
     setPreviewBackgroundId(background.id);
 
-    showToast(`🖼️ ${background.name} 적용 완료!`);
+    showToast(`${background.name} 적용 완료!`);
   };
 
   /* =========================

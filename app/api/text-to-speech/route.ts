@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { LEVELS, TTS_RATE, type LearningLevel } from "@/lib/learningRules";
 import * as SpeechSDK from "microsoft-cognitiveservices-speech-sdk";
 
 export const runtime = "nodejs";
@@ -15,13 +16,19 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { text } = await request.json();
+    const { text, level } = await request.json();
 
     if (!text || typeof text !== "string" || !text.trim()) {
       return NextResponse.json({ error: "읽을 텍스트가 없어요." }, { status: 400 });
     }
 
-    const audioBuffer = await synthesizeSpeech(text.trim());
+    // 단계에 맞는 말 속도 (단계를 보내지 않으면 중급 속도)
+    const rate =
+      TTS_RATE[
+        LEVELS.includes(level) ? (level as LearningLevel) : "intermediate"
+      ];
+
+    const audioBuffer = await synthesizeSpeech(text.trim(), rate);
 
     return new NextResponse(new Uint8Array(audioBuffer), {
       status: 200,
@@ -39,7 +46,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function synthesizeSpeech(text: string): Promise<Buffer> {
+function synthesizeSpeech(text: string, rate: string): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(
       AZURE_KEY!,
@@ -57,11 +64,11 @@ function synthesizeSpeech(text: string): Promise<Buffer> {
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;");
 
-    // rate를 살짝 늦춰서 아이들이 알아듣기 쉽게 조정
+    // rate를 늦춰서 아이들이 알아듣기 쉽게 조정 (단계가 낮을수록 더 천천히)
     const ssml = `
       <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">
         <voice name="en-US-AnaNeural">
-          <prosody rate="-8%">${escapedText}</prosody>
+          <prosody rate="${rate}">${escapedText}</prosody>
         </voice>
       </speak>
     `;

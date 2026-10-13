@@ -117,6 +117,27 @@
     0 2px 0 rgba(255, 255, 255, 0.7);
 }
 
+/* 제목 · Total 앞의 아이콘 */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cardHeader svg {
+  color: #8a5fd0;
+}
+
+.totalLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.totalLabel svg {
+  color: #f0a020;
+}
+
 .learningBody {
   padding: 16px 18px 18px;
 }
@@ -247,4 +268,73 @@
 
 .homeResetButton:hover {
   transform: translateY(-2px);
+}
+
+/*
+  태블릿 · 폰 (왼쪽 메뉴가 아래 탭 바로 바뀌는 폭)
+  겹쳐 놓던 제목 · 토끼 · 카드를 순서대로 흐르게 배치.
+  자리가 넉넉하면 토끼와 카드가 나란히, 좁으면 위아래로 놓임
+*/
+@media (max-width: 1024px) {
+  .dashboard {
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+  }
+
+  .hero {
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 18px 28px;
+
+    padding: 4px 8px 20px;
+  }
+
+  .title {
+    position: static;
+    transform: none;
+
+    flex: 0 0 100%;
+    order: 1;
+
+    font-size: clamp(40px, 8vw, 56px);
+    line-height: 1.1;
+    text-align: center;
+  }
+
+  .centerWrap {
+    position: static;
+    transform: none;
+
+    order: 2;
+  }
+
+  .circle {
+    width: min(74vw, 340px);
+    height: min(60vw, 280px);
+  }
+
+  .bunny {
+    transform: scale(1.7);
+  }
+
+  .rightCards {
+    position: static;
+
+    width: min(100%, 340px);
+
+    order: 3;
+  }
+
+  .homeResetButton {
+    position: static;
+
+    order: 5;
+  }
 }

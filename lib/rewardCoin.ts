@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { TEST_COIN_REASON_PREFIX } from "@/lib/testReward";
 
 export type RewardType =
   | "alphabet"
@@ -49,7 +50,7 @@ export async function rewardCoin({
 
   const { data: todayLogs, error: todayError } = await supabase
     .from("coin_logs")
-    .select("amount")
+    .select("amount, reason")
     .eq("user_id", user.id)
     .eq("type", "earn")
     .gte("created_at", todayStart.toISOString());
@@ -63,8 +64,11 @@ export async function rewardCoin({
     };
   }
 
+  /* Test 코인은 한 번만 받는 보상이라 하루 한도에 넣지 않음 */
   const todayEarned =
-    todayLogs?.reduce((sum, log) => sum + (log.amount ?? 0), 0) ?? 0;
+    todayLogs
+      ?.filter((log) => !log.reason?.startsWith(TEST_COIN_REASON_PREFIX))
+      .reduce((sum, log) => sum + (log.amount ?? 0), 0) ?? 0;
 
   if (todayEarned >= DAILY_LIMIT) {
     return {
@@ -200,6 +204,6 @@ export async function rewardCoin({
 
   return {
     success: true,
-    message: `🥕 ${availableAmount}코인을 받았어요!`,
+    message: `${availableAmount}코인을 받았어요!`,
   };
 }

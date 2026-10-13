@@ -13,7 +13,7 @@
   height: 100%;
   margin: 0 auto;
 
-  background-image: url("/dashboard/home-bg.png");
+  background-image: url("/dashboard/home-bg.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -54,8 +54,18 @@
 }
 
 @media (max-width: 1024px) {
+  /* 본문 아래에 탭 바 한 줄 */
   .body {
     grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .body > aside {
+    order: 2;
+  }
+
+  .shopBody {
+    display: block;
   }
 
   .main {

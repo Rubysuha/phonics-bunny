@@ -34,6 +34,10 @@ import {
   saveReadingTestResult,
 } from "@/lib/readingTestProgress";
 
+import type { TestCoinResult } from "@/lib/testReward";
+
+import TestCoinNote from "@/components/TestCoinNote";
+
 import {
   getReadingStars,
   isReadingPassed,
@@ -137,6 +141,13 @@ export default function ReadingStoryQuizPage() {
     setIsSaving,
   ] =
     useState(false);
+
+  const [
+    coins,
+    setCoins,
+  ] = useState<TestCoinResult | null>(
+    null
+  );
 
   const [
     saveError,
@@ -268,6 +279,10 @@ export default function ReadingStoryQuizPage() {
             setSaveError(
               result.message
             );
+          } else {
+            setCoins(
+              result.coins
+            );
           }
         } catch (
           error
@@ -278,7 +293,7 @@ export default function ReadingStoryQuizPage() {
           );
 
           setSaveError(
-            "테스트 결과를 저장하지 못했습니다."
+            "테스트 결과를 저장하지 못했어요."
           );
         } finally {
           setIsSaving(
@@ -318,6 +333,8 @@ export default function ReadingStoryQuizPage() {
       setScore(
         0
       );
+
+      setCoins(null);
 
       setSaveError(
         null
@@ -511,6 +528,10 @@ export default function ReadingStoryQuizPage() {
                   ? "Great reading! You understood the story."
                   : "Read the story again and give it another try."}
               </p>
+
+              <TestCoinNote
+                coins={coins}
+              />
 
               {saveError && (
                 <p

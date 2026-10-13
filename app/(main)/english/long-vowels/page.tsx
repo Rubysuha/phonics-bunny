@@ -49,7 +49,7 @@ export default function LongVowelsPage() {
           <PageTitle
             eyebrow="PHONICS"
             title="Long Vowels"
-            subtitle="Long Vowel은 영어에서 A, E, I, O, U가 자기 이름처럼 길게 발음되는 경우를 말합니다."
+            subtitle="Learn the long sounds of A, E, I, O, and U. They say their names!"
           />
 
           <div className={styles.grid}>

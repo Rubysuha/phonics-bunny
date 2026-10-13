@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { Books, Trophy } from "@phosphor-icons/react";
 import { supabase } from "@/lib/supabase";
 import { loadHomeLook, saveHomeLook } from "@/lib/homeLook";
 import { backgroundSkins, bunnySkins } from "../shop/data";
@@ -148,7 +149,8 @@ export default function DashboardPage() {
         <div className={styles.rightCards}>
           <div className={styles.todayLearningCard}>
             <div className={styles.cardHeader}>
-              📚 Today’s Learning
+              <Books size={22} weight="fill" />
+              Today’s Learning
             </div>
 
             <div className={styles.learningBody}>
@@ -200,7 +202,10 @@ export default function DashboardPage() {
               <div className={styles.learningDivider}></div>
 
               <div className={styles.totalRow}>
-                <span>🏆 Total</span>
+                <span className={styles.totalLabel}>
+                  <Trophy size={20} weight="fill" />
+                  Total
+                </span>
                 <strong>{todayLearning.total}</strong>
               </div>
             </div>

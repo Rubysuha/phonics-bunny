@@ -18,10 +18,20 @@ import {
   convertRecordingToWav,
   createSupportedMediaRecorder,
 } from "@/lib/audioToWav";
-import { getWeakWords } from "@/lib/getWeakWords";
+import {
+  loadMyLearningSummary,
+  type LearningSummary,
+} from "@/lib/learningProgress";
+import {
+  LEVEL_UP_COOLDOWN_DAYS,
+  type LearningLevel,
+} from "@/lib/learningRules";
+import { sightWordLevels } from "@/app/(main)/english/sight-words/data";
+import LevelCard from "@/components/LevelCard";
 import HelpTooltip from "@/components/HelpTooltip";
 
 import styles from "./ai.module.css";
+import { useToast } from "@/components/Toast";
 
 type ChatMessage = {
   role: "bunny" | "user";
@@ -62,12 +72,36 @@ const OPENING_LINES = [
 ];
 
 export default function AiConversationPage() {
+  const { showToast } = useToast();
+
   const router = useRouter();
 
   /* 이 화면을 나가면 재생 중인 소리를 모두 멈춤 */
   useStopAudioOnLeave();
 
   const [hasStarted, setHasStarted] = useState(false);
+
+  /* 학습 단계 (단계 카드 · AI Bunny 말 속도에 사용) */
+  const [summary, setSummary] =
+    useState<LearningSummary | null>(null);
+
+  const levelRef =
+    useRef<LearningLevel>("beginner");
+
+  useEffect(() => {
+    let cancelled = false;
+
+    loadMyLearningSummary().then((loaded) => {
+      if (cancelled || !loaded) return;
+
+      levelRef.current = loaded.level;
+      setSummary(loaded);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     const random =
@@ -193,6 +227,8 @@ export default function AiConversationPage() {
               body:
                 JSON.stringify({
                   text,
+                  level:
+                    levelRef.current,
                 }),
             }
           );
@@ -356,8 +392,8 @@ export default function AiConversationPage() {
           error
         );
 
-        alert(
-          "마이크 권한을 확인해줘."
+        showToast(
+          "마이크 권한을 확인해 주세요."
         );
       }
     };
@@ -497,33 +533,33 @@ export default function AiConversationPage() {
         } =
           await supabase.auth.getUser();
 
-        let weakWords:
-          string[] = [];
+        /* 방금까지의 학습 기록으로 단계 · 약한 단어 · 배운 단어를 다시 계산 */
+        const summary =
+          user
+            ? await loadMyLearningSummary()
+            : null;
 
-        let studiedTypes:
-          string[] = [];
+        const weakWords =
+          summary?.weakWords ?? [];
 
-        let level:
-          | "beginner"
-          | "elementary"
-          | "intermediate"
-          | "advanced" =
-          "beginner";
+        const studiedTypes =
+          summary?.studiedTypes ?? [];
 
-        if (user) {
-          const summary =
-            await getWeakWords(
-              user.id
-            );
+        const level: LearningLevel =
+          summary?.level ?? "beginner";
 
-          weakWords =
-            summary.weakWords;
+        /* 배운 단어가 아직 없으면 Sight Words Level 1 로 대신함 */
+        const knownWords =
+          summary && summary.knownWords.length > 0
+            ? summary.knownWords
+            : sightWordLevels[0].words.map(
+                (item) => item.word
+              );
 
-          studiedTypes =
-            summary.studiedTypes;
+        levelRef.current = level;
 
-          level =
-            summary.level;
+        if (summary) {
+          setSummary(summary);
         }
 
         const history =
@@ -560,11 +596,10 @@ export default function AiConversationPage() {
                   history,
 
                   weakWords,
-
-                  studiedTypes,
-
-                  level,
-                }),
+                    studiedTypes,
+                    knownWords,
+                    level,
+                  }),
             }
           );
 
@@ -609,7 +644,7 @@ export default function AiConversationPage() {
         );
 
         setStatusText(
-          "문제가 발생했어요. 다시 시도해줘."
+          "문제가 발생했어요. 다시 시도해 주세요."
         );
       } finally {
         setIsProcessing(
@@ -688,7 +723,14 @@ export default function AiConversationPage() {
               />
             </Link>
 
-            <div
+            {/* 가운데: 내 단계 (로그인하지 않았으면 제목) */}
+            {summary ? (
+              <LevelCard
+                summary={summary}
+                inline
+              />
+            ) : (
+              <div
               className={
                 styles.modeTitle
               }
@@ -702,39 +744,35 @@ export default function AiConversationPage() {
                 AI Bunny Talk Quest
               </span>
             </div>
+            )}
 
             <HelpTooltip
-              title="AI Bunny Talk Quest"
+              title="AI Bunny 이렇게 해요"
               sections={[
                 {
-                  heading:
-                    "학습 목표",
-
+                  heading: "학습 목표",
                   items: [
-                    "정답이 정해져 있지 않은 자유 회화예요.",
-                    "다른 학습에서 어려웠던 단어를 AI Bunny가 자연스럽게 다시 활용해요.",
+                    "정답이 없는 자유 대화예요. AI Bunny와 영어로 편하게 이야기해요.",
+                    "다른 학습에서 점수가 낮았던 단어와 문장을 AI Bunny가 대화 속에 다시 꺼내 줘요.",
                   ],
                 },
-
                 {
-                  heading:
-                    "난이도",
-
+                  heading: "진행 방법",
                   items: [
-                    "Book과 Conversation Practice 학습 상태를 바탕으로 대화 난이도가 자동으로 조절돼요.",
-                    "왕초보 → 초급 → 중급 → 고급 순으로 문장이 조금씩 길어져요.",
+                    "Bunny Starts를 누르면 AI Bunny가 먼저 말을 걸고, I Start를 누르면 내가 먼저 말해요.",
+                    "Speak를 누르고 영어로 말한 뒤 Stop을 누르면 AI Bunny가 듣고 대답해요.",
+                    "틀려도 괜찮아요. AI Bunny가 맞는 표현으로 자연스럽게 다시 말해 줘요.",
+                    "이 대화에서는 발음 점수를 매기지 않고, 당근 코인도 주지 않아요.",
                   ],
                 },
-
                 {
-                  heading:
-                    "진행 방법",
-
+                  heading: "내 단계 (MY LEVEL)",
                   items: [
-                    "Speak를 눌러 영어로 말해요.",
-                    "Stop을 누르면 AI Bunny가 듣고 답해요.",
-                    "바니가 먼저 시작하거나 내가 먼저 말을 걸 수 있어요.",
-                    "이 자유 대화에서는 발음 점수를 매기지 않아요.",
+                    "화면 맨 위의 MY LEVEL에서 지금 단계와 다음 단계까지 남은 양을 볼 수 있어요. 누르면 영역별로 자세히 나와요.",
+                    "단계는 왕초보 → 초급 → 중급 → 고급 순서예요. 단계가 오를수록 AI Bunny의 문장이 길어지고 말이 조금씩 빨라져요.",
+                    "Phonics 단어 · Book 이야기 · Conversation 대화를 숙달한 개수로 단계가 정해지고, 세 영역 중 가장 낮은 단계가 내 단계가 돼요.",
+                    `단계는 한 번에 한 단계씩 오르고, 오른 뒤 ${LEVEL_UP_COOLDOWN_DAYS}일 동안은 다시 오르지 않아요. 한 번 오른 단계는 내려가지 않아요.`,
+                    "왕초보와 초급에서는 내가 배운 단어를 중심으로 쉽게 말해 줘요.",
                   ],
                 },
               ]}

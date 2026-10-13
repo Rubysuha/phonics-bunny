@@ -121,7 +121,7 @@
 .eyebrow {
   margin: 0;
   color: var(--accent);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: .12em;
 }
@@ -152,15 +152,16 @@
 }
 
 /*
-  모험의 단계: 다섯 단계를 한 줄에 두고
+  모험의 단계: 모든 단계(5~6개)를 한 줄에 두고
   카드 사이를 점선 길로 연결
+  (--stage-count 는 화면에서 영역의 Stage 수로 넘겨 줌)
 */
 .stageGrid {
   position: relative;
-  width: min(100%, 960px);
+  width: min(100%, calc(var(--stage-count, 5) * 192px));
   justify-self: center;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--stage-count, 5), minmax(0, 1fr));
   gap: 14px;
 }
 
@@ -235,7 +236,7 @@
 
 .questionCount {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   text-align: right;
 }
@@ -247,7 +248,7 @@
 
 .stageLabel {
   color: var(--accent);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: .1em;
 }
@@ -291,7 +292,7 @@
   align-items: baseline;
   gap: 6px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .bestScore strong {
@@ -551,4 +552,13 @@
 
 .backButton {
   z-index: 1;
+}
+
+/* 오른쪽 위의 ? (이용 안내) */
+.helpButton {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  align-self: center;
+  z-index: 3;
 }

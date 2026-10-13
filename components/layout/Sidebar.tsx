@@ -37,11 +37,12 @@ export default function Sidebar() {
     if (pathname.startsWith("/book")) return "Book";
     if (pathname.startsWith("/test")) return "Test";
     if (pathname.startsWith("/community")) return "Community";
+    if (pathname.startsWith("/mypage")) return "My Page";
     return "Home";
   };
 
   return (
-    <aside className={styles.sidebar}>
+    <aside className={styles.sidebar} aria-label="메뉴">
       <div className={styles.titleBox}>
         <span className={styles.titleIcon}>
           <Carrot size={26} weight="duotone" />
@@ -63,6 +64,7 @@ export default function Sidebar() {
               key={menu.href}
               href={menu.href}
               className={`${styles.menuItem} ${isActive ? styles.active : ""}`}
+              aria-current={isActive ? "page" : undefined}
             >
               <span className={styles.menuIcon}>
                 <Icon size={28} weight="duotone" />

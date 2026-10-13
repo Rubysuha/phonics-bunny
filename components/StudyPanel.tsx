@@ -12,6 +12,7 @@ import {
   X,
 } from "@phosphor-icons/react";
 import StudyFrame from "./StudyFrame";
+import MasteryMeter from "./MasteryMeter";
 import styles from "./StudyPanel.module.css";
 
 type Props = {
@@ -44,6 +45,9 @@ type Props = {
   /* 한글 자료가 없는 단어는 넘기지 않음 (버튼 숨김) */
   onDownload?: () => void;
   backHref: string;
+
+  /* 숙달 진행을 보여 줄 학습 기록 id (기록을 남기지 않는 화면은 넘기지 않음) */
+  masteryId?: string;
 };
 
 /*
@@ -68,6 +72,7 @@ export default function StudyPanel({
   onAnalyze,
   onDownload,
   backHref,
+  masteryId,
 }: Props) {
   const isPreparing = countdown !== null;
 
@@ -93,6 +98,12 @@ export default function StudyPanel({
   return (
     <StudyFrame imageSrc={imageSrc} imageAlt={imageAlt} caption={title}>
       <p className={styles.eyebrow}>LISTEN &amp; SPEAK</p>
+
+      {masteryId && (
+        <div className={styles.mastery}>
+          <MasteryMeter contentId={masteryId} />
+        </div>
+      )}
 
       <div className={styles.listenRow}>
         <button

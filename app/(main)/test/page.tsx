@@ -9,14 +9,16 @@ import {
   countPassedReadingStories, getReadingProgress,
 } from "@/lib/readingTestProgress";
 import {
-  PHONICS_STAGE_COUNT, PHONICS_TEST_CATEGORY_IDS,
+  PHONICS_TEST_CATEGORY_IDS, TOTAL_PHONICS_STAGE_COUNT,
 } from "@/lib/phonicsTestRules";
 import { getConversationProgress, } from "@/lib/conversationTestProgress";
 import { bookLevels, } from "../book/data";
 import { conversationTopics, } from "./conversation/data";
+import HelpTooltip from "@/components/HelpTooltip";
+import { TEST_MENU_HELP } from "./testHelp";
 
 const PHONICS_CATEGORIES = PHONICS_TEST_CATEGORY_IDS;
-const TOTAL_PHONICS_STAGES = PHONICS_CATEGORIES.length * PHONICS_STAGE_COUNT;
+const TOTAL_PHONICS_STAGES = TOTAL_PHONICS_STAGE_COUNT;
 const TOTAL_READING_STORIES = bookLevels.reduce(
   (total, level) => total + level.stories.length, 0
 );
@@ -134,6 +136,13 @@ export default function TestPage() {
       <div className={styles.hero}>
         <div className={styles.inner}>
           <header className={styles.header}>
+            <div className={styles.helpButton}>
+              <HelpTooltip
+                title="Test 이렇게 해요"
+                sections={TEST_MENU_HELP}
+              />
+            </div>
+
             <div className={styles.signText}>
               <h1 className={styles.title}>
                 <span>TEST</span> <span>QUEST</span>
@@ -164,7 +173,7 @@ export default function TestPage() {
                   onClick={() => router.push(menu.href)}
                 >
                   <div className={styles.cardArt} aria-hidden="true">
-                    <img src={`/test/quest-${menu.id}.png`} alt="" />
+                    <img src={`/test/quest-${menu.id}.webp`} alt="" />
                   </div>
 
                   <div className={styles.cardContent}>

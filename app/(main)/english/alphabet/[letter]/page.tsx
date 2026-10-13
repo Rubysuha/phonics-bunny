@@ -61,7 +61,7 @@ export default function AlphabetDetailPage() {
       await audio.play();
     } catch (error) {
       console.error(error);
-      alert("소리 파일을 찾을 수 없거나 재생할 수 없어.");
+      showToast("소리를 재생할 수 없어요.");
     }
   };
 
@@ -82,7 +82,7 @@ export default function AlphabetDetailPage() {
       await audio.play();
     } catch (error) {
       console.error(error);
-      alert("AI 소리 파일을 찾을 수 없거나 재생할 수 없어.");
+      showToast("AI 소리를 재생할 수 없어요.");
     }
   };
 
@@ -147,7 +147,7 @@ export default function AlphabetDetailPage() {
     } catch (error) {
       console.error(error);
       setCountdown(null);
-      alert("마이크 권한을 허용해야 녹음할 수 있어.");
+      showToast("마이크 권한을 허용해야 녹음할 수 있어요.");
     }
   };
 
@@ -173,7 +173,7 @@ export default function AlphabetDetailPage() {
 
   const handlePlayMine = async () => {
     if (!myRecordingUrl) {
-      alert("먼저 녹음을 해줘.");
+      showToast("먼저 녹음을 해 주세요.");
       return;
     }
 
@@ -182,7 +182,7 @@ export default function AlphabetDetailPage() {
       await audio.play();
     } catch (error) {
       console.error(error);
-      alert("내 녹음을 재생할 수 없어.");
+      showToast("내 녹음을 재생할 수 없어요.");
     }
   };
 

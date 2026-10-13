@@ -387,7 +387,7 @@
 .categoryText small {
   margin-top: 2px;
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
 
   opacity: 0.7;
@@ -460,7 +460,7 @@
 
   border: 2px solid rgba(255, 255, 255, 0.8);
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 950;
 
   box-shadow:
@@ -508,7 +508,7 @@
 
   color: #ffd979;
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 900;
 }
 
@@ -693,7 +693,7 @@
 
   color: #b07d48;
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 950;
 }
 
@@ -714,7 +714,7 @@
   background: #fff0c9;
   color: #a56a30;
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 950;
 }
 
@@ -1020,7 +1020,7 @@
   border: none;
   border-radius: 10px;
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 950;
 
   cursor: pointer;
@@ -1241,7 +1241,7 @@
 
   color: #ead3b6;
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -1823,7 +1823,7 @@
   color:
     rgba(255, 255, 255, 0.74);
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
 }
 

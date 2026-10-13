@@ -1,6 +1,7 @@
 import Link from "next/link";
 import BackButton from "@/components/ui/BackButton";
 import HelpTooltip from "@/components/HelpTooltip";
+import { SCORE_HELP, coinHelp, masteryHelp } from "@/components/helpSections";
 import PageTitle from "@/components/PageTitle";
 import styles from "./vowel-words.module.css";
 import { shortVowelItems } from "../data";
@@ -29,26 +30,28 @@ export default async function ShortVowelWordsPage({ params }: Props) {
       <div className={styles.hero}>
         <div className={styles.helpWrap}>
           <HelpTooltip
-            title="이렇게 진행돼요"
+            title="Short Vowels 이렇게 해요"
             sections={[
               {
                 heading: "학습 목표",
                 items: [
-                  "A/E/I/O/U 각각의 짧은 소리를 구별하고, cat·bed·pig처럼 자음-모음-자음(CVC) 구조의 단어를 소리 내어 읽어요.",
-                  "같은 모음 패턴을 반복하면서 낱글자 소리를 조합해 새 단어를 읽어내는 디코딩 능력과 음소 인식이 늘어요.",
+                  "A · E · I · O · U의 짧은 소리를 구별하고, cat · bed · pig처럼 자음-모음-자음으로 된 단어를 소리 내어 읽어요.",
+                  "같은 모음 단어를 반복하면서 글자 소리를 이어 붙여 새 단어를 읽는 힘이 자라요.",
                 ],
               },
               {
                 heading: "진행 방법",
                 items: [
-                  "단어 카드를 누르면 학습 페이지로 이동해요.",
-                  "소리 재생 → AI가 읽어주기 → 녹음하기 → 내 녹음 듣기 → AI 발음 분석하기 순서로 진행돼요.",
-                  "AI 발음 분석은 정확도 70% + 완성도 20% + 목소리 크기 10%를 합산해서 점수를 매겨요.",
-                  "여기서 발음 정확도가 낮았던 단어는 AI Bunny 대화에서 자동으로 다시 등장해요.",
-                  "한글 학습 자료도 내려받을 수 있어요.",
-                  "소리 듣기와 녹음은 각각 코인으로 이어지고, 같은 단어에서 듣기 5번·녹음 5번까지 따로 받을 수 있어요.",
+                  "단어 카드를 누르면 학습 화면이 열려요.",
+                  "Listen(내 목소리 녹음 또는 AI 음성)과 AI Voice로 소리를 듣고, 마이크를 눌러 따라 말해요.",
+                  "Play My Recording으로 내 목소리를 들어 보고, Check My Pronunciation으로 점수를 확인해요.",
+                  SCORE_HELP,
+                  "점수가 낮았던 단어는 AI Bunny 대화에 다시 나와서 한 번 더 연습할 수 있어요.",
+                  "한글 학습 자료가 있는 단어는 학습 화면에서 내려받을 수 있어요.",
                 ],
               },
+              masteryHelp("단어"),
+              coinHelp("단어", 1),
             ]}
           />
         </div>
@@ -57,7 +60,7 @@ export default async function ShortVowelWordsPage({ params }: Props) {
           <PageTitle
             eyebrow="SHORT VOWELS"
             title={`Short ${item.upper}`}
-            subtitle="단어 박스를 눌러 학습 페이지로 들어가 보세요."
+            subtitle="Tap a word card to start learning."
           />
 
           {groupBySection(item.words).map((group) => (

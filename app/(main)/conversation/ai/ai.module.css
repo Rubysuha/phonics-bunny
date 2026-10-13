@@ -13,22 +13,9 @@
   border-radius: 30px;
   overflow: hidden;
 
-  background:
-    radial-gradient(
-      circle at 12% 15%,
-      rgba(206, 236, 255, 0.82),
-      transparent 29%
-    ),
-    radial-gradient(
-      circle at 88% 12%,
-      rgba(255, 214, 242, 0.74),
-      transparent 28%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(238, 246, 255, 0.96),
-      rgba(249, 241, 255, 0.95)
-    );
+  /* Phonics · Book 과 같은 반투명 유리 배경 (뒤의 Home 배경이 비쳐 보임) */
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(12px);
 
   border: 1px solid rgba(255, 255, 255, 0.7);
 
@@ -1833,4 +1820,64 @@
   color: #d9534f;
 
   font-weight: 900;
+}
+
+
+/* ─────────────────────────────
+   대화 창 크게
+   - 맨 윗줄에 내 단계를 두고
+   - 토끼 자리와 머리글을 줄여 대화 영역을 넓힘
+───────────────────────────── */
+
+.topBar {
+  margin-bottom: 10px;
+}
+
+.chatHeader {
+  min-height: 54px;
+
+  padding: 7px 16px;
+}
+
+.bunnyAvatar {
+  width: 40px;
+  height: 40px;
+
+  border-radius: 14px;
+}
+
+.chatBody {
+  gap: 12px;
+
+  padding: 12px;
+}
+
+@media (min-width: 901px) {
+  .chatBody {
+    grid-template-columns: clamp(150px, 22%, 220px) minmax(0, 1fr);
+  }
+}
+
+.messageList {
+  gap: 16px;
+
+  padding: 20px 22px;
+}
+
+/* 말풍선 글씨도 크게 */
+.bunnyMessage,
+.userMessage {
+  padding: 14px 18px;
+
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+@media (max-width: 680px) {
+  .bunnyMessage,
+  .userMessage {
+    padding: 12px 15px;
+
+    font-size: 16px;
+  }
 }

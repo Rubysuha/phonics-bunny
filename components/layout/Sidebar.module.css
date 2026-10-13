@@ -136,8 +136,75 @@
   color: #9b6238;
 }
 
+/*
+  태블릿 · 폰: 왼쪽 메뉴 대신 화면 아래 탭 바로 보여 줌
+  (AppShell 에서 본문 아래 줄에 배치)
+*/
 @media (max-width: 1024px) {
   .sidebar {
+    height: auto;
+    padding: 0 10px 10px;
+  }
+
+  .titleBox {
     display: none;
+  }
+
+  .menuPanel {
+    flex-direction: row;
+
+    border-radius: 22px;
+    overflow: hidden;
+
+    background: rgba(255, 250, 240, 0.86);
+  }
+
+  .menuItem {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 60px;
+    padding: 6px 2px;
+
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+
+    border-bottom: none;
+  }
+
+  .menuIcon {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+  }
+
+  .menuIcon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .menuLabel {
+    max-width: 100%;
+
+    font-size: 12px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 520px) {
+  .sidebar {
+    padding: 0 6px 6px;
+  }
+
+  .menuItem {
+    min-height: 54px;
+  }
+
+  .menuLabel {
+    font-size: 10.5px;
+    letter-spacing: -0.02em;
   }
 }

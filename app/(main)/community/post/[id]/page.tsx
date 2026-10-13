@@ -29,6 +29,7 @@ import {
   DEFAULT_CATEGORY_TINT,
 } from "../../categoryTheme";
 import BunnyMark from "../../BunnyMark";
+import { useToast } from "@/components/Toast";
 
 type Comment = {
   id: number;
@@ -80,6 +81,8 @@ const colorForName = (name: string) => {
 };
 
 export default function CommunityPostPage() {
+  const { showToast } = useToast();
+
   const router = useRouter();
   const params = useParams();
 
@@ -300,7 +303,7 @@ export default function CommunityPostPage() {
 
   const handleLike = async () => {
     if (!currentUserId) {
-      alert("로그인 후 좋아요를 누를 수 있어요.");
+      showToast("로그인 후 좋아요를 누를 수 있어요.");
       router.push("/login");
       return;
     }
@@ -339,12 +342,12 @@ export default function CommunityPostPage() {
 
   const handleAddComment = async () => {
     if (!commentText.trim()) {
-      alert("댓글을 입력해주세요.");
+      showToast("댓글을 입력해 주세요.");
       return;
     }
 
     if (!currentUserId) {
-      alert("로그인 후 댓글을 작성할 수 있어요.");
+      showToast("로그인 후 댓글을 작성할 수 있어요.");
       router.push("/login");
       return;
     }
@@ -371,7 +374,7 @@ export default function CommunityPostPage() {
     });
 
     if (error) {
-      alert("댓글 등록에 실패했어요.");
+      showToast("댓글 등록에 실패했어요.");
       console.error("댓글 등록 실패:", error.message);
       return;
     }
@@ -390,7 +393,7 @@ export default function CommunityPostPage() {
       .eq("user_id", currentUserId);
 
     if (error) {
-      alert("댓글 삭제에 실패했어요.");
+      showToast("댓글 삭제에 실패했어요.");
       console.error("댓글 삭제 실패:", error.message);
       return;
     }

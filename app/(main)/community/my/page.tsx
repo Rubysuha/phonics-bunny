@@ -33,6 +33,8 @@ import {
   DEFAULT_CATEGORY_COLOR,
   DEFAULT_CATEGORY_TINT,
 } from "../categoryTheme";
+import { useToast } from "@/components/Toast";
+import { useConfirm } from "@/components/ConfirmDialog";
 
 type MyPost = {
   id: number;
@@ -88,6 +90,9 @@ const dateKeyFromString = (dateStr: string) => dateKeyFromDate(new Date(dateStr)
 type CalendarCell = { day: number; key: string; year: number; month: number };
 
 export default function CommunityMyPage() {
+  const { showToast } = useToast();
+  const confirm = useConfirm();
+
   const router = useRouter();
 
   const [userId, setUserId] = useState("");
@@ -221,8 +226,9 @@ export default function CommunityMyPage() {
   const handleDeletePost = async (postId: number) => {
     if (!userId) return;
 
-    const ok = confirm(
-      "정말 이 게시글을 삭제할까요?\n삭제된 게시글은 복구할 수 없어요."
+    const ok = await confirm(
+      "정말 이 게시글을 삭제할까요?\n삭제된 게시글은 복구할 수 없어요.",
+      { confirmLabel: "삭제" }
     );
 
     if (!ok) return;
@@ -237,19 +243,21 @@ export default function CommunityMyPage() {
       .eq("user_id", userId);
 
     if (error) {
-      alert("게시글 삭제에 실패했어요.");
+      showToast("게시글 삭제에 실패했어요.");
       console.error(error.message);
       return;
     }
 
     setPosts((prev) => prev.filter((post) => post.id !== postId));
-    alert("게시글이 삭제되었어요.");
+    showToast("게시글이 삭제되었어요.");
   };
 
   const handleDeleteComment = async (commentId: number) => {
     if (!userId) return;
 
-    const ok = confirm("댓글을 삭제할까요?");
+    const ok = await confirm("댓글을 삭제할까요?", {
+      confirmLabel: "삭제",
+    });
     if (!ok) return;
 
     const { error } = await supabase
@@ -259,7 +267,7 @@ export default function CommunityMyPage() {
       .eq("user_id", userId);
 
     if (error) {
-      alert("댓글 삭제에 실패했어요.");
+      showToast("댓글 삭제에 실패했어요.");
       console.error(error.message);
       return;
     }
@@ -277,7 +285,7 @@ export default function CommunityMyPage() {
       .eq("user_id", userId);
 
     if (error) {
-      alert("좋아요 취소에 실패했어요.");
+      showToast("좋아요 취소에 실패했어요.");
       console.error(error.message);
       return;
     }
@@ -292,12 +300,12 @@ export default function CommunityMyPage() {
     if (!file || !userId) return;
 
     if (!file.type.startsWith("image/")) {
-      alert("이미지 파일만 업로드할 수 있어요.");
+      showToast("이미지 파일만 업로드할 수 있어요.");
       return;
     }
 
     if (file.size > 3 * 1024 * 1024) {
-      alert("3MB 이하 이미지만 업로드할 수 있어요.");
+      showToast("3MB 이하 이미지만 업로드할 수 있어요.");
       return;
     }
 
@@ -322,7 +330,7 @@ export default function CommunityMyPage() {
       .upload(fileName, file, { upsert: true });
 
     if (uploadError) {
-      alert(`프로필 사진 업로드에 실패했어요: ${uploadError.message}`);
+      showToast(`프로필 사진 업로드에 실패했어요: ${uploadError.message}`);
       console.error(uploadError.message);
       setAvatarUploading(false);
       return;
@@ -337,7 +345,7 @@ export default function CommunityMyPage() {
       .eq("id", userId);
 
     if (updateError) {
-      alert("프로필 사진 저장에 실패했어요.");
+      showToast("프로필 사진 저장에 실패했어요.");
       console.error(updateError.message);
       setAvatarUploading(false);
       return;
@@ -350,7 +358,9 @@ export default function CommunityMyPage() {
   const handleAvatarDelete = async () => {
     if (!userId || !profile?.avatar_url) return;
 
-    const ok = confirm("프로필 사진을 삭제할까요?");
+    const ok = await confirm("프로필 사진을 삭제할까요?", {
+      confirmLabel: "삭제",
+    });
     if (!ok) return;
 
     setAvatarUploading(true);
@@ -373,7 +383,7 @@ export default function CommunityMyPage() {
       .eq("id", userId);
 
     if (error) {
-      alert("프로필 사진 삭제에 실패했어요.");
+      showToast("프로필 사진 삭제에 실패했어요.");
       console.error(error.message);
       setAvatarUploading(false);
       return;

@@ -90,13 +90,42 @@
   font-weight: 600;
 }
 
-/* 레벨 카드 */
+/*
+  레벨 카드 (그림 없이 글자로만)
+  큰 레벨 숫자 · 레벨 이름 · 이 레벨의 예시 단어 · Start
+  레벨마다 숫자와 단어 칩의 색만 조금씩 다름
+*/
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
 
   gap: 14px;
+}
+
+.tone1 {
+  --tone: #e2725b;
+  --tone-bg: #fdeae4;
+}
+
+.tone2 {
+  --tone: #d98a1f;
+  --tone-bg: #fdf0d6;
+}
+
+.tone3 {
+  --tone: #3f9d6a;
+  --tone-bg: #e3f5ea;
+}
+
+.tone4 {
+  --tone: #3b82b8;
+  --tone-bg: #e1f0fb;
+}
+
+.tone5 {
+  --tone: #8a63c7;
+  --tone-bg: #efe7fb;
 }
 
 .card {
@@ -105,9 +134,9 @@
   display: flex;
   flex-direction: column;
 
-  overflow: hidden;
+  padding: 20px 16px 16px;
 
-  border: 1px solid var(--line);
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
   border-radius: 24px;
 
   background: var(--ivory);
@@ -120,11 +149,14 @@
 
   transition:
     transform 0.18s ease,
-    box-shadow 0.18s ease;
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
 }
 
 .card:hover {
   transform: translateY(-4px);
+
+  border-color: var(--tone);
 
   box-shadow: 0 14px 28px rgba(120, 92, 50, 0.14);
 }
@@ -134,54 +166,50 @@
   outline-offset: 3px;
 }
 
-.imageWrap {
-  width: 100%;
+/* 레벨 이름 + 단어 수 (좁으면 단어 수가 아래 줄로 내려감) */
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
 
-  aspect-ratio: 1 / 1.05;
+  margin-top: 14px;
+}
+
+.levelNumber {
+  flex-shrink: 0;
+
+  width: 68px;
+  height: 68px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  overflow: hidden;
+  border-radius: 22px;
 
-  background: var(--cream);
-}
+  background: var(--tone-bg);
 
-.image {
-  width: 100%;
-  height: 100%;
+  color: var(--tone);
 
-  display: block;
-
-  object-fit: cover;
-  object-position: center 40%;
-}
-
-/* 메뉴 그림이 아직 없는 레벨 */
-
-.noImage {
-  color: #e6d3b3;
-
-  font-size: 110px;
+  font-size: 44px;
   font-weight: 800;
   line-height: 1;
 }
 
-.textRow {
-  flex: 1;
+.cardCount {
+  padding: 5px 12px;
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  border-radius: 999px;
 
-  gap: 10px;
+  background: #f6f1e7;
 
-  padding: 14px 14px 16px 16px;
-}
+  color: var(--ink-soft);
 
-.cardText {
-  min-width: 0;
+  font-size: 13px;
+  font-weight: 800;
+
+  white-space: nowrap;
 }
 
 .cardTitle {
@@ -189,35 +217,60 @@
 
   color: var(--ink);
 
-  font-size: 21px;
+  font-size: 28px;
+  font-weight: 800;
+
+  letter-spacing: -0.3px;
+}
+
+/* 예시 단어 */
+
+.samples {
+  flex: 1;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 8px;
+
+  margin: 12px 0 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.samples li {
+  padding: 7px 14px;
+
+  border-radius: 999px;
+
+  background: var(--tone-bg);
+
+  color: var(--tone);
+
+  font-size: 19px;
   font-weight: 800;
 }
 
-.cardDescription {
-  margin: 2px 0 0;
+.startRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-  color: var(--ink-soft);
+  margin-top: 16px;
+  padding-top: 12px;
 
-  font-size: 13px;
-  font-weight: 600;
+  border-top: 1.5px dashed var(--line);
 
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+  color: var(--ink);
 
-.cardCount {
-  margin: 6px 0 0;
-
-  color: var(--coral-deep);
-
-  font-size: 12px;
+  font-size: 18px;
   font-weight: 800;
 }
 
 .arrow {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
 
   flex-shrink: 0;
 
@@ -227,7 +280,7 @@
 
   border-radius: 50%;
 
-  background: var(--coral);
+  background: var(--tone);
 
   color: #ffffff;
 }

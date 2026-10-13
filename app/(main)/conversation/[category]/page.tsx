@@ -8,9 +8,11 @@ import {
 } from "@phosphor-icons/react/ssr";
 
 import HelpTooltip from "@/components/HelpTooltip";
+import { SCORE_HELP, coinHelp, masteryHelp } from "@/components/helpSections";
 import styles from "./sentence-list.module.css";
 import StageBadge from "../StageBadge";
 import { conversationCategories } from "../data";
+import { STAGE_DONE_SCORE, STAGE_TIERS, getStageTier } from "@/lib/learningRules";
 
 type Props = {
   params: Promise<{
@@ -56,24 +58,28 @@ export default async function ConversationCategoryPage({
             </div>
 
             <HelpTooltip
-              title="이렇게 진행돼요"
+              title="World Adventure 이렇게 해요"
               sections={[
                 {
                   heading: "학습 목표",
                   items: [
-                    "스테이지를 선택해 짧은 영어 대화를 듣고 따라 말해요.",
-                    "정해진 대화문으로 발음과 억양을 집중해서 연습해요.",
+                    "짧은 영어 대화를 듣고 역할을 따라 말하면서 발음과 억양을 연습해요.",
+                    "Stage는 Starter(2줄) → Basic(3–4줄) → Challenge(5–8줄) 순으로 대화가 길어져요.",
                   ],
                 },
                 {
                   heading: "진행 방법",
                   items: [
-                    "원하는 Stage를 선택해 학습을 시작해요.",
-                    "전체 듣기와 한 줄 듣기를 모두 사용할 수 있어요.",
-                    "녹음 후 AI 발음 분석으로 점수를 확인할 수 있어요.",
-                    "AI 발음 분석까지 마친 Stage는 초록색 체크로 표시돼요.",
+                    "지도에서 원하는 Stage를 눌러요. 순서와 상관없이 아무 Stage나 할 수 있어요.",
+                    "전체 듣기와 한 줄 듣기로 대화를 듣고, 마이크를 눌러 대화 전체를 따라 말해요.",
+                    "내 녹음을 들어 본 뒤 발음 확인으로 점수를 받아요.",
+                    `발음 확인에서 ${STAGE_DONE_SCORE}점 이상을 받으면 지도의 Stage가 초록색 체크로 바뀌어요.`,
+                    SCORE_HELP,
+                    "점수가 낮았던 대화의 문장은 AI Bunny 대화에 다시 나와요.",
                   ],
                 },
+                masteryHelp("대화"),
+                coinHelp("대화", 2),
               ]}
             />
           </div>
@@ -124,7 +130,13 @@ export default async function ConversationCategoryPage({
                     doneClassName={styles.stageDone}
                   />
 
-                  <span className={styles.stageLabel}>
+                  <span
+                    className={`${styles.stageLabel} ${
+                      styles[`tier-${getStageTier(index + 1).id}`]
+                    }`}
+                  >
+                    <em>{getStageTier(index + 1).label}</em>
+
                     <strong>
                       Stage {index + 1}
                     </strong>
@@ -144,6 +156,22 @@ export default async function ConversationCategoryPage({
                 <Play size={15} weight="fill" />
                 Stage를 눌러 시작해요
               </div>
+
+              {/* 대화 길이에 따른 3단계 */}
+              {STAGE_TIERS.map((tier) => (
+                <div
+                  key={tier.id}
+                  className={`${styles.tierLegend} ${
+                    styles[`tier-${tier.id}`]
+                  }`}
+                >
+                  <i />
+                  {tier.label}
+                  <small>
+                    Stage {tier.from}–{tier.to}
+                  </small>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -162,7 +190,9 @@ export default async function ConversationCategoryPage({
                 />
 
                 <div>
-                  <span>Stage {index + 1}</span>
+                  <span>
+                    Stage {index + 1} · {getStageTier(index + 1).label}
+                  </span>
                   <strong>{dialogue.title}</strong>
                 </div>
 

@@ -28,11 +28,11 @@
 }
 
 .subtitle {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
 
   color: #6f665d;
 
-  font-size: 14px;
-  font-weight: 600;
+  font-size: clamp(18px, 1.9vw, 22px);
+  font-weight: 700;
   line-height: 1.5;
 }

@@ -1,5 +1,6 @@
 // lib/logEngagement.ts
 import { supabase } from "@/lib/supabase";
+import { notifyLearningUpdated } from "@/lib/learningEvents";
 
 export type EngagementAction = "listen" | "listen_line" | "playback";
 
@@ -28,5 +29,8 @@ export async function logEngagement({
 
   if (error) {
     console.error("참여 기록 저장 실패:", error);
+    return;
   }
+
+  notifyLearningUpdated();
 }

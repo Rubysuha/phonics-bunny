@@ -13,6 +13,7 @@ import StudyBar from "@/components/StudyBar";
 import PronunciationResultModal from "@/components/PronunciationResultModal";
 import { rewardCoin } from "@/lib/rewardCoin";
 import { logEngagement } from "@/lib/logEngagement";
+import { notifyLearningUpdated } from "@/lib/learningEvents";
 import { convertRecordingToWav, createSupportedMediaRecorder } from "@/lib/audioToWav";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/Toast";
@@ -115,7 +116,7 @@ export default function ConversationDetailPage() {
         action: "listen_line",
       });
     } catch {
-      alert("소리 파일을 찾을 수 없거나 재생할 수 없어.");
+      showToast("소리를 재생할 수 없어요.");
     } finally {
       setActiveLineIndex(null);
     }
@@ -147,7 +148,7 @@ export default function ConversationDetailPage() {
         action: "listen", // 전체 완주는 반드시 "listen"
       });
     } catch {
-      alert("소리 파일을 찾을 수 없거나 재생할 수 없어.");
+      showToast("소리를 재생할 수 없어요.");
     } finally {
       setIsPlayingAll(false);
       setActiveLineIndex(null);
@@ -219,7 +220,7 @@ export default function ConversationDetailPage() {
     } catch (error) {
       console.error(error);
       setCountdown(null);
-      alert("마이크 권한을 허용해야 녹음할 수 있어.");
+      showToast("마이크 권한을 허용해야 녹음할 수 있어요.");
     }
   };
 
@@ -245,7 +246,7 @@ export default function ConversationDetailPage() {
 
   const handlePlayMine = async () => {
     if (!myRecordingUrl) {
-      alert("먼저 녹음을 해줘.");
+      showToast("먼저 녹음을 해 주세요.");
       return;
     }
 
@@ -264,13 +265,13 @@ export default function ConversationDetailPage() {
       await audio.play();
     } catch (error) {
       console.error(error);
-      alert("내 녹음을 재생할 수 없어.");
+      showToast("내 녹음을 재생할 수 없어요.");
     }
   };
 
   const handleAnalyzePronunciation = async () => {
     if (!recordingBlobRef.current) {
-      alert("먼저 녹음을 해줘.");
+      showToast("먼저 녹음을 해 주세요.");
       return;
     }
 
@@ -296,7 +297,7 @@ export default function ConversationDetailPage() {
       const data = await response.json();
 
       if (!response.ok || data.error) {
-        setAnalysisError(data.error ?? "분석에 실패했어요. 다시 시도해줘.");
+        setAnalysisError(data.error ?? "분석에 실패했어요. 다시 시도해 주세요.");
         return;
       }
 
@@ -324,11 +325,13 @@ export default function ConversationDetailPage() {
 
         if (logError) {
           console.error("발음 기록 저장 실패:", logError);
+        } else {
+          notifyLearningUpdated();
         }
       }
     } catch (error) {
       console.error(error);
-      setAnalysisError("분석 중 문제가 발생했어요. 다시 시도해줘.");
+      setAnalysisError("분석 중 문제가 발생했어요. 다시 시도해 주세요.");
     } finally {
       setIsAnalyzing(false);
     }
@@ -418,6 +421,7 @@ export default function ConversationDetailPage() {
             onAnalyze={handleAnalyzePronunciation}
             backIcon={<X size={19} />}
             backLabel="Close"
+            masteryId={`conversation-${item.id}`}
             backHref={`/conversation/${currentCategory.slug}`}
           />
         </div>

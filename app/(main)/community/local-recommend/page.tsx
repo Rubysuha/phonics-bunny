@@ -14,6 +14,7 @@ import {
   Coffee,
 } from "@phosphor-icons/react";
 import styles from "./local-recommend.module.css";
+import { useToast } from "@/components/Toast";
 
 type KakaoLatLng = {
   getLat: () => number;
@@ -115,6 +116,8 @@ const categories: {
 ];
 
 export default function LocalRecommendPage() {
+  const { showToast } = useToast();
+
   const router = useRouter();
 
   const mapRef = useRef<HTMLDivElement | null>(null);
@@ -143,7 +146,7 @@ export default function LocalRecommendPage() {
     const trimmedKeyword = searchKeyword.trim();
 
     if (!trimmedKeyword) {
-      alert("검색어를 입력해 주세요.");
+      showToast("검색어를 입력해 주세요.");
       return;
     }
 
@@ -238,7 +241,7 @@ export default function LocalRecommendPage() {
     script.async = true;
     script.onload = loadMap;
     script.onerror = () => {
-      alert("카카오맵 스크립트를 불러오지 못했어요.");
+      showToast("카카오맵 스크립트를 불러오지 못했어요.");
     };
 
     document.head.appendChild(script);
@@ -275,7 +278,7 @@ export default function LocalRecommendPage() {
 
   const handleCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert("현재 위치를 사용할 수 없는 브라우저예요.");
+      showToast("현재 위치를 사용할 수 없는 브라우저예요.");
       return;
     }
 
@@ -300,7 +303,7 @@ export default function LocalRecommendPage() {
         searchPlaces(nextKeyword, currentPosition);
       },
       () => {
-        alert("현재 위치 권한을 허용해야 사용할 수 있어요.");
+        showToast("현재 위치 권한을 허용해야 사용할 수 있어요.");
       }
     );
   };

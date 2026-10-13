@@ -4,6 +4,7 @@ import RecordCountdown from "@/components/RecordCountdown";
 import { createPageAudio, useStopAudioOnLeave } from "@/lib/pageAudio";
 import { rewardCoin } from "@/lib/rewardCoin";
 import { logEngagement } from "@/lib/logEngagement";
+import { notifyLearningUpdated } from "@/lib/learningEvents";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -167,7 +168,7 @@ export default function BookDetailPage() {
       await audio.play();
     } catch (error) {
       console.error(error);
-      alert("소리 파일을 찾을 수 없거나 재생할 수 없어.");
+      showToast("소리를 재생할 수 없어요.");
     }
   };
 
@@ -236,7 +237,7 @@ export default function BookDetailPage() {
     } catch (error) {
       console.error(error);
       setCountdown(null);
-      alert("마이크 권한을 허용해야 녹음할 수 있어.");
+      showToast("마이크 권한을 허용해야 녹음할 수 있어요.");
     }
   };
 
@@ -262,7 +263,7 @@ export default function BookDetailPage() {
 
   const handlePlayMine = async () => {
     if (!myRecordingUrl) {
-      alert("먼저 녹음을 해줘.");
+      showToast("먼저 녹음을 해 주세요.");
       return;
     }
 
@@ -281,13 +282,13 @@ export default function BookDetailPage() {
       await audio.play();
     } catch (error) {
       console.error(error);
-      alert("내 녹음을 재생할 수 없어.");
+      showToast("내 녹음을 재생할 수 없어요.");
     }
   };
 
   const handleAnalyzePronunciation = async () => {
     if (!recordingBlobRef.current) {
-      alert("먼저 녹음을 해줘.");
+      showToast("먼저 녹음을 해 주세요.");
       return;
     }
 
@@ -313,7 +314,7 @@ export default function BookDetailPage() {
       const data = await response.json();
 
       if (!response.ok || data.error) {
-        setAnalysisError(data.error ?? "분석에 실패했어요. 다시 시도해줘.");
+        setAnalysisError(data.error ?? "분석에 실패했어요. 다시 시도해 주세요.");
         return;
       }
 
@@ -341,11 +342,13 @@ export default function BookDetailPage() {
 
         if (logError) {
           console.error("발음 기록 저장 실패:", logError);
+        } else {
+          notifyLearningUpdated();
         }
       }
     } catch (error) {
       console.error(error);
-      setAnalysisError("분석 중 문제가 발생했어요. 다시 시도해줘.");
+      setAnalysisError("분석 중 문제가 발생했어요. 다시 시도해 주세요.");
     } finally {
       setIsAnalyzing(false);
     }
@@ -440,6 +443,7 @@ export default function BookDetailPage() {
             onAnalyze={handleAnalyzePronunciation}
             backIcon={<ArrowLeft size={19} />}
             backLabel="Book List"
+            masteryId={`book-${currentLevel.level}-${currentStory.slug}`}
             backHref={`/book/${currentLevel.level}`}
           />
         </div>

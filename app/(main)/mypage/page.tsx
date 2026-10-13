@@ -6,6 +6,20 @@ import { supabase } from "@/lib/supabase";
 import { bunnySkins } from "../shop/data";
 import { getMyPageStats, MyPageStats } from "@/lib/mypageStats";
 import styles from "./mypage.module.css";
+import { useToast } from "@/components/Toast";
+import {
+  ArrowLeft,
+  Carrot,
+  CheckCircle,
+  Fire,
+  Microphone,
+  PencilSimple,
+} from "@phosphor-icons/react";
+import {
+  loadLearningSummary,
+  type LearningSummary,
+} from "@/lib/learningProgress";
+import LevelCard from "@/components/LevelCard";
 
 type Profile = {
   email: string | null;
@@ -311,6 +325,8 @@ function CoinRow({ log }: { log: CoinLog }) {
 }
 
 export default function MyPage() {
+  const { showToast } = useToast();
+
   const router = useRouter();
 
   const [userId, setUserId] = useState("");
@@ -352,6 +368,9 @@ export default function MyPage() {
 
   const [editBunnyName, setEditBunnyName] =
     useState("");
+
+  const [learningSummary, setLearningSummary] =
+    useState<LearningSummary | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -439,6 +458,9 @@ export default function MyPage() {
       setLearningLogs(learningData ?? []);
       setStats(statsData);
       setLoading(false);
+
+      /* 단계는 계산이 오래 걸릴 수 있어서 화면을 먼저 보여 주고 뒤에 채움 */
+      setLearningSummary(await loadLearningSummary(user.id));
     };
 
     fetchMyPageData();
@@ -450,7 +472,7 @@ export default function MyPage() {
     }
 
     if (!editBunnyName.trim()) {
-      alert("토끼 이름을 입력해 주세요.");
+      showToast("토끼 이름을 입력해 주세요.");
       return;
     }
 
@@ -469,7 +491,7 @@ export default function MyPage() {
         error
       );
 
-      alert("토끼 이름 수정에 실패했어요.");
+      showToast("토끼 이름 수정에 실패했어요.");
 
       setSaving(false);
       return;
@@ -605,12 +627,14 @@ export default function MyPage() {
         onClick={() =>
           router.push("/dashboard")
         }
-        aria-label="대시보드로 돌아가기"
+        aria-label="Home으로 돌아가기"
       >
-        ←
+        <ArrowLeft size={24} weight="bold" />
       </button>
 
       <div className={styles.header}>
+        <p className={styles.eyebrow}>PROFILE &amp; RECORDS</p>
+
         <h1>My Page</h1>
 
         <p>
@@ -658,14 +682,14 @@ export default function MyPage() {
                       }
                       aria-label="토끼 이름 수정"
                     >
-                      ✎
+                      <PencilSimple size={15} weight="bold" />
                     </button>
                   )}
                 </div>
               </div>
 
               <div className={styles.coinPill}>
-                <span>🥕</span>
+                <Carrot size={18} weight="fill" />
 
                 <strong>
                   {profile?.coins ?? 0}
@@ -768,6 +792,12 @@ export default function MyPage() {
 
         <div className={styles.statsRow}>
           <div className={styles.statCard}>
+            <span
+              className={`${styles.statIcon} ${styles.statIconStreak}`}
+            >
+              <Fire size={22} weight="fill" />
+            </span>
+
             <span className={styles.statLabel}>
               연속 학습
             </span>
@@ -788,6 +818,12 @@ export default function MyPage() {
           </div>
 
           <div className={styles.statCard}>
+            <span
+              className={`${styles.statIcon} ${styles.statIconScore}`}
+            >
+              <Microphone size={22} weight="fill" />
+            </span>
+
             <span className={styles.statLabel}>
               평균 발음 점수
             </span>
@@ -814,6 +850,12 @@ export default function MyPage() {
           </div>
 
           <div className={styles.statCard}>
+            <span
+              className={`${styles.statIcon} ${styles.statIconWeek}`}
+            >
+              <CheckCircle size={22} weight="fill" />
+            </span>
+
             <span className={styles.statLabel}>
               이번 주 학습
             </span>
@@ -837,6 +879,13 @@ export default function MyPage() {
           </div>
         </div>
       </div>
+
+      {/* AI Bunny 단계: 누르면 영역별 숙달 개수를 볼 수 있음 */}
+      {learningSummary && (
+        <div className={styles.levelRow}>
+          <LevelCard summary={learningSummary} inline />
+        </div>
+      )}
 
       <div className={styles.analysisGrid}>
         <div className={styles.logCard}>

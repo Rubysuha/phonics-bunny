@@ -49,7 +49,7 @@ export const conversationCategories: ConversationCategory[] = [
   {
     slug: "family",
     title: "Family",
-    description: "가족과 나누는 짧은 대화를 연습해 보세요.",
+    description: "Practice short conversations with your family.",
     preview: "mom, dad, family",
     color: "pink",
     menuImage: "/conversation/menu/family.png",
@@ -177,7 +177,7 @@ export const conversationCategories: ConversationCategory[] = [
   {
     slug: "school",
     title: "School",
-    description: "학교에서 나누는 대화를 연습해 보세요.",
+    description: "Practice conversations at school.",
     preview: "teacher, class, friend",
     color: "blue",
     menuImage: "/conversation/menu/school.png",
@@ -305,7 +305,7 @@ export const conversationCategories: ConversationCategory[] = [
   {
     slug: "food",
     title: "Food",
-    description: "음식과 관련된 대화를 연습해 보세요.",
+    description: "Practice conversations about food.",
     preview: "hungry, lunch, snack",
     color: "yellow",
     menuImage: "/conversation/menu/food.png",
@@ -433,7 +433,7 @@ export const conversationCategories: ConversationCategory[] = [
   {
     slug: "weather",
     title: "Weather",
-    description: "날씨와 관련된 대화를 연습해 보세요.",
+    description: "Practice conversations about the weather.",
     preview: "sunny, rainy, windy",
     color: "mint",
     menuImage: "/conversation/menu/weather.png",
@@ -561,7 +561,7 @@ export const conversationCategories: ConversationCategory[] = [
   {
     slug: "animals",
     title: "Animals",
-    description: "동물과 관련된 대화를 연습해 보세요.",
+    description: "Practice conversations about animals.",
     preview: "cat, dog, zoo",
     color: "purple",
     menuImage: "/conversation/menu/animals.png",
@@ -689,7 +689,7 @@ export const conversationCategories: ConversationCategory[] = [
   {
     slug: "daily-routine",
     title: "Daily Routine",
-    description: "일상생활 속 대화를 연습해 보세요.",
+    description: "Practice conversations about your day.",
     preview: "wake up, eat, sleep",
     color: "cream",
     menuImage: "/conversation/menu/routine.png",

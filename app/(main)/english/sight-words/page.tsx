@@ -5,11 +5,13 @@ import PageTitle from "@/components/PageTitle";
 import styles from "./sight-words.module.css";
 import { sightWordLevels } from "./data";
 
+/* 카드에 크게 보여 줄 예시 단어 수 */
+const SAMPLE_WORD_COUNT = 4;
+
 const sightMenus = sightWordLevels.map((level) => ({
   title: level.title,
-  description: level.preview,
   href: `/english/sight-words/${level.level}`,
-  image: level.menuImage,
+  samples: level.words.slice(0, SAMPLE_WORD_COUNT).map((item) => item.word),
   count: level.words.length,
 }));
 
@@ -21,37 +23,33 @@ export default function SightWordsPage() {
           <PageTitle
             eyebrow="PHONICS"
             title="Sight Words"
-            subtitle="Level을 선택해서 자주 쓰는 단어를 학습해 보세요."
+            subtitle="Choose a level and learn the words you see most often."
           />
 
           <div className={styles.grid}>
             {sightMenus.map((menu, index) => (
-              <Link key={menu.href} href={menu.href} className={styles.card}>
-                <div className={styles.imageWrap}>
-                  {menu.image ? (
-                    <img
-                      src={menu.image}
-                      alt=""
-                      className={styles.image}
-                      draggable={false}
-                    />
-                  ) : (
-                    /* 메뉴 그림이 아직 없는 레벨: 레벨 숫자를 크게 */
-                    <span className={styles.noImage}>{index + 1}</span>
-                  )}
+              <Link
+                key={menu.href}
+                href={menu.href}
+                className={`${styles.card} ${styles[`tone${(index % 5) + 1}`]}`}
+              >
+                <span className={styles.levelNumber}>{index + 1}</span>
+
+                <div className={styles.titleRow}>
+                  <h2 className={styles.cardTitle}>{menu.title}</h2>
+
+                  <span className={styles.cardCount}>{menu.count} words</span>
                 </div>
 
-                <div className={styles.textRow}>
-                  <div className={styles.cardText}>
-                    <h2 className={styles.cardTitle}>{menu.title}</h2>
+                {/* 그림 대신 이 레벨에서 배우는 단어를 보여 줌 */}
+                <ul className={styles.samples} aria-label="예시 단어">
+                  {menu.samples.map((word) => (
+                    <li key={word}>{word}</li>
+                  ))}
+                </ul>
 
-                    <p className={styles.cardDescription}>
-                      {menu.description}
-                    </p>
-
-                    <p className={styles.cardCount}>{menu.count} words</p>
-                  </div>
-
+                <div className={styles.startRow}>
+                  Start
                   <span className={styles.arrow}>
                     <ArrowRight size={18} weight="bold" />
                   </span>

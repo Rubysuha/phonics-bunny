@@ -49,7 +49,7 @@ export default function ShortVowelsPage() {
           <PageTitle
             eyebrow="PHONICS"
             title="Short Vowels"
-            subtitle="짧게 발음되는 A, E, I, O, U 단모음을 익혀보세요."
+            subtitle="Learn the short sounds of A, E, I, O, and U."
           />
 
           <div className={styles.grid}>

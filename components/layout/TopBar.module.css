@@ -13,11 +13,14 @@
   display: flex;
   align-items: center;
   gap: 10px;
+
+  border-radius: 14px;
 }
 
 .brandIcon {
-  font-size: 32px;
-  line-height: 1;
+  display: inline-flex;
+
+  color: #ff8a3d;
 }
 
 .brandText {
@@ -68,8 +71,29 @@
   transform: scale(0.97);
 }
 
+/* 불러오는 동안 자리만 잡아 두는 빈 상자 */
+.userBoxLoading {
+  width: 150px;
+  height: 48px;
+
+  cursor: default;
+  pointer-events: none;
+
+  opacity: 0.6;
+}
+
+.role {
+  max-width: 180px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .coin {
-  font-size: 20px;
+  display: inline-flex;
+
+  color: #ff8a3d;
 }
 
 .coinText {
@@ -95,8 +119,9 @@
     gap: 8px;
   }
 
-  .brandIcon {
-    font-size: 24px;
+  .brandIcon svg {
+    width: 24px;
+    height: 24px;
   }
 
   .brandText {
@@ -108,10 +133,77 @@
     padding: 8px 14px;
   }
 
-  .coin,
+  .coin svg {
+    width: 18px;
+    height: 18px;
+  }
+
   .coinText,
   .divider,
   .role {
     font-size: 15px;
+  }
+
+  .role {
+    max-width: 110px;
+  }
+
+  .userBoxLoading {
+    width: 110px;
+    height: 38px;
+  }
+}
+
+/* 사용자 박스: [당근 코인] 이름 > */
+
+.userBox {
+  gap: 10px;
+
+  padding: 7px 16px 7px 7px;
+}
+
+.coinChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 8px 14px 8px 11px;
+
+  border-radius: 999px;
+
+  background: #fff1df;
+
+  color: #ff8a3d;
+}
+
+.coinChip .coinText {
+  color: #89582d;
+}
+
+.caret {
+  flex-shrink: 0;
+
+  color: #b9ab98;
+}
+
+/* 로그인 전: 코인 칩이 없으므로 왼쪽 여백을 맞춤 */
+.userBox > .role:first-child {
+  padding-left: 12px;
+}
+
+@media (max-width: 600px) {
+  .userBox {
+    gap: 7px;
+
+    padding: 5px 11px 5px 5px;
+  }
+
+  .coinChip {
+    padding: 6px 10px 6px 8px;
+  }
+
+  .coinChip svg {
+    width: 16px;
+    height: 16px;
   }
 }

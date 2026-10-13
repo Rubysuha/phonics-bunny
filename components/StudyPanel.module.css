@@ -543,3 +543,11 @@
       0 0 0 8px rgba(217, 68, 60, 0.25);
   }
 }
+
+/* 숙달 진행 표시 (LISTEN & SPEAK 아래) */
+.mastery {
+  display: flex;
+  justify-content: center;
+
+  margin: -4px 0 8px;
+}

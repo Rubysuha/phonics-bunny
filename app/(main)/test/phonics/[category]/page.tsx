@@ -32,11 +32,13 @@ import {
 } from "@/lib/testProgress";
 
 import {
-  FINAL_PHONICS_STAGE,
+  isFinalPhonicsStage,
   getPhonicsPassScore,
   getPhonicsQuestionCount,
   isPhonicsTestCategoryId,
 } from "@/lib/phonicsTestRules";
+import HelpTooltip from "@/components/HelpTooltip";
+import { PHONICS_TEST_HELP } from "../../testHelp";
 
 /* ─────────────────────────────
    Page
@@ -254,6 +256,13 @@ export default function PhonicsCategoryPage() {
             />
           </button>
 
+          <div className={styles.helpButton}>
+            <HelpTooltip
+              title="Phonics Challenge 이렇게 해요"
+              sections={PHONICS_TEST_HELP}
+            />
+          </div>
+
           {/* Header */}
 
           <header
@@ -318,6 +327,12 @@ export default function PhonicsCategoryPage() {
                 className={
                   styles.stageGrid
                 }
+              style={
+                {
+                  "--stage-count":
+                    category.stages.length,
+                } as React.CSSProperties
+              }
               >
                 {category.stages.map(
                   (
@@ -330,11 +345,13 @@ export default function PhonicsCategoryPage() {
 
                     const questionCount =
                       getPhonicsQuestionCount(
+                        category.id,
                         stageNumber
                       );
 
                     const passScore =
                       getPhonicsPassScore(
+                        category.id,
                         stageNumber
                       );
 
@@ -360,8 +377,10 @@ export default function PhonicsCategoryPage() {
                       0;
 
                     const isFinal =
-                      stageNumber ===
-                      FINAL_PHONICS_STAGE;
+                      isFinalPhonicsStage(
+                        category.id,
+                        stageNumber
+                      );
 
                     return (
                       <button
@@ -579,16 +598,19 @@ export default function PhonicsCategoryPage() {
 
                   <p>
                     {`Stage 1~${
-                      FINAL_PHONICS_STAGE -
-                      1
+                      category.stages.length - 1
                     }는 ${getPhonicsPassScore(
+                      category.id,
                       1
                     )}/${getPhonicsQuestionCount(
+                      category.id,
                       1
                     )} 이상, Final Stage는 ${getPhonicsPassScore(
-                      FINAL_PHONICS_STAGE
+                      category.id,
+                      category.stages.length
                     )}/${getPhonicsQuestionCount(
-                      FINAL_PHONICS_STAGE
+                      category.id,
+                      category.stages.length
                     )} 이상 맞히면 통과해요.`}
                   </p>
                 </div>
@@ -599,7 +621,8 @@ export default function PhonicsCategoryPage() {
                   }
                 >
                   {`Final · ${getPhonicsQuestionCount(
-                    FINAL_PHONICS_STAGE
+                    category.id,
+                    category.stages.length
                   )} Questions`}
                 </div>
               </div>

@@ -8,6 +8,12 @@ import {
   getReadingStoryKey,
   isReadingPassed,
 } from "@/lib/readingTestRules";
+import { bookLevels } from "@/app/(main)/book/data";
+import { TEST_COIN } from "@/lib/learningRules";
+import {
+  rewardTestCoins,
+  type TestCoinResult,
+} from "@/lib/testReward";
 
 export type ReadingStoryProgress = {
   bestScore: number;
@@ -40,6 +46,7 @@ export type SaveReadingTestResultReturn =
       success: true;
       passed: boolean;
       stars: number;
+          coins: TestCoinResult;
     };
 
 const EMPTY_PROGRESS: ReadingProgress = {
@@ -82,7 +89,7 @@ export async function saveReadingTestResult({
       stars: 0,
 
       message:
-        "로그인이 필요합니다.",
+        "로그인이 필요해요.",
     };
   }
 
@@ -95,6 +102,17 @@ export async function saveReadingTestResult({
     getReadingStars(
       score
     );
+
+  /* 새로 딴 별을 알기 위해 저장하기 전의 기록을 먼저 확인 */
+  const previousProgress =
+    await getReadingProgress(level);
+
+  const previousStars =
+    getReadingStoryProgress(
+      previousProgress,
+      level,
+      story
+    )?.stars ?? 0;
 
   const {
     error,
@@ -147,7 +165,7 @@ export async function saveReadingTestResult({
       stars: 0,
 
       message:
-        "테스트 결과 저장에 실패했습니다.",
+        "테스트 결과를 저장하지 못했어요.",
     };
   }
 
@@ -187,12 +205,40 @@ export async function saveReadingTestResult({
     );
   }
 
+  /* 코인 */
+  const coins = await rewardTestCoins({
+    userId: user.id,
+    title: `Reading ${level}/${story}`,
+    previousStars,
+    stars,
+    coinPerStar: TEST_COIN.readingPerStar,
+    bonus: {
+      name: `Reading ${level}`,
+      isComplete: async () => {
+        if (!passed) return false;
+
+        const stories =
+          bookLevels.find((item) => item.level === level)?.stories ?? [];
+
+        /* 이번에 통과한 이야기를 빼고 나머지가 모두 통과 상태인지 */
+        return (
+          stories.length > 0 &&
+          stories.every(
+            (item) =>
+              item.slug === story ||
+              getReadingStoryProgress(previousProgress, level, item.slug)
+                ?.passed
+          )
+        );
+      },
+    },
+  });
+
   return {
     success: true,
-
     passed,
-
     stars,
+    coins,
   };
 }
 

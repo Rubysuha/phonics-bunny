@@ -40,6 +40,12 @@ export type PhonicsBankItem = {
   group: string;
 
   /*
+    그룹 안의 세부 묶음 (Blend 의 bl · cl · fl 등)
+    문제를 묶음마다 고르게 뽑을 때 사용
+  */
+  section?: string;
+
+  /*
     실제 학습 단어
   */
   word: string;
@@ -153,6 +159,8 @@ export const blendBank: PhonicsBankItem[] =
       category: "blend-sounds",
 
       group: blend.group,
+
+      section: item.section,
 
       slug: item.slug,
 

@@ -3,6 +3,8 @@
 import { createPageAudio, useStopAudioOnLeave } from "@/lib/pageAudio";
 import { rewardCoin } from "@/lib/rewardCoin";
 import { logEngagement } from "@/lib/logEngagement";
+import { notifyLearningUpdated } from "@/lib/learningEvents";
+import MasteryMeter from "@/components/MasteryMeter";
 import { useMemo, useRef, useState } from "react";
 import { notFound, useParams } from "next/navigation";
 import {
@@ -16,6 +18,7 @@ import {
 import RecordCountdown from "@/components/RecordCountdown";
 import PronunciationResultModal from "@/components/PronunciationResultModal";
 import HelpTooltip from "@/components/HelpTooltip";
+import { SCORE_HELP, coinHelp, masteryHelp } from "@/components/helpSections";
 import BackButton from "@/components/ui/BackButton";
 import PageTitle from "@/components/PageTitle";
 import styles from "./level.module.css";
@@ -90,7 +93,7 @@ export default function SightWordLevelPage() {
       await audio.play();
     } catch (error) {
       console.error(error);
-      alert("소리 파일을 찾을 수 없거나 재생할 수 없어.");
+      showToast("소리를 재생할 수 없어요.");
     }
   };
 
@@ -171,7 +174,7 @@ export default function SightWordLevelPage() {
       console.error(error);
       setCountdownWord("");
       setCountdownValue(null);
-      alert("마이크 권한을 허용해야 녹음할 수 있어.");
+      showToast("마이크 권한을 허용해야 녹음할 수 있어요.");
     }
   };
 
@@ -201,7 +204,7 @@ export default function SightWordLevelPage() {
     const myRecordingUrl = recordings[word];
 
     if (!myRecordingUrl) {
-      alert("먼저 녹음을 해줘.");
+      showToast("먼저 녹음을 해 주세요.");
       return;
     }
 
@@ -219,7 +222,7 @@ export default function SightWordLevelPage() {
       await audio.play();
     } catch (error) {
       console.error(error);
-      alert("내 녹음을 재생할 수 없어.");
+      showToast("내 녹음을 재생할 수 없어요.");
     }
   };
 
@@ -230,7 +233,7 @@ export default function SightWordLevelPage() {
     const blob = recordedBlobs[item.word];
 
     if (!blob) {
-      alert("먼저 녹음을 해줘.");
+      showToast("먼저 녹음을 해 주세요.");
       return;
     }
 
@@ -255,7 +258,7 @@ export default function SightWordLevelPage() {
       const data = await response.json();
 
       if (!response.ok || data.error) {
-        setAnalysisError(data.error ?? "분석에 실패했어요. 다시 시도해줘.");
+        setAnalysisError(data.error ?? "분석에 실패했어요. 다시 시도해 주세요.");
         return;
       }
 
@@ -283,11 +286,13 @@ export default function SightWordLevelPage() {
 
         if (logError) {
           console.error("발음 기록 저장 실패:", logError);
+        } else {
+          notifyLearningUpdated();
         }
       }
     } catch (error) {
       console.error(error);
-      setAnalysisError("분석 중 문제가 발생했어요. 다시 시도해줘.");
+      setAnalysisError("분석 중 문제가 발생했어요. 다시 시도해 주세요.");
     } finally {
       setAnalyzingWord("");
     }
@@ -313,26 +318,27 @@ export default function SightWordLevelPage() {
       <div className={styles.hero}>
         <div className={styles.helpWrap}>
           <HelpTooltip
-            title="이렇게 진행돼요"
+            title="Sight Words 이렇게 해요"
             sections={[
               {
                 heading: "학습 목표",
                 items: [
-                  "the, said, was처럼 소리 규칙을 따르지 않아 파닉스로 풀어 읽기 어려운 고빈도 단어를 통째로 외워요.",
-                  "실제 문장의 대부분을 차지하는 단어들이라, 여기서 익숙해질수록 문장을 읽는 속도와 유창성이 늘어요.",
+                  "the · said · was처럼 소리 규칙으로 읽기 어려운, 자주 나오는 단어를 통째로 익혀요.",
+                  "문장의 대부분을 차지하는 단어들이라, 익숙해질수록 문장을 빠르고 자연스럽게 읽게 돼요.",
                 ],
               },
               {
                 heading: "진행 방법",
                 items: [
-                  "듣기 버튼의 소리는 이미 AI 음성으로 만들어져 있어서, 다른 섹션과 달리 별도의 AI 읽기 버튼은 없어요.",
-                  "카드별로 듣기 → 녹음 → 내 녹음 듣기 → AI 발음 분석하기 순서로 진행돼요.",
-                  "AI 발음 분석은 정확도 70% + 완성도 20% + 목소리 크기 10%를 합산해서 점수를 매겨요.",
-                  "여기서 발음 정확도가 낮았던 단어는 AI Bunny 대화에서 자동으로 다시 등장해요.",
-                  "레벨 전체 한글 학습 자료도 내려받을 수 있어요.",
-                  "소리 듣기와 녹음은 각각 코인으로 이어지고, 같은 단어에서 듣기 5번·녹음 5번까지 따로 받을 수 있어요.",
+                  "카드마다 듣기 → 녹음 → 내 녹음 듣기 → 발음 확인 순서로 연습해요.",
+                  "듣기 소리가 AI 음성이라 따로 AI Voice 버튼은 없어요.",
+                  SCORE_HELP,
+                  "점수가 낮았던 단어는 AI Bunny 대화에 다시 나와서 한 번 더 연습할 수 있어요.",
+                  "레벨 전체의 한글 학습 자료가 있으면 화면 아래에서 내려받을 수 있어요.",
                 ],
               },
+              masteryHelp("단어"),
+              coinHelp("단어", 1),
             ]}
           />
         </div>
@@ -341,7 +347,7 @@ export default function SightWordLevelPage() {
           <PageTitle
             eyebrow="SIGHT WORDS"
             title={currentLevel.title}
-            subtitle="자주 쓰는 단어를 듣고, 따라 말하고, 내 목소리로 확인해 보세요."
+            subtitle="Listen, repeat, and check your own voice."
           />
 
           <div className={styles.grid}>
@@ -370,6 +376,10 @@ export default function SightWordLevelPage() {
                           ? "Recording Complete!"
                           : "Tap to Record"}
                   </p>
+
+                  <div className={styles.mastery}>
+                    <MasteryMeter contentId={`sight-words-${item.slug}`} />
+                  </div>
 
                   <div className={styles.controls}>
                     <button

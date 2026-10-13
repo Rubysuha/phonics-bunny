@@ -38,7 +38,7 @@ export default function ShopCategoryPage() {
   const [selectedBackgroundId, setSelectedBackgroundId] =
     useState<string>("default_bg");
   const [backgroundImage, setBackgroundImage] = useState<string>(
-    "/shop/closet-bg.png"
+    "/shop/closet-bg.webp"
   );
 
   const [celebration, setCelebration] = useState<Celebration | null>(null);
@@ -135,7 +135,7 @@ export default function ShopCategoryPage() {
     if (ownedBunnies.includes(bunny.id)) return;
 
     if (coin < bunny.price) {
-      showToast("🥕 당근 코인이 부족해요!");
+      showToast("당근 코인이 부족해요!");
       return;
     }
 
@@ -210,7 +210,7 @@ export default function ShopCategoryPage() {
     if (ownedBackgrounds.includes(bg.id)) return;
 
     if (coin < bg.price) {
-      showToast("🥕 당근 코인이 부족해요!");
+      showToast("당근 코인이 부족해요!");
       return;
     }
 

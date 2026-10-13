@@ -1,44 +1,31 @@
-export function getConversationPassScore(
+import { TEST } from "@/lib/learningRules";
+import { getPassScore, getStars } from "@/lib/phonicsTestRules";
+
+/*
+  Conversation Test
+  월드(topic) 하나 = 10문제, Final = 20문제
+  통과 · 별 기준은 Phonics Test 와 같음 (lib/learningRules.ts)
+*/
+
+export function getConversationQuestionCount(
   topic: string
 ): number {
   return topic === "final"
-    ? 11
-    : 7;
+    ? TEST.reviewQuestionCount
+    : TEST.questionCount;
+}
+
+export function getConversationPassScore(
+  topic: string
+): number {
+  return getPassScore(getConversationQuestionCount(topic));
 }
 
 export function getConversationStars(
   score: number,
   topic: string
 ): number {
-  if (topic === "final") {
-    if (score === 15) {
-      return 3;
-    }
-
-    if (score >= 13) {
-      return 2;
-    }
-
-    if (score >= 11) {
-      return 1;
-    }
-
-    return 0;
-  }
-
-  if (score === 10) {
-    return 3;
-  }
-
-  if (score >= 8) {
-    return 2;
-  }
-
-  if (score >= 7) {
-    return 1;
-  }
-
-  return 0;
+  return getStars(score, topic === "final");
 }
 
 export function isConversationTopicPassed(

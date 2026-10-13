@@ -178,7 +178,7 @@
 .profileInfo .label {
   color: #a596a1;
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -362,7 +362,7 @@
 .profileMetaItem span {
   color: #aa9ca6;
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -468,7 +468,7 @@
 
   color: #aca0a8;
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 650;
   line-height: 1.45;
 }
@@ -499,7 +499,7 @@
   justify-content: space-between;
   gap: 18px;
 
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .logHeader h2 {
@@ -534,7 +534,7 @@
 
   color: #aa9ea6;
 
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -630,7 +630,7 @@
 
   color: #b2a5ae;
 
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
 
   font-variant-numeric: tabular-nums;
@@ -673,7 +673,7 @@
 
   color: #ada1a9;
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   text-align: right;
 }
@@ -809,7 +809,7 @@
   align-items: center;
   justify-content: center;
 
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 900;
 }
 
@@ -929,7 +929,7 @@
 
   color: #91818e;
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 900;
 }
 
@@ -1016,7 +1016,7 @@
 
   color: #aa9da6;
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   text-align: center;
 }
@@ -1145,7 +1145,7 @@
 
   color: #b1a4ad;
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 650;
   text-align: center;
 }
@@ -1180,7 +1180,7 @@
 .calendarSelectedHeader > div > span {
   color: #aa9da6;
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 750;
 }
 
@@ -1207,7 +1207,7 @@
   padding: 0 9px;
   box-sizing: border-box;
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 900;
 }
 
@@ -1273,7 +1273,7 @@
 .sleekRowMeta {
   color: #aa9da6;
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 650;
 
   display: flex;
@@ -1300,7 +1300,7 @@
 
   color: #aa9da6;
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 650;
 
   font-variant-numeric: tabular-nums;
@@ -1345,7 +1345,7 @@
 }
 
 .recordEmpty span {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 650;
 }
 
@@ -1453,3 +1453,415 @@
   }
 }
 
+
+
+/* ─────────────────────────────
+   다듬기: 아이콘 · 단계 카드
+───────────────────────────── */
+
+.backButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.coinPill svg {
+  color: #ff8a3d;
+}
+
+/* 통계 카드 오른쪽 위의 아이콘 */
+.statCard {
+  position: relative;
+}
+
+.statIcon {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+}
+
+.statIconStreak {
+  background: #ffeede;
+  color: #ff8a3d;
+}
+
+.statIconScore {
+  background: #fde6ee;
+  color: #d95c8a;
+}
+
+.statIconWeek {
+  background: #e3f4e1;
+  color: #3f9255;
+}
+
+/* AI Bunny 단계 카드 한 줄 */
+.levelRow {
+  display: flex;
+
+  margin-bottom: 18px;
+}
+
+/* ═════════════════════════════
+   새 디자인
+
+   - 앱 틀(상단 바 · 메뉴)을 덮고 화면 전체를 쓰는 화면
+   - 맨 위에 넓은 프로필 배너, 그 아래 통계 → 단계 → 분석 → 기록 순서
+   - 글자색은 앱 전체와 같은 따뜻한 갈색 계열
+═════════════════════════════ */
+
+/* 앱 틀(상단 바 · 메뉴)을 덮고 화면 전체를 씀 */
+.page {
+  position: absolute;
+  inset: 0;
+
+  padding: 30px clamp(18px, 3vw, 40px) 44px;
+
+  /* 다른 메뉴와 같은 반투명 유리 배경 (뒤의 Home 배경이 비쳐 보임) */
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(12px);
+
+  color: #2b2622;
+
+  scrollbar-width: thin;
+  scrollbar-color: #dccfb6 transparent;
+}
+
+/* 제목 줄 */
+
+.backButton {
+  top: 30px;
+  left: clamp(18px, 3vw, 40px);
+
+  width: 46px;
+  height: 46px;
+
+  border: 1.5px solid #dccfb6;
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.9);
+
+  color: #6f665d;
+
+  box-shadow: none;
+}
+
+.header {
+  margin: 0 0 18px 60px;
+}
+
+.eyebrow {
+  margin: 0;
+
+  color: #d2604a;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  letter-spacing: 0.16em;
+}
+
+.header h1 {
+  margin-top: 1px;
+
+  color: #2b2622;
+
+  font-size: 36px;
+  font-weight: 800;
+
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.header p {
+  margin: 3px 0 0;
+
+  color: #6f665d;
+
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* 카드 공통 */
+
+.profileCard,
+.statCard,
+.logCard {
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+
+  background: rgba(255, 255, 255, 0.92);
+
+  box-shadow: 0 8px 22px rgba(120, 90, 60, 0.07);
+}
+
+/* 프로필 배너: 한 줄 전체 */
+
+.topLayout {
+  grid-template-columns: 1fr;
+  gap: 14px;
+
+  margin-bottom: 14px;
+}
+
+.profileCard {
+  grid-template-columns: 116px minmax(0, 1fr);
+  gap: 22px;
+
+  padding: 22px 24px;
+
+  border-radius: 26px;
+
+  background:
+    linear-gradient(
+      115deg,
+      rgba(255, 244, 230, 0.96) 0%,
+      rgba(255, 236, 243, 0.96) 55%,
+      rgba(238, 241, 255, 0.96) 100%
+    );
+}
+
+.bunnyImageBox {
+  width: 116px;
+  height: 116px;
+
+  border: 4px solid #ffffff;
+  border-radius: 50%;
+
+  background: #fffaf2;
+
+  box-shadow: 0 8px 18px rgba(120, 90, 60, 0.12);
+}
+
+.profileInfo .label {
+  color: #d2604a;
+
+  letter-spacing: 0.12em;
+}
+
+.bunnyNameRow h2 {
+  margin: 0;
+
+  color: #2b2622;
+
+  font-size: 30px;
+  font-weight: 800;
+
+  letter-spacing: -0.5px;
+}
+
+.editIconButton {
+  width: 32px;
+  height: 32px;
+
+  border: 1.5px solid #dccfb6;
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  color: #6f665d;
+}
+
+.coinPill {
+  min-height: 46px;
+
+  gap: 8px;
+
+  padding: 0 18px 0 14px;
+
+  border: 1.5px solid #ffffff;
+
+  background: #ffffff;
+
+  color: #89582d;
+
+  box-shadow: 0 6px 14px rgba(120, 90, 60, 0.1);
+}
+
+.coinPill strong {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+/* 현재 토끼 · 가입일 · 이메일: 작은 알약 모양으로 한 줄에 */
+
+.profileMetaGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin-top: 14px;
+}
+
+.profileMetaItem {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
+
+  padding: 7px 14px;
+
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.profileMetaItem span {
+  color: #a2968a;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.profileMetaItem strong {
+  color: #3a332d;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* 통계 */
+
+.statsRow {
+  gap: 14px;
+}
+
+.statCard {
+  min-height: 0;
+
+  padding: 18px 20px;
+
+  border-radius: 22px;
+}
+
+.statLabel {
+  color: #6f665d;
+
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.statValueRow strong {
+  color: #2b2622;
+
+  font-size: 38px;
+  font-weight: 800;
+}
+
+.statCard p {
+  padding-top: 8px;
+
+  color: #a2968a;
+
+  font-size: 13.5px;
+}
+
+.levelRow {
+  margin-bottom: 14px;
+}
+
+/* 분석 · 기록 */
+
+.analysisGrid {
+  grid-template-columns: minmax(0, 1.55fr) minmax(260px, 1fr);
+  gap: 14px;
+
+  margin-bottom: 14px;
+}
+
+.logCard {
+  padding: 22px;
+
+  border-radius: 24px;
+}
+
+.logCard h2,
+.logHeader h2 {
+  color: #2b2622;
+
+  font-weight: 800;
+}
+
+.activityCard {
+  padding: 0;
+}
+
+.loadingBox {
+  border: none;
+
+  background: transparent;
+
+  color: #6f665d;
+
+  font-size: 16px;
+}
+
+/* 좁은 화면 */
+
+@media (max-width: 1180px) {
+  .analysisGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .activityLayout {
+    grid-template-columns: 300px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .header {
+    margin: 0 0 16px 58px;
+  }
+
+  .header h1 {
+    font-size: 26px;
+  }
+
+  .profileCard {
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 14px;
+
+    padding: 18px;
+  }
+
+  .bunnyImageBox {
+    width: 88px;
+    height: 88px;
+  }
+
+  .bunnyNameRow h2 {
+    font-size: 24px;
+  }
+
+  .statsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .activityLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .profileCard {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+
+  .profileTopRow {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+
+/* 동그란 프로필 안에서 토끼가 너무 작아 보이지 않게 */
+.bunnyImageBox img {
+  transform: scale(1.3);
+}

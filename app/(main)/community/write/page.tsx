@@ -24,6 +24,7 @@ import {
   DEFAULT_CATEGORY_TINT,
 } from "../categoryTheme";
 import BunnyMark from "../BunnyMark";
+import { useToast } from "@/components/Toast";
 
 type WriteCategoryId = CommunityCategoryId;
 
@@ -36,6 +37,8 @@ const categoryIcon: Record<CommunityCategoryId, React.ElementType> = {
 };
 
 function CommunityWritePageInner() {
+  const { showToast } = useToast();
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -98,7 +101,7 @@ function CommunityWritePageInner() {
 
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) {
-      alert("제목과 내용을 입력해주세요.");
+      showToast("제목과 내용을 입력해 주세요.");
       return;
     }
 
@@ -110,7 +113,7 @@ function CommunityWritePageInner() {
     } = await supabase.auth.getUser();
 
     if (userError || !user) {
-      alert("로그인 후 글을 작성할 수 있어요.");
+      showToast("로그인 후 글을 작성할 수 있어요.");
       setIsUploading(false);
       router.push("/login");
       return;
@@ -123,7 +126,7 @@ function CommunityWritePageInner() {
       .single();
 
     if (profileError || !profile) {
-      alert("사용자 정보를 불러오지 못했어요.");
+      showToast("사용자 정보를 불러오지 못했어요.");
       console.error(profileError?.message);
       setIsUploading(false);
       return;
@@ -143,7 +146,7 @@ function CommunityWritePageInner() {
         .upload(fileName, imageFile);
 
       if (uploadError) {
-        alert(`이미지 업로드에 실패했어요: ${uploadError.message}`);
+        showToast(`이미지 업로드에 실패했어요: ${uploadError.message}`);
         console.error(uploadError.message);
         setIsUploading(false);
         return;
@@ -170,7 +173,7 @@ function CommunityWritePageInner() {
       });
 
     if (insertError) {
-      alert("게시글 저장에 실패했어요.");
+      showToast("게시글 저장에 실패했어요.");
       console.error(insertError.message);
       setIsUploading(false);
       return;
@@ -198,7 +201,7 @@ function CommunityWritePageInner() {
       console.error("코인 로그 저장 실패:", logError.message);
     }
 
-    alert("게시글이 업로드되었어요! 당근 코인 +3");
+    showToast("게시글이 업로드되었어요! 당근 코인 +3");
     setIsUploading(false);
 
     if (category === "local-recommend") {
@@ -295,7 +298,7 @@ function CommunityWritePageInner() {
           <div className={styles.section}>
             <div className={styles.sectionHeader}>
               <h2>게시글 내용</h2>
-              <span>제목과 내용을 입력해주세요.</span>
+              <span>제목과 내용을 입력해 주세요.</span>
             </div>
 
             <input

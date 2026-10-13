@@ -50,22 +50,22 @@ export default function SignupPage() {
       !form.phone ||
       !form.bunnyName
     ) {
-      alert("필수 항목을 모두 입력해 주세요.");
+      showToast("필수 항목을 모두 입력해 주세요.");
       return;
     }
 
     if (form.password.length < 6) {
-      alert("비밀번호는 6자 이상이어야 해요.");
+      showToast("비밀번호는 6자 이상이어야 해요.");
       return;
     }
 
     if (passwordMismatch) {
-      alert("비밀번호가 서로 달라요.");
+      showToast("비밀번호가 서로 달라요.");
       return;
     }
 
     if (form.role === "parent" && (!form.childName || !form.childAge)) {
-      alert("학부모 가입은 아이 이름과 나이를 입력해 주세요.");
+      showToast("학부모 가입은 아이 이름과 나이를 입력해 주세요.");
       return;
     }
 
@@ -73,7 +73,7 @@ export default function SignupPage() {
       form.role === "teacher" &&
       (!form.teacherClassAge || !form.teacherInstitution)
     ) {
-      alert("선생님 가입은 담당 반과 기관명을 입력해 주세요.");
+      showToast("선생님 가입은 담당 반과 기관명을 입력해 주세요.");
       return;
     }
 
@@ -103,14 +103,14 @@ export default function SignupPage() {
 
     if (error) {
       setIsLoading(false);
-      alert("회원가입에 실패했어. 이메일이나 비밀번호를 확인해줘.");
+      showToast("회원가입에 실패했어요. 이메일이나 비밀번호를 확인해 주세요.");
       console.error(error.message);
       return;
     }
 
     setIsLoading(false);
 
-    showToast("🐰 회원가입이 완료됐어요!");
+    showToast("회원가입이 완료됐어요!");
     router.push("/login");
   };
 

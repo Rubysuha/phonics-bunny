@@ -44,19 +44,18 @@ import {
   saveConversationTestResult,
 } from "@/lib/conversationTestProgress";
 
+import type { TestCoinResult } from "@/lib/testReward";
+
+import TestCoinNote from "@/components/TestCoinNote";
+
 /* ─────────────────────────────
    Topic Check
 ───────────────────────────── */
 
-const VALID_TOPICS:
-  ConversationTopicId[] = [
-    "greetings",
-    "school",
-    "family",
-    "food",
-    "friends",
-    "final",
-  ];
+const VALID_TOPICS: ConversationTopicId[] =
+  conversationTopics.map(
+    (topic) => topic.id
+  );
 
 function isConversationTopic(
   value: string
@@ -102,16 +101,35 @@ export default function ConversationTopicPage() {
         )
       : undefined;
 
+  /*
+    문제를 고르는 seed
+    들어올 때마다(다시 풀 때도) 새 값을 써서 매번 다른 문제가 나옴.
+    서버와 브라우저의 첫 화면이 같도록 화면이 뜬 뒤에 정함
+  */
   const [
     attempt,
     setAttempt,
-  ] =
-    useState(0);
+  ] = useState<
+    number | null
+  >(null);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setAttempt(Date.now());
+  }, [topicId]);
+
+  const [
+    coins,
+    setCoins,
+  ] = useState<TestCoinResult | null>(
+    null
+  );
 
   const questions =
     useMemo(() => {
       if (
-        !validTopic
+        !validTopic ||
+        attempt === null
       ) {
         return [];
       }
@@ -263,7 +281,8 @@ export default function ConversationTopicPage() {
   ───────────────────────────── */
 
   if (
-    isCheckingAccess
+    isCheckingAccess ||
+    attempt === null
   ) {
     return (
       <section
@@ -372,7 +391,7 @@ export default function ConversationTopicPage() {
             }
           >
             <h1>
-              🔒 Final Challenge
+              Final Challenge
             </h1>
 
             <p>
@@ -485,12 +504,16 @@ export default function ConversationTopicPage() {
           });
 
         if (
-          !result.success
-        ) {
-          setSaveError(
-            result.message
-          );
-        }
+        !result.success
+      ) {
+        setSaveError(
+          result.message
+        );
+      } else {
+        setCoins(
+          result.coins
+        );
+      }
       } catch (
         error
       ) {
@@ -500,7 +523,7 @@ export default function ConversationTopicPage() {
         );
 
         setSaveError(
-          "테스트 결과를 저장하지 못했습니다."
+          "테스트 결과를 저장하지 못했어요."
         );
       } finally {
         setIsSaving(
@@ -536,9 +559,10 @@ export default function ConversationTopicPage() {
       );
 
       setAttempt(
-        (prev) =>
-          prev + 1
-      );
+      Date.now()
+    );
+
+    setCoins(null);
 
       setIsFinished(
         false
@@ -561,6 +585,8 @@ export default function ConversationTopicPage() {
 
   const handleNextTopic =
     () => {
+      setCoins(null);
+
       if (!nextTopic) {
         return;
       }
@@ -670,9 +696,13 @@ export default function ConversationTopicPage() {
                   styles.resultTitle
                 }
               >
-                {passed
-                  ? "Quiz Complete!"
-                  : "Try Again!"}
+                {stars === 3
+                  ? "Perfect!"
+                  : stars === 2
+                    ? "Great Job!"
+                    : passed
+                      ? "Quiz Complete!"
+                      : "Try Again!"}
               </h1>
 
               <p
@@ -758,6 +788,10 @@ export default function ConversationTopicPage() {
                   ? `Great work! You passed with ${score} out of ${questions.length}.`
                   : `You need ${passScore} out of ${questions.length} to pass.`}
               </p>
+
+              <TestCoinNote
+                coins={coins}
+              />
 
               {saveError && (
                 <p

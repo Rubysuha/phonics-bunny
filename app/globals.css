@@ -9,7 +9,7 @@ body {
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, Helvetica, var(--font-kr), sans-serif;
   background: #efefef;
   color: #222;
 }
@@ -21,4 +21,13 @@ a {
 
 button {
   font: inherit;
+}
+
+/*
+  키보드로 이동할 때 보이는 포커스 표시 (모든 화면 공통)
+  :where 라서 각 화면에서 따로 정한 포커스 모양이 있으면 그쪽이 우선
+*/
+:where(a, button, input, select, textarea, [role="button"], [tabindex]):focus-visible {
+  outline: 3px solid rgba(226, 114, 91, 0.55);
+  outline-offset: 2px;
 }

@@ -432,3 +432,91 @@
   40% { transform: scale(1.08); }
   100% { transform: scale(1); }
 }
+/* 태블릿: 카드 두 줄, 왼쪽 위 뒤로가기 · 오른쪽 위 코인과 제목이 겹치지 않게 */
+@media (max-width: 900px) {
+  .pageInner {
+    padding: 96px 20px 32px;
+  }
+
+  .header {
+    margin-left: 0;
+  }
+
+  .header h1 {
+    font-size: 38px;
+  }
+
+  .header p {
+    font-size: 15px;
+  }
+
+  .backButton {
+    top: 20px;
+    left: 20px;
+
+    width: 52px;
+    height: 52px;
+
+    font-size: 28px;
+  }
+
+  .coinBox {
+    top: 20px;
+    right: 20px;
+
+    width: 160px;
+    height: 52px;
+
+    font-size: 18px;
+  }
+
+  .coinBox strong {
+    font-size: 24px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .imageBox {
+    width: min(100%, 150px);
+    height: auto;
+    aspect-ratio: 1;
+  }
+
+  .errorBox {
+    width: min(100%, 420px);
+  }
+}
+
+/* 폰 */
+@media (max-width: 520px) {
+  .pageInner {
+    padding: 88px 12px 24px;
+  }
+
+  .header h1 {
+    font-size: 30px;
+  }
+
+  .grid {
+    gap: 12px;
+  }
+
+  .card {
+    padding: 18px 10px 16px;
+  }
+
+  .card h2 {
+    font-size: 19px;
+  }
+
+  .buyButton,
+  .selectButton {
+    width: min(100%, 150px);
+  }
+
+  .celebrateCard {
+    width: min(100%, 320px);
+  }
+}
