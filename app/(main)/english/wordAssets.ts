@@ -348,6 +348,7 @@ export const wordAssets: ReadonlySet<string> = new Set([
   "/blend-sounds/s/scarf.webp",
   "/blend-sounds/s/school.webp",
   "/blend-sounds/s/skate.webp",
+  "/blend-sounds/s/sketch.webp",
   "/blend-sounds/s/ski.webp",
   "/blend-sounds/s/skin.webp",
   "/blend-sounds/s/skip.webp",
