@@ -137,7 +137,8 @@ export default function DashboardPage() {
       <FloatingReportButton />
 
       <div className={styles.hero}>
-        <h1 className={styles.title}>Home</h1>
+        {/* 화면에는 보이지 않고 화면 읽기 프로그램만 읽는 제목 (토끼와 배경이 잘 보이게) */}
+        <h1 className={styles.hiddenTitle}>Home</h1>
 
         {homeBackgroundImage && (
           <button
